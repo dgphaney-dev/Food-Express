@@ -1,5 +1,19 @@
+import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { ShoppingBag, LogOut, ClipboardList, UtensilsCrossed, Search, X, Bike } from 'lucide-react';
+import {
+  ShoppingBag,
+  LogOut,
+  ClipboardList,
+  UtensilsCrossed,
+  Search,
+  X,
+  Bike,
+  Menu,
+  Home,
+  Utensils,
+  ShieldCheck,
+  ChevronRight,
+} from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
 import { formatPrice } from '../utils/helpers';
 
@@ -15,6 +29,24 @@ export default function Navbar({
   const count = cartCount ?? cartItemCount;
   const location = useLocation();
   const { totalPrice } = useCart();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Close mobile drawer on route change
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [location.pathname]);
+
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [mobileMenuOpen]);
 
   const isActive = (path) => {
     if (path === '/') return location.pathname === '/';
@@ -22,10 +54,30 @@ export default function Navbar({
   };
 
   const navTabs = [
-    { label: 'NOSSOS PRODUTOS', path: '/nossos-produtos', altPaths: ['/delivery', '/cardapio', '/produtos'] },
-    { label: 'RESTAURANTE & SALÃO', path: '/restaurante', altPaths: ['/salao'] },
-    { label: 'TELA DO MOTORISTA', path: '/entregador', altPaths: ['/motorista', '/driver'] },
-    { label: 'ACESSO DO ATENDENTE', path: '/admin/login', altPaths: [] },
+    {
+      label: 'NOSSOS PRODUTOS',
+      path: '/nossos-produtos',
+      altPaths: ['/delivery', '/cardapio', '/produtos'],
+      icon: Utensils,
+    },
+    {
+      label: 'RESTAURANTE & SALÃO',
+      path: '/restaurante',
+      altPaths: ['/salao'],
+      icon: UtensilsCrossed,
+    },
+    {
+      label: 'TELA DO MOTORISTA',
+      path: '/entregador',
+      altPaths: ['/motorista', '/driver'],
+      icon: Bike,
+    },
+    {
+      label: 'ACESSO DO ATENDENTE',
+      path: '/admin/login',
+      altPaths: [],
+      icon: ShieldCheck,
+    },
   ];
 
   const isTabActive = (tab) => {
@@ -42,27 +94,27 @@ export default function Navbar({
           : 'bg-[#0e0c0a]/95 border-b border-[#26201b]'
       }`}
     >
-      <div className="w-full flex h-18 items-center justify-between px-4 sm:px-6 lg:px-8 gap-4">
+      <div className="max-w-7xl mx-auto w-full flex h-18 items-center justify-between px-3 sm:px-6 lg:px-8 gap-2 sm:gap-4">
         {/* Brand / Logo */}
-        <div className="flex items-center gap-3 shrink-0">
-          <Link to={isAdmin ? '/admin/pedidos' : '/'} className="flex items-center gap-3 group">
-            <div className="flex h-11 w-11 items-center justify-center rounded-full bg-black border-2 border-orange-500/50 text-white transition-transform group-hover:scale-105 overflow-hidden shadow-xl ring-2 ring-orange-500/20">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+          <Link to={isAdmin ? '/admin/pedidos' : '/'} className="flex items-center gap-2.5 sm:gap-3 group">
+            <div className="flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-full bg-black border-2 border-orange-500/50 text-white transition-transform group-hover:scale-105 overflow-hidden shadow-xl ring-2 ring-orange-500/20 shrink-0">
               <img src="/logo.jpg" alt="FoodExpress" className="w-full h-full object-cover scale-105" />
             </div>
             <div className="flex flex-col">
-              <span className="text-2xl font-black tracking-tight text-white leading-none font-['Oswald',sans-serif]">
+              <span className="text-xl sm:text-2xl font-black tracking-tight text-white leading-none font-['Oswald',sans-serif]">
                 Food<span className="bg-gradient-to-r from-orange-500 via-amber-400 to-red-500 bg-clip-text text-transparent">Express</span>
               </span>
-              <span className="text-[10px] font-bold text-amber-500/90 tracking-widest uppercase mt-0.5 font-['Oswald',sans-serif]">
+              <span className="hidden sm:inline text-[10px] font-bold text-amber-500/90 tracking-widest uppercase mt-0.5 font-['Oswald',sans-serif]">
                 {isAdmin ? 'Painel Operacional' : 'Steakhouse & Artisan Burgers'}
               </span>
             </div>
           </Link>
         </div>
 
-        {/* Center Search Bar (Client View - when onSearchChange is passed) */}
+        {/* Center Search Bar (Client View - when onSearchChange is passed on wide desktop) */}
         {!isAdmin && onSearchChange && (
-          <div className="hidden xl:flex flex-1 max-w-xs mx-2">
+          <div className="hidden 2xl:flex flex-1 max-w-xs mx-2">
             <div className="relative w-full">
               <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-500" />
               <input
@@ -84,13 +136,13 @@ export default function Navbar({
           </div>
         )}
 
-        {/* Center/Right Outback Style Navigation Tabs (Matches user screenshot) */}
+        {/* Desktop Navigation Tabs (Aparece em telas a partir de xl para garantir zero aperto/quebra) */}
         {!isAdmin && (
-          <nav className="hidden md:flex items-center gap-1 lg:gap-2 xl:gap-3 shrink-0">
+          <nav className="hidden xl:flex items-center gap-1 2xl:gap-2 shrink-0">
             {/* INÍCIO */}
             <Link
               to="/"
-              className={`group relative px-3 py-2 rounded-xl text-xs font-black uppercase tracking-wider font-['Oswald',sans-serif] whitespace-nowrap shrink-0 transition-all duration-300 ${
+              className={`group relative px-2.5 2xl:px-3 py-2 rounded-xl text-xs font-black uppercase tracking-wider font-['Oswald',sans-serif] whitespace-nowrap shrink-0 transition-all duration-300 ${
                 location.pathname === '/'
                   ? 'text-amber-400'
                   : 'text-stone-300 hover:text-white hover:bg-white/[0.05]'
@@ -120,7 +172,7 @@ export default function Navbar({
                 <Link
                   key={tab.path}
                   to={tab.path}
-                  className={`group relative px-3 py-2 rounded-xl text-xs font-black uppercase tracking-wider font-['Oswald',sans-serif] whitespace-nowrap shrink-0 transition-all duration-300 ${
+                  className={`group relative px-2.5 2xl:px-3 py-2 rounded-xl text-xs font-black uppercase tracking-wider font-['Oswald',sans-serif] whitespace-nowrap shrink-0 transition-all duration-300 ${
                     active
                       ? 'text-amber-400'
                       : 'text-stone-300 hover:text-white hover:bg-white/[0.05]'
@@ -147,129 +199,197 @@ export default function Navbar({
           </nav>
         )}
 
-        {/* Right side actions */}
-        <div className="flex items-center gap-2 shrink-0">
+        {/* Right side actions (Sacola, Pedir Agora, Hambúrguer Responsivo) */}
+        <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
           {isAdmin ? (
             <>
               {/* Admin nav links */}
               <Link
                 to="/admin/pedidos"
-                className={`flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold uppercase tracking-wider font-['Oswald',sans-serif] transition-colors ${
+                className={`flex items-center gap-1.5 sm:gap-2 rounded-xl px-3 sm:px-4 py-2 text-xs font-bold uppercase tracking-wider font-['Oswald',sans-serif] transition-colors whitespace-nowrap shrink-0 ${
                   isActive('/admin/pedidos') || isActive('/admin/orders')
                     ? 'bg-orange-600 text-white shadow-md'
                     : 'text-zinc-400 hover:bg-zinc-800 hover:text-white'
                 }`}
                 title="Fila de Pedidos"
               >
-                <ClipboardList size={16} />
+                <ClipboardList size={15} />
                 <span>Pedidos</span>
               </Link>
 
               <Link
                 to="/admin/cardapio"
-                className={`flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold uppercase tracking-wider font-['Oswald',sans-serif] transition-colors ${
+                className={`flex items-center gap-1.5 sm:gap-2 rounded-xl px-3 sm:px-4 py-2 text-xs font-bold uppercase tracking-wider font-['Oswald',sans-serif] transition-colors whitespace-nowrap shrink-0 ${
                   isActive('/admin/cardapio') || isActive('/admin/menu')
                     ? 'bg-orange-600 text-white shadow-md'
                     : 'text-zinc-400 hover:bg-zinc-800 hover:text-white'
                 }`}
                 title="Gerenciar Cardápio"
               >
-                <UtensilsCrossed size={16} />
+                <UtensilsCrossed size={15} />
                 <span>Cardápio</span>
               </Link>
 
               <Link
                 to="/entregador"
-                className={`flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold uppercase tracking-wider font-['Oswald',sans-serif] transition-colors ${
+                className={`hidden sm:flex items-center gap-1.5 sm:gap-2 rounded-xl px-3 sm:px-4 py-2 text-xs font-bold uppercase tracking-wider font-['Oswald',sans-serif] transition-colors whitespace-nowrap shrink-0 ${
                   isActive('/entregador') || isActive('/motorista')
                     ? 'bg-orange-600 text-white shadow-md'
                     : 'text-zinc-400 hover:bg-zinc-800 hover:text-white'
                 }`}
                 title="Abrir tela do motorista/entregador"
               >
-                <Bike size={16} />
+                <Bike size={15} />
                 <span>Entregador</span>
-              </Link>
-
-              {/* View Public Menu link */}
-              <Link
-                to="/nossos-produtos"
-                target="_blank"
-                className="hidden lg:flex items-center gap-1.5 px-3 py-2 text-xs font-bold uppercase tracking-wider font-['Oswald',sans-serif] text-zinc-400 hover:text-amber-400 rounded-lg transition-colors"
-                title="Abrir cardápio do cliente em nova aba"
-              >
-                Ver cardápio
               </Link>
 
               {/* Logout button */}
               <button
                 onClick={onLogout}
-                className="ml-1 flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-bold uppercase tracking-wider font-['Oswald',sans-serif] text-zinc-400 hover:bg-red-950/40 hover:text-red-400 border border-transparent hover:border-red-900/40 transition-colors cursor-pointer"
+                className="ml-1 flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-bold uppercase tracking-wider font-['Oswald',sans-serif] text-zinc-400 hover:bg-red-950/40 hover:text-red-400 border border-transparent hover:border-red-900/40 transition-colors cursor-pointer shrink-0"
                 title="Sair do painel"
               >
-                <LogOut size={16} />
+                <LogOut size={15} />
                 <span className="hidden sm:inline">Sair</span>
               </button>
             </>
           ) : (
-            /* Customer Cart button with live count and subtotal */
-            onCartClick ? (
+            <>
+              {/* Customer Cart button with live count and subtotal */}
+              {onCartClick ? (
+                <button
+                  onClick={onCartClick}
+                  className="relative flex items-center gap-1.5 sm:gap-2.5 rounded-xl sm:rounded-full bg-[#181411] hover:bg-[#201b17] border border-[#3a3029] hover:border-[#4d3f35] text-white px-3 sm:px-5 py-2 font-bold text-xs sm:text-sm shadow-md transition-all active:scale-[0.98] cursor-pointer whitespace-nowrap shrink-0"
+                  aria-label={`Sacola com ${count} itens`}
+                >
+                  <ShoppingBag size={15} strokeWidth={2.2} className="text-amber-500 shrink-0" />
+                  <span className="font-bold text-xs sm:text-sm text-stone-100">Sacola</span>
+                  {count > 0 ? (
+                    <div className="flex items-center gap-1.5 sm:gap-2 pl-1 border-l border-[#3a3029] ml-1">
+                      <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-[#c2410c] px-1.5 text-xs font-bold text-white shadow-sm">
+                        {count}
+                      </span>
+                      <span className="hidden sm:inline text-xs font-semibold text-amber-400">
+                        {formatPrice(totalPrice)}
+                      </span>
+                    </div>
+                  ) : (
+                    <span className="text-[11px] text-stone-500 font-normal hidden sm:inline">vazia</span>
+                  )}
+                </button>
+              ) : (
+                /* Botão Pedir Agora Responsivo (Sem truncar) */
+                <Link
+                  to="/nossos-produtos"
+                  className="inline-flex items-center gap-1.5 sm:gap-2 rounded-xl bg-[#c2410c] hover:bg-[#d9531e] active:scale-95 text-white px-3.5 sm:px-4 py-2 text-xs sm:text-sm font-bold shadow-md shadow-black/50 uppercase font-['Oswald',sans-serif] tracking-wider transition-all cursor-pointer whitespace-nowrap shrink-0"
+                >
+                  <ShoppingBag size={14} className="shrink-0" />
+                  <span>Pedir Agora</span>
+                </Link>
+              )}
+
+              {/* Botão de Menu Hambúrguer Responsivo (Aparece em telas tablet/mobile < xl) */}
               <button
-                onClick={onCartClick}
-                className="relative flex items-center gap-2.5 rounded-full bg-[#181411] hover:bg-[#201b17] border border-[#3a3029] hover:border-[#4d3f35] text-white px-4 sm:px-5 py-2 font-bold text-xs sm:text-sm shadow-md transition-all active:scale-[0.98] cursor-pointer"
-                aria-label={`Sacola com ${count} itens`}
+                type="button"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="xl:hidden flex items-center justify-center w-10 h-10 rounded-xl bg-[#181411] hover:bg-[#221c17] border border-[#3a3029] text-stone-200 hover:text-white transition-all cursor-pointer shrink-0"
+                aria-label={mobileMenuOpen ? 'Fechar menu' : 'Abrir menu'}
               >
-                <ShoppingBag size={16} strokeWidth={2.2} className="text-amber-500" />
-                <span className="font-bold text-xs sm:text-sm text-stone-100">Sacola</span>
-                {count > 0 ? (
-                  <div className="flex items-center gap-2 pl-1 border-l border-[#3a3029] ml-1">
-                    <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-[#c2410c] px-1.5 text-xs font-bold text-white shadow-sm">
-                      {count}
-                    </span>
-                    <span className="hidden sm:inline text-xs font-semibold text-amber-400">
-                      {formatPrice(totalPrice)}
-                    </span>
-                  </div>
-                ) : (
-                  <span className="text-xs text-stone-500 font-normal">vazia</span>
-                )}
+                {mobileMenuOpen ? <X size={20} className="text-orange-500" /> : <Menu size={20} />}
               </button>
-            ) : (
-              /* If no cart click passed, show a direct button to Nossos Produtos / Cardápio */
-              <Link
-                to="/nossos-produtos"
-                className="inline-flex items-center gap-2 rounded-xl bg-[#c2410c] hover:bg-[#d9531e] active:scale-95 text-white px-4 py-2 text-xs sm:text-sm font-bold shadow-md shadow-black/50 uppercase font-['Oswald',sans-serif] tracking-wider transition-all cursor-pointer"
-              >
-                <ShoppingBag size={15} />
-                <span>Pedir Agora</span>
-              </Link>
-            )
+            </>
           )}
         </div>
       </div>
 
-      {/* Mobile Subnav for tabs */}
-      {!isAdmin && (
-        <div className="md:hidden flex items-center gap-4 overflow-x-auto px-4 py-2 bg-[#120e0c] border-t border-[#221a15] scrollbar-hide text-xs font-bold font-['Oswald',sans-serif]">
-          <Link
-            to="/"
-            className={`whitespace-nowrap pb-0.5 border-b-2 ${
-              location.pathname === '/' ? 'text-amber-400 border-orange-500' : 'text-stone-400 border-transparent'
-            }`}
-          >
-            INÍCIO
-          </Link>
-          {navTabs.map((tab) => (
-            <Link
-              key={tab.path}
-              to={tab.path}
-              className={`whitespace-nowrap pb-0.5 border-b-2 ${
-                isTabActive(tab) ? 'text-amber-400 border-orange-500' : 'text-stone-400 border-transparent'
-              }`}
-            >
-              {tab.label}
-            </Link>
-          ))}
+      {/* DRAWER RESPONSIVO MOBILE & TABLET (Para telas < xl) */}
+      {!isAdmin && mobileMenuOpen && (
+        <div className="xl:hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex justify-end animate-in fade-in duration-200">
+          <div className="w-full max-w-xs sm:max-w-sm h-full bg-[#120f0d] border-l border-[#2e241d] p-5 flex flex-col justify-between shadow-2xl animate-in slide-in-from-right duration-300">
+            {/* Topo do Drawer */}
+            <div>
+              <div className="flex items-center justify-between pb-4 border-b border-[#261e18]">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-9 h-9 rounded-full bg-black border border-orange-500/50 flex items-center justify-center overflow-hidden">
+                    <img src="/logo.jpg" alt="Logo" className="w-full h-full object-cover scale-105" />
+                  </div>
+                  <div>
+                    <span className="text-base font-black text-white font-['Oswald',sans-serif]">
+                      Food<span className="text-orange-500">Express</span>
+                    </span>
+                    <span className="text-[10px] text-amber-500 block uppercase font-bold tracking-wider font-['Oswald',sans-serif]">
+                      Menu de Navegação
+                    </span>
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="w-8 h-8 rounded-lg bg-zinc-900 border border-zinc-800 text-stone-400 hover:text-white flex items-center justify-center cursor-pointer"
+                >
+                  <X size={16} />
+                </button>
+              </div>
+
+              {/* Lista de Links no Drawer */}
+              <nav className="mt-4 space-y-1.5">
+                <Link
+                  to="/"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`flex items-center justify-between p-3 rounded-xl text-xs font-bold uppercase tracking-wider font-['Oswald',sans-serif] transition-all ${
+                    location.pathname === '/'
+                      ? 'bg-orange-500/15 border border-orange-500/40 text-amber-400'
+                      : 'text-stone-300 hover:bg-[#1c1612] hover:text-white'
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <Home size={16} className={location.pathname === '/' ? 'text-amber-400' : 'text-stone-400'} />
+                    <span>Início</span>
+                  </div>
+                  <ChevronRight size={14} className="opacity-50" />
+                </Link>
+
+                {navTabs.map((tab) => {
+                  const active = isTabActive(tab);
+                  const Icon = tab.icon;
+                  return (
+                    <Link
+                      key={tab.path}
+                      to={tab.path}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className={`flex items-center justify-between p-3 rounded-xl text-xs font-bold uppercase tracking-wider font-['Oswald',sans-serif] transition-all ${
+                        active
+                          ? 'bg-orange-500/15 border border-orange-500/40 text-amber-400'
+                          : 'text-stone-300 hover:bg-[#1c1612] hover:text-white'
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <Icon size={16} className={active ? 'text-amber-400' : 'text-stone-400'} />
+                        <span>{tab.label}</span>
+                      </div>
+                      <ChevronRight size={14} className="opacity-50" />
+                    </Link>
+                  );
+                })}
+              </nav>
+            </div>
+
+            {/* Rodapé do Drawer com Ações Rápidas */}
+            <div className="pt-4 border-t border-[#261e18] space-y-3">
+              <Link
+                to="/nossos-produtos"
+                onClick={() => setMobileMenuOpen(false)}
+                className="w-full py-3 rounded-xl bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs uppercase tracking-wider font-['Oswald',sans-serif] flex items-center justify-center gap-2 shadow-lg shadow-orange-950/60 transition-all cursor-pointer"
+              >
+                <ShoppingBag size={15} />
+                <span>Pedir no Cardápio</span>
+              </Link>
+
+              <div className="text-center text-[11px] text-stone-500">
+                FoodExpress Steakhouse · Salão & Delivery
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </header>
