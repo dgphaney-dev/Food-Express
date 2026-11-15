@@ -1233,3 +1233,22 @@ pm run build bem-sucedido.
      - Testes automatizados executados e aprovados: 7/7 suites verdes (`npm test`).
      - Build do frontend validado com sucesso (`npm run build:frontend`).
      - Lint verificado e sem erros.
+
+
+---
+
+### [2026-11-15 00:36] — Correção de Sobreposição do Menu Drawer Mobile (React Portal & z-[99999])
+- **Papel Ativo:** Desenvolvedor Frontend Sênior & Especialista em UX/CSS
+- **Etapa SDD:** `Fase 3 — Correção de Layout e Isolamento de Stacking Context no Mobile Drawer`
+- **Ações Executadas:**
+  1. **Diagnóstico do Bug de Sobreposição:**
+     - O menu hambúrguer responsivo estava aninhado diretamente dentro do `<header className="sticky top-0 z-50 backdrop-blur-md">`.
+     - De acordo com a especificação CSS de `backdrop-filter`, o header se tornava o bloco de contenção (*containing block*) do elemento `position: fixed`.
+     - Como resultado, os elementos seguintes do DOM (o banner Hero com texto "THUNDER BROWNIE COM SORVETE" e o botão "PEDIR NO CARDÁPIO") com seus próprios stacking contexts estavam pintando por cima do drawer.
+  2. **Implementação de React Portal (`createPortal`):**
+     - O drawer mobile foi desacoplado do `<header>` e agora é montado diretamente no `document.body` via `createPortal`.
+     - Aplicado `z-[99999]` absoluto e backdrop com `backdrop-blur-sm bg-black/85` e painel opaco com `relative z-10`.
+     - Adicionado suporte a fechar ao clicar no backdrop e prevenção de clique dentro do painel.
+  3. **Validação:**
+     - Build de produção verificado com sucesso (`npm run build:frontend`).
+     - Testes automatizados executados com 7/7 aprovados (`npm test`).

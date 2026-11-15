@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { Link, useLocation } from 'react-router-dom';
 import {
   ShoppingBag,
@@ -302,96 +303,109 @@ export default function Navbar({
         </div>
       </div>
 
-      {/* DRAWER RESPONSIVO MOBILE & TABLET (Para telas < xl) */}
-      {!isAdmin && mobileMenuOpen && (
-        <div className="xl:hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex justify-end animate-in fade-in duration-200">
-          <div className="w-full max-w-xs sm:max-w-sm h-full bg-[#120f0d] border-l border-[#2e241d] p-5 flex flex-col justify-between shadow-2xl animate-in slide-in-from-right duration-300">
-            {/* Topo do Drawer */}
-            <div>
-              <div className="flex items-center justify-between pb-4 border-b border-[#261e18]">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-9 h-9 rounded-full bg-black border border-orange-500/50 flex items-center justify-center overflow-hidden">
-                    <img src="/logo.jpg" alt="Logo" className="w-full h-full object-cover scale-105" />
+      {/* DRAWER RESPONSIVO MOBILE & TABLET (Renderizado via Portal no body para garantir isolamento e z-index absoluto) */}
+      {!isAdmin &&
+        mobileMenuOpen &&
+        typeof document !== 'undefined' &&
+        createPortal(
+          <div
+            className="xl:hidden fixed inset-0 z-[99999] bg-black/85 backdrop-blur-sm flex justify-end animate-in fade-in duration-200"
+            onClick={(e) => {
+              if (e.target === e.currentTarget) setMobileMenuOpen(false);
+            }}
+          >
+            <div
+              className="w-full max-w-xs sm:max-w-sm h-full bg-[#120f0d] border-l border-[#2e241d] p-5 flex flex-col justify-between shadow-2xl relative z-10 animate-in slide-in-from-right duration-300"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Topo do Drawer */}
+              <div>
+                <div className="flex items-center justify-between pb-4 border-b border-[#261e18]">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-full bg-black border border-orange-500/50 flex items-center justify-center overflow-hidden">
+                      <img src="/logo.jpg" alt="Logo" className="w-full h-full object-cover scale-105" />
+                    </div>
+                    <div>
+                      <span className="text-base font-black text-white font-['Oswald',sans-serif]">
+                        Food<span className="text-orange-500">Express</span>
+                      </span>
+                      <span className="text-[10px] text-amber-500 block uppercase font-bold tracking-wider font-['Oswald',sans-serif]">
+                        Menu de Navegação
+                      </span>
+                    </div>
                   </div>
-                  <div>
-                    <span className="text-base font-black text-white font-['Oswald',sans-serif]">
-                      Food<span className="text-orange-500">Express</span>
-                    </span>
-                    <span className="text-[10px] text-amber-500 block uppercase font-bold tracking-wider font-['Oswald',sans-serif]">
-                      Menu de Navegação
-                    </span>
-                  </div>
+
+                  <button
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="w-8 h-8 rounded-lg bg-zinc-900 border border-zinc-800 text-stone-400 hover:text-white flex items-center justify-center cursor-pointer transition-colors"
+                    aria-label="Fechar menu"
+                  >
+                    <X size={16} />
+                  </button>
                 </div>
 
-                <button
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="w-8 h-8 rounded-lg bg-zinc-900 border border-zinc-800 text-stone-400 hover:text-white flex items-center justify-center cursor-pointer"
-                >
-                  <X size={16} />
-                </button>
+                {/* Lista de Links no Drawer */}
+                <nav className="mt-4 space-y-1.5">
+                  <Link
+                    to="/"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={`flex items-center justify-between p-3 rounded-xl text-xs font-bold uppercase tracking-wider font-['Oswald',sans-serif] transition-all ${
+                      location.pathname === '/'
+                        ? 'bg-orange-500/15 border border-orange-500/40 text-amber-400'
+                        : 'text-stone-300 hover:bg-[#1c1612] hover:text-white'
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <Home size={16} className={location.pathname === '/' ? 'text-amber-400' : 'text-stone-400'} />
+                      <span>Início</span>
+                    </div>
+                    <ChevronRight size={14} className="opacity-50" />
+                  </Link>
+
+                  {navTabs.map((tab) => {
+                    const active = isTabActive(tab);
+                    const Icon = tab.icon;
+                    return (
+                      <Link
+                        key={tab.path}
+                        to={tab.path}
+                        onClick={() => setMobileMenuOpen(false)}
+                        className={`flex items-center justify-between p-3 rounded-xl text-xs font-bold uppercase tracking-wider font-['Oswald',sans-serif] transition-all ${
+                          active
+                            ? 'bg-orange-500/15 border border-orange-500/40 text-amber-400'
+                            : 'text-stone-300 hover:bg-[#1c1612] hover:text-white'
+                        }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <Icon size={16} className={active ? 'text-amber-400' : 'text-stone-400'} />
+                          <span>{tab.label}</span>
+                        </div>
+                        <ChevronRight size={14} className="opacity-50" />
+                      </Link>
+                    );
+                  })}
+                </nav>
               </div>
 
-              {/* Lista de Links no Drawer */}
-              <nav className="mt-4 space-y-1.5">
+              {/* Rodapé do Drawer com Ações Rápidas */}
+              <div className="pt-4 border-t border-[#261e18] space-y-3">
                 <Link
-                  to="/"
+                  to="/nossos-produtos"
                   onClick={() => setMobileMenuOpen(false)}
-                  className={`flex items-center justify-between p-3 rounded-xl text-xs font-bold uppercase tracking-wider font-['Oswald',sans-serif] transition-all ${
-                    location.pathname === '/'
-                      ? 'bg-orange-500/15 border border-orange-500/40 text-amber-400'
-                      : 'text-stone-300 hover:bg-[#1c1612] hover:text-white'
-                  }`}
+                  className="w-full py-3 rounded-xl bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs uppercase tracking-wider font-['Oswald',sans-serif] flex items-center justify-center gap-2 shadow-lg shadow-orange-950/60 transition-all cursor-pointer"
                 >
-                  <div className="flex items-center gap-3">
-                    <Home size={16} className={location.pathname === '/' ? 'text-amber-400' : 'text-stone-400'} />
-                    <span>Início</span>
-                  </div>
-                  <ChevronRight size={14} className="opacity-50" />
+                  <ShoppingBag size={15} />
+                  <span>Pedir no Cardápio</span>
                 </Link>
 
-                {navTabs.map((tab) => {
-                  const active = isTabActive(tab);
-                  const Icon = tab.icon;
-                  return (
-                    <Link
-                      key={tab.path}
-                      to={tab.path}
-                      onClick={() => setMobileMenuOpen(false)}
-                      className={`flex items-center justify-between p-3 rounded-xl text-xs font-bold uppercase tracking-wider font-['Oswald',sans-serif] transition-all ${
-                        active
-                          ? 'bg-orange-500/15 border border-orange-500/40 text-amber-400'
-                          : 'text-stone-300 hover:bg-[#1c1612] hover:text-white'
-                      }`}
-                    >
-                      <div className="flex items-center gap-3">
-                        <Icon size={16} className={active ? 'text-amber-400' : 'text-stone-400'} />
-                        <span>{tab.label}</span>
-                      </div>
-                      <ChevronRight size={14} className="opacity-50" />
-                    </Link>
-                  );
-                })}
-              </nav>
-            </div>
-
-            {/* Rodapé do Drawer com Ações Rápidas */}
-            <div className="pt-4 border-t border-[#261e18] space-y-3">
-              <Link
-                to="/nossos-produtos"
-                onClick={() => setMobileMenuOpen(false)}
-                className="w-full py-3 rounded-xl bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs uppercase tracking-wider font-['Oswald',sans-serif] flex items-center justify-center gap-2 shadow-lg shadow-orange-950/60 transition-all cursor-pointer"
-              >
-                <ShoppingBag size={15} />
-                <span>Pedir no Cardápio</span>
-              </Link>
-
-              <div className="text-center text-[11px] text-stone-500">
-                FoodExpress Steakhouse · Salão & Delivery
+                <div className="text-center text-[11px] text-stone-500">
+                  FoodExpress Steakhouse · Salão & Delivery
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-      )}
+          </div>,
+          document.body
+        )}
     </header>
   );
 }
