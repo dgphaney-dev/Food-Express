@@ -1276,3 +1276,19 @@ pm run build bem-sucedido.
      - 8/8 testes de integração executados com 100% de sucesso (`npm test`).
      - Build do frontend validado com sucesso (`npm run build:frontend`).
      - Testes ponta a ponta via proxy HTTP (`/api/public/menu`, `/api/public/orders`, `/api/public/orders/:id/pay`, `/api/driver/orders/:id/confirm-pin`) executados com sucesso total.
+
+
+---
+
+### [2026-11-15 00:56] — Ajuste de Fundo Escuro Opaco para o Menu Hambúrguer (96% Black Overlay & Cards Sólidos)
+- **Papel Ativo:** Designer de Interface & Engenheiro Frontend
+- **Etapa SDD:** `Fase 3 — Refinamento Visual do Menu Drawer Mobile`
+- **Ações Executadas:**
+  1. **Fundo 96% Dark Pitch Black:**
+     - O overlay do backdrop agora utiliza `rgba(0, 0, 0, 0.96)` escurecendo completamente toda a tela de fundo ao abrir o menu, eliminando qualquer transparência ou texto do hero visível.
+  2. **Estrutura Sólida do Drawer:**
+     - O painel do menu utiliza fundo `#0c0a09` opaco e cada botão de navegação possui fundo card `#14100d` com borda sutil `#261e18` (e destaque em âmbar/brasa na aba ativa).
+     - No mobile, o drawer expande com `w-full` cobrindo a tela de forma imersiva.
+  3. **Validação:**
+     - Build de produção validado (`npm run build:frontend`).
+     - Testes automatizados executados com 8/8 aprovados (`npm test`).
