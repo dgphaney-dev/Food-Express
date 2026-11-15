@@ -123,10 +123,10 @@ export default function Navbar({
           : 'bg-[#0e0c0a]/95 border-b border-[#26201b]'
       }`}
     >
-      <div className="max-w-7xl mx-auto w-full flex h-18 items-center justify-between px-3 sm:px-6 lg:px-8 gap-2 sm:gap-4">
+      <div className="max-w-7xl mx-auto w-full flex h-18 items-center justify-between px-3 sm:px-4 xl:px-6 gap-2 xl:gap-3">
         {/* Brand / Logo */}
-        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-          <Link to={isAdmin ? '/admin/pedidos' : '/'} className="flex items-center gap-2.5 sm:gap-3 group">
+        <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
+          <Link to={isAdmin ? '/admin/pedidos' : '/'} className="flex items-center gap-2 sm:gap-2.5 group">
             <div className="flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-full bg-black border-2 border-orange-500/50 text-white transition-transform group-hover:scale-105 overflow-hidden shadow-xl ring-2 ring-orange-500/20 shrink-0">
               <img src="/logo.jpg" alt="FoodExpress" className="w-full h-full object-cover scale-105" />
             </div>
@@ -134,7 +134,7 @@ export default function Navbar({
               <span className="text-xl sm:text-2xl font-black tracking-tight text-white leading-none font-['Oswald',sans-serif]">
                 Food<span className="bg-gradient-to-r from-orange-500 via-amber-400 to-red-500 bg-clip-text text-transparent">Express</span>
               </span>
-              <span className="hidden sm:inline text-[10px] font-bold text-amber-500/90 tracking-widest uppercase mt-0.5 font-['Oswald',sans-serif]">
+              <span className="hidden xl:inline text-[9px] 2xl:text-[10px] font-bold text-amber-500/90 tracking-widest uppercase mt-0.5 font-['Oswald',sans-serif]">
                 {isAdmin ? 'Painel Operacional' : 'Steakhouse & Artisan Burgers'}
               </span>
             </div>
@@ -165,13 +165,13 @@ export default function Navbar({
           </div>
         )}
 
-        {/* Desktop Navigation Tabs (Aparece em telas a partir de xl para garantir zero aperto/quebra) */}
+        {/* Desktop Navigation Tabs (Ajustado com espaçamentos proporcionais para nunca truncar nem vazar) */}
         {!isAdmin && (
-          <nav className="hidden xl:flex items-center gap-1 2xl:gap-2 shrink-0">
+          <nav className="hidden xl:flex items-center gap-0.5 2xl:gap-1.5 shrink-0">
             {/* INÍCIO */}
             <Link
               to="/"
-              className={`group relative px-2.5 2xl:px-3 py-2 rounded-xl text-xs font-black uppercase tracking-wider font-['Oswald',sans-serif] whitespace-nowrap shrink-0 transition-all duration-300 ${
+              className={`group relative px-2 xl:px-2.5 2xl:px-3 py-1.5 2xl:py-2 rounded-xl text-[11px] xl:text-xs font-black uppercase tracking-wider font-['Oswald',sans-serif] whitespace-nowrap shrink-0 transition-all duration-300 ${
                 location.pathname === '/'
                   ? 'text-amber-400'
                   : 'text-stone-300 hover:text-white hover:bg-white/[0.05]'
@@ -201,7 +201,7 @@ export default function Navbar({
                 <Link
                   key={tab.path}
                   to={tab.path}
-                  className={`group relative px-2.5 2xl:px-3 py-2 rounded-xl text-xs font-black uppercase tracking-wider font-['Oswald',sans-serif] whitespace-nowrap shrink-0 transition-all duration-300 ${
+                  className={`group relative px-2 xl:px-2.5 2xl:px-3 py-1.5 2xl:py-2 rounded-xl text-[11px] xl:text-xs font-black uppercase tracking-wider font-['Oswald',sans-serif] whitespace-nowrap shrink-0 transition-all duration-300 ${
                     active
                       ? 'text-amber-400'
                       : 'text-stone-300 hover:text-white hover:bg-white/[0.05]'
