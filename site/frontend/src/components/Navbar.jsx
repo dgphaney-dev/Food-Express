@@ -308,21 +308,23 @@ export default function Navbar({
         mobileMenuOpen &&
         typeof document !== 'undefined' &&
         createPortal(
-          <div
-            className="xl:hidden fixed inset-0 z-[99999] flex justify-end animate-in fade-in duration-200"
-            style={{ backgroundColor: 'rgba(0, 0, 0, 0.96)' }}
-            onClick={(e) => {
-              if (e.target === e.currentTarget) setMobileMenuOpen(false);
-            }}
-          >
+          <div className="xl:hidden fixed inset-0 z-[99999] flex justify-end">
+            {/* 1. Backdrop escurecedor profundo (Escurece 100% da tela de fundo com blur de brasa escura) */}
             <div
-              className="w-full sm:max-w-sm h-full border-l border-[#2e241d] p-5 sm:p-6 flex flex-col justify-between shadow-2xl relative z-10 animate-in slide-in-from-right duration-300 overflow-y-auto"
-              style={{ backgroundColor: '#0c0a09' }}
+              className="fixed inset-0 transition-opacity duration-300 animate-in fade-in"
+              style={{ backgroundColor: 'rgba(0, 0, 0, 0.96)', backdropFilter: 'blur(8px)' }}
+              onClick={() => setMobileMenuOpen(false)}
+            />
+
+            {/* 2. Painel do Menu (100% escuro sólido na paleta Steakhouse) */}
+            <div
+              className="w-full sm:w-[380px] sm:max-w-sm h-full border-l border-[#2e241d] p-5 sm:p-6 flex flex-col justify-between shadow-[0_0_50px_rgba(0,0,0,0.9)] relative z-10 animate-in slide-in-from-right duration-300 overflow-y-auto"
+              style={{ backgroundColor: '#0a0807' }}
               onClick={(e) => e.stopPropagation()}
             >
               {/* Topo do Drawer */}
               <div>
-                <div className="flex items-center justify-between pb-4 border-b border-[#261e18]">
+                <div className="flex items-center justify-between pb-4 border-b border-[#221a14]">
                   <div className="flex items-center gap-2.5">
                     <div className="w-10 h-10 rounded-full bg-black border-2 border-orange-500/50 flex items-center justify-center overflow-hidden shadow-lg">
                       <img src="/logo.jpg" alt="Logo" className="w-full h-full object-cover scale-105" />
@@ -339,14 +341,14 @@ export default function Navbar({
 
                   <button
                     onClick={() => setMobileMenuOpen(false)}
-                    className="w-9 h-9 rounded-xl bg-[#181411] border border-[#33261c] text-stone-300 hover:text-white hover:border-orange-500/50 flex items-center justify-center cursor-pointer transition-colors"
+                    className="w-9 h-9 rounded-xl bg-[#14100d] border border-[#2e231b] text-stone-300 hover:text-white hover:border-orange-500/50 flex items-center justify-center cursor-pointer transition-colors"
                     aria-label="Fechar menu"
                   >
                     <X size={18} />
                   </button>
                 </div>
 
-                {/* Lista de Links no Drawer */}
+                {/* Lista de Links no Drawer (Cada item com card escuro sólido e borda nítida) */}
                 <nav className="mt-5 space-y-2">
                   <Link
                     to="/"
@@ -355,7 +357,7 @@ export default function Navbar({
                     className={`flex items-center justify-between p-3.5 rounded-xl text-xs font-bold uppercase tracking-wider font-['Oswald',sans-serif] transition-all shadow-sm ${
                       location.pathname === '/'
                         ? 'border border-orange-500/60 text-amber-400 ring-1 ring-orange-500/30'
-                        : 'border border-[#261e18] text-stone-300 hover:text-white hover:border-stone-700'
+                        : 'border border-[#241c16] text-stone-200 hover:text-white hover:border-stone-700'
                     }`}
                   >
                     <div className="flex items-center gap-3">
@@ -377,7 +379,7 @@ export default function Navbar({
                         className={`flex items-center justify-between p-3.5 rounded-xl text-xs font-bold uppercase tracking-wider font-['Oswald',sans-serif] transition-all shadow-sm ${
                           active
                             ? 'border border-orange-500/60 text-amber-400 ring-1 ring-orange-500/30'
-                            : 'border border-[#261e18] text-stone-300 hover:text-white hover:border-stone-700'
+                            : 'border border-[#241c16] text-stone-200 hover:text-white hover:border-stone-700'
                         }`}
                       >
                         <div className="flex items-center gap-3">
@@ -392,7 +394,7 @@ export default function Navbar({
               </div>
 
               {/* Rodapé do Drawer com Ações Rápidas */}
-              <div className="pt-5 border-t border-[#261e18] space-y-3 mt-6">
+              <div className="pt-5 border-t border-[#221a14] space-y-3 mt-6">
                 <Link
                   to="/nossos-produtos"
                   onClick={() => setMobileMenuOpen(false)}
