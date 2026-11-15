@@ -16,6 +16,7 @@ import {
   CheckCircle2,
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { adminApi } from '../services/api';
 import { MOCK_MENU } from '../data/mockData';
 import { formatPrice } from '../utils/helpers';
 import Navbar from '../components/Navbar';
@@ -57,6 +58,26 @@ export default function AdminMenuPage() {
   useEffect(() => {
     localStorage.setItem(MENU_STORAGE_KEY, JSON.stringify(menu));
   }, [menu]);
+
+  // Synchronize with real backend database if available
+  useEffect(() => {
+    adminApi
+      .fetchAdminMenu()
+      .then((data) => {
+        if (data && data.categories && data.products) {
+          const formatted = data.categories.map((c) => ({
+            ...c,
+            products: data.products.filter((p) => p.categoryId === c.id),
+          }));
+          if (formatted.length > 0) {
+            setMenu({ categories: formatted });
+          }
+        }
+      })
+      .catch(() => {
+        // Fallback gracefully to local mock/storage
+      });
+  }, []);
 
   const [activeTab, setActiveTab] = useState('products'); // 'products' | 'categories'
   const [selectedCategoryFilter, setSelectedCategoryFilter] = useState('ALL');

@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Lock, User, Eye, EyeOff, ShieldCheck, ArrowRight, Flame, CheckCircle2, Sparkles } from 'lucide-react';
+import { Lock, User, Eye, EyeOff, ShieldCheck, ArrowRight, Sparkles, Flame, CheckCircle2 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { adminApi } from '../services/api';
 import Navbar from '../components/Navbar';
 import ScrollReveal from '../components/ScrollReveal';
 
@@ -26,14 +27,17 @@ export default function AdminLoginPage() {
     setError('');
     setLoading(true);
 
-    // Simulate network delay
-    await new Promise((r) => setTimeout(r, 450));
-
-    if (username.trim() === 'admin' && password === 'admin123') {
-      login('mock-token-123', { username: 'admin' });
+    try {
+      const data = await adminApi.login(username.trim(), password);
+      login(data.token, { username: 'admin' });
       navigate('/admin/pedidos', { replace: true });
-    } else {
-      setError('Usuário ou senha incorretos. Utilize as credenciais padrão de teste.');
+    } catch {
+      if (username.trim() === 'admin' && password === 'admin123') {
+        login('mock-token-123', { username: 'admin' });
+        navigate('/admin/pedidos', { replace: true });
+      } else {
+        setError('Usuário ou senha incorretos. Utilize as credenciais padrão de teste.');
+      }
     }
 
     setLoading(false);
@@ -48,9 +52,14 @@ export default function AdminLoginPage() {
   const handleQuickDemoLogin = async () => {
     setError('');
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 250));
-    login('mock-token-123', { username: 'admin' });
-    navigate('/admin/pedidos', { replace: true });
+    try {
+      const data = await adminApi.login('admin', 'admin123');
+      login(data.token, { username: 'admin' });
+      navigate('/admin/pedidos', { replace: true });
+    } catch {
+      login('mock-token-123', { username: 'admin' });
+      navigate('/admin/pedidos', { replace: true });
+    }
   };
 
   return (

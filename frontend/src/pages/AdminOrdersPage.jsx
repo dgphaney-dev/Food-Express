@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useOrders } from '../contexts/OrderContext';
+import { adminApi } from '../services/api';
 import { ORDER_STATUS_SEQUENCE } from '../data/mockData';
 import { formatPrice, formatRelativeTime } from '../utils/helpers';
 import Navbar from '../components/Navbar';
@@ -115,11 +116,13 @@ export default function AdminOrdersPage() {
     if (currentIdx < 0 || currentIdx >= ORDER_STATUS_SEQUENCE.length - 1) return;
     const nextStatus = ORDER_STATUS_SEQUENCE[currentIdx + 1];
     advanceOrderStatus(order.id, nextStatus);
+    adminApi.advanceOrder(order.id, nextStatus).catch(() => {});
   };
 
   const handleCancel = (order) => {
     if (window.confirm(`Deseja realmente cancelar o pedido #${order.id}?`)) {
       cancelOrder(order.id);
+      adminApi.cancelOrder(order.id).catch(() => {});
     }
   };
 

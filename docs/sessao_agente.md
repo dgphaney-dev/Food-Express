@@ -1191,3 +1191,25 @@ pm run build bem-sucedido.
 - **Validação:**
   - Build de produção verificado (`npm run build` -> 0 erros).
   - ESLint verificado e sem erros.
+
+
+---
+
+### [2026-11-15 00:09] — Integração Completa do Backend (Node.js + Express + SQLite + Drizzle) com o Frontend
+- **Papel Ativo:** Desenvolvedor Fullstack Sênior & Especialista em Integração e Arquitetura
+- **Etapa SDD:** `Fase 3 — Integração Fullstack (Merge da feature/painel-admin e conexão com API REST)`
+- **Ações Executadas:**
+  1. **Merge e Unificação dos Módulos:**
+     - Incorporados todos os artefatos de backend da branch `feature/painel-admin`:
+       - `src/backend/` (Controllers, Services, Repositories, Middlewares, Schemas e Seeds Drizzle).
+       - `tests/` (Testes unitários e de integração com Vitest e Supertest).
+       - `frontend/src/services/api.js` (Cliente HTTP para comunicação com a API).
+       - `frontend/vite.config.js` (Proxy reverso para `/api` apontando para `http://127.0.0.1:3333`).
+     - Preservadas e integradas 100% das telas modernas do frontend: Dark Steakhouse, GPS do Entregador (`/entregador`), Pagamento PIX com ativação imediata e acompanhamento de pedido (`/pedido/:orderId`).
+  2. **Compatibilidade Nativa SQLite no Windows:**
+     - Implementado wrapper resiliente utilizando `node:sqlite` nativo do Node.js v24 (zero dependência de compilação C++ externa).
+  3. **Validação:**
+     - 7/7 testes de backend aprovados (`npm test` -> 100% green).
+     - Database SQLite populada com sucesso (`npm run seed`).
+     - Servidor de backend ativo e respondendo em `http://127.0.0.1:3333/api` (Healthcheck OK).
+     - Frontend compilando com código 0 (`npm run build`).
