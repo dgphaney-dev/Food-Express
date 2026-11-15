@@ -42,7 +42,11 @@ function hydrateOrders(orderRows) {
       status: o.status,
       tableNumber: o.tableNumber,
       customerName: o.customerName,
+      customerPhone: o.customerPhone,
       deliveryAddress: o.deliveryAddress,
+      paymentMethod: o.paymentMethod || 'PIX',
+      isPaid: Boolean(o.isPaid),
+      deliveryPin: o.deliveryPin || '8492',
       totalAmount: Number(o.totalAmount),
       createdAt: o.createdAt,
       updatedAt: o.updatedAt,
@@ -96,7 +100,11 @@ export const orderRepo = {
           status: orderData.status || 'RECEIVED',
           tableNumber: orderData.tableNumber ?? null,
           customerName: orderData.customerName ?? null,
+          customerPhone: orderData.customerPhone ?? null,
           deliveryAddress: orderData.deliveryAddress ?? null,
+          paymentMethod: orderData.paymentMethod ?? 'PIX',
+          isPaid: Boolean(orderData.isPaid),
+          deliveryPin: orderData.deliveryPin ?? '8492',
           totalAmount: Number(orderData.totalAmount),
           createdAt: orderData.createdAt || now,
           updatedAt: orderData.updatedAt || now,
@@ -136,6 +144,16 @@ export const orderRepo = {
     const db = getDb();
     db.update(orders)
       .set({ status, updatedAt })
+      .where(eq(orders.id, Number(id)))
+      .run();
+    return this.findById(id);
+  },
+
+  markAsPaid(id, paymentMethod = 'PIX') {
+    const db = getDb();
+    const now = new Date().toISOString();
+    db.update(orders)
+      .set({ isPaid: true, paymentMethod, updatedAt: now })
       .where(eq(orders.id, Number(id)))
       .run();
     return this.findById(id);

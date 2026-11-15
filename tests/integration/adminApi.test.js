@@ -131,4 +131,62 @@ describe('Integration — Backend Admin API (Auth, Cardápio e Fila de Pedidos)'
       .set('Authorization', `Bearer ${adminToken}`);
     expect(cancelDeliveredRes.status).toBe(422);
   });
+
+  it('API-003, API-004, API-012: deve criar pedido do cliente, simular pagamento e permitir ao motorista confirmar entrega via PIN', async () => {
+    // 1. Cliente cria pedido pelo app
+    const orderRes = await request(app)
+      .post('/api/public/orders')
+      .send({
+        orderType: 'DELIVERY',
+        customerName: 'Gabriel Oliveira',
+        customerPhone: '(11) 98765-4321',
+        deliveryAddress: 'Rua das Flores, 123',
+        totalAmount: 48.9,
+        paymentMethod: 'PIX',
+        isPaid: false,
+        deliveryPin: '8492',
+        items: [
+          {
+            title: 'X-Burger Artesanal',
+            quantity: 1,
+            price: 32.9,
+            variation: 'Ao Ponto',
+            addons: ['Bacon Extra'],
+          },
+        ],
+      });
+
+    expect(orderRes.status).toBe(201);
+    expect(orderRes.body.order).toBeDefined();
+    const newOrderId = orderRes.body.order.id;
+    expect(orderRes.body.order.status).toBe('RECEIVED');
+    expect(orderRes.body.order.deliveryPin).toBe('8492');
+
+    // 2. Cliente realiza pagamento via PIX
+    const payRes = await request(app)
+      .post(`/api/public/orders/${newOrderId}/pay`)
+      .send({ paymentMethod: 'PIX' });
+    expect(payRes.status).toBe(200);
+    expect(payRes.body.order.isPaid).toBe(true);
+
+    // 3. Motorista lista pedidos de entrega
+    const driverOrdersRes = await request(app).get('/api/driver/orders');
+    expect(driverOrdersRes.status).toBe(200);
+    const hasCreatedOrder = driverOrdersRes.body.orders.some(
+      (o) => o.id === newOrderId
+    );
+    expect(hasCreatedOrder).toBe(true);
+
+    // 4. Motorista confirma entrega digitando PIN
+    const wrongPinRes = await request(app)
+      .post(`/api/driver/orders/${newOrderId}/confirm-pin`)
+      .send({ pin: '0000' });
+    expect(wrongPinRes.status).toBe(400);
+
+    const rightPinRes = await request(app)
+      .post(`/api/driver/orders/${newOrderId}/confirm-pin`)
+      .send({ pin: '8492' });
+    expect(rightPinRes.status).toBe(200);
+    expect(rightPinRes.body.order.status).toBe('DELIVERED');
+  });
 });

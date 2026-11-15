@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { useOrders } from '../contexts/OrderContext';
 import { formatPrice } from '../utils/helpers';
+import { driverApi } from '../services/api';
 import Navbar from '../components/Navbar';
 import ScrollReveal from '../components/ScrollReveal';
 
@@ -138,6 +139,7 @@ export default function DriverDeliveryPage() {
     if (pinCode.trim() === expectedPin || pinCode.trim() === '1234' || pinCode.length === 4) {
       if (selectedOrder) {
         advanceOrderStatus(selectedOrder.id, 'DELIVERED');
+        driverApi.confirmPin(selectedOrder.id, pinCode).catch(() => {});
       }
       setDriverStage('COMPLETED');
       setBikePosition(100);

@@ -16,6 +16,7 @@ import { useCart } from '../contexts/CartContext';
 import { useOrders } from '../contexts/OrderContext';
 import { MOCK_MENU, RESTAURANT_CONFIG } from '../data/mockData';
 import { formatPrice, generateWhatsAppMessage, generateWhatsAppUrl, getSanitizedMenuData } from '../utils/helpers';
+import { publicApi } from '../services/api';
 import Navbar from '../components/Navbar';
 import ProductCard from '../components/ProductCard';
 import ProductModal from '../components/ProductModal';
@@ -37,9 +38,47 @@ export default function CustomerMenuPage() {
 
   const sectionRefs = useRef({});
   const tabsBarRef = useRef(null);
+  const [liveMenu, setLiveMenu] = useState(null);
 
-  // Menu data from localStorage or MOCK_MENU
+  // Carrega cardápio oficial do backend SQLite
+  useEffect(() => {
+    let isMounted = true;
+    publicApi
+      .getMenu()
+      .then((data) => {
+        if (isMounted && data?.categories && data.categories.length > 0) {
+          const formatted = {
+            categories: data.categories.map((c) => ({
+              id: c.id,
+              name: c.name,
+              displayOrder: c.displayOrder ?? 0,
+              active: true,
+              products: (c.products || []).map((p) => ({
+                id: p.id,
+                title: p.name || p.title,
+                description: p.description || '',
+                price: Number(p.basePrice || p.price || 0),
+                imageUrl: p.imageUrl || '',
+                active: p.active !== false,
+                categoryId: c.id,
+                variations: p.variations || [],
+                addons: p.addons || [],
+              })),
+            })),
+          };
+          setLiveMenu(formatted);
+        }
+      })
+      .catch(() => {});
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  // Menu data do backend SQLite, localStorage ou fallback MOCK_MENU
   const menuData = useMemo(() => {
+    if (liveMenu) return liveMenu;
     try {
       const saved = localStorage.getItem('foodexpress_admin_menu_data');
       const parsed = saved ? JSON.parse(saved) : null;
@@ -47,7 +86,7 @@ export default function CustomerMenuPage() {
     } catch {
       return MOCK_MENU;
     }
-  }, []);
+  }, [liveMenu]);
 
   // Active categories
   const categories = useMemo(

@@ -53,7 +53,11 @@ export const orders = sqliteTable('orders', {
   status: text('status').notNull().default('RECEIVED'), // 'RECEIVED' | 'PREPARING' | 'READY' | 'DELIVERED' | 'CANCELLED'
   tableNumber: text('table_number'),
   customerName: text('customer_name'),
+  customerPhone: text('customer_phone'),
   deliveryAddress: text('delivery_address'),
+  paymentMethod: text('payment_method'),
+  isPaid: integer('is_paid', { mode: 'boolean' }).default(false),
+  deliveryPin: text('delivery_pin').default('8492'),
   totalAmount: real('total_amount').notNull(),
   createdAt: text('created_at').notNull(),
   updatedAt: text('updated_at').notNull(),

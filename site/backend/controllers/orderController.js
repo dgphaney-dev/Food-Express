@@ -69,4 +69,78 @@ export const orderController = {
       next(err);
     }
   },
+
+  /**
+   * POST /api/public/orders
+   */
+  createCustomerOrder(req, res, next) {
+    try {
+      const result = orderService.createCustomerOrder(req.body);
+      res.status(201).json(result);
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  /**
+   * GET /api/public/orders/:id
+   */
+  getOrderById(req, res, next) {
+    try {
+      const result = orderService.getOrderById(req.params.id);
+      res.status(200).json(result);
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  /**
+   * POST /api/public/orders/:id/pay
+   */
+  markOrderAsPaid(req, res, next) {
+    try {
+      const paymentMethod = req.body?.paymentMethod || 'PIX';
+      const result = orderService.markOrderAsPaid(req.params.id, paymentMethod);
+      res.status(200).json(result);
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  /**
+   * POST /api/public/orders/:id/cancel
+   */
+  cancelOrderByCustomer(req, res, next) {
+    try {
+      const result = orderService.cancelOrderByCustomer(req.params.id);
+      res.status(200).json(result);
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  /**
+   * GET /api/driver/orders
+   */
+  listDriverOrders(_req, res, next) {
+    try {
+      const result = orderService.listDriverOrders();
+      res.status(200).json(result);
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  /**
+   * POST /api/driver/orders/:id/confirm-pin
+   */
+  confirmDriverPin(req, res, next) {
+    try {
+      const pin = req.body?.pin;
+      const result = orderService.confirmDriverPin(req.params.id, pin);
+      res.status(200).json(result);
+    } catch (err) {
+      next(err);
+    }
+  },
 };

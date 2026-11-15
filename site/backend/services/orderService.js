@@ -212,4 +212,107 @@ export const orderService = {
     );
     return { order: created };
   },
+
+  /**
+   * Criação pública de pedido pelo cliente (Delivery ou Salão)
+   */
+  createCustomerOrder(payload = {}) {
+    if (!payload.items || !Array.isArray(payload.items) || payload.items.length === 0) {
+      throw new AppError('O pedido deve conter pelo menos 1 item.', 400, 'EMPTY_ORDER_ITEMS');
+    }
+
+    const orderType = payload.orderType === 'DINE_IN' ? 'DINE_IN' : 'DELIVERY';
+    const totalAmount = Number(payload.totalAmount || payload.totalPrice || 0);
+
+    if (totalAmount <= 0) {
+      throw new AppError('O valor total do pedido deve ser maior que zero.', 400, 'INVALID_TOTAL_AMOUNT');
+    }
+
+    const now = new Date().toISOString();
+    const orderData = {
+      orderType,
+      status: ORDER_STATUS.RECEIVED,
+      tableNumber: payload.tableNumber ? String(payload.tableNumber) : null,
+      customerName: payload.customerName || (orderType === 'DELIVERY' ? 'Cliente FoodExpress' : null),
+      customerPhone: payload.customerPhone || null,
+      deliveryAddress: payload.deliveryAddress || null,
+      paymentMethod: payload.paymentMethod || 'PIX',
+      isPaid: Boolean(payload.isPaid),
+      deliveryPin: payload.deliveryPin || '8492',
+      totalAmount,
+      createdAt: now,
+      updatedAt: now,
+    };
+
+    const itemsList = payload.items.map((item) => {
+      const quantity = Math.max(1, Number(item.quantity || 1));
+      const unitPrice = Number(item.price || item.unitPrice || 0);
+      const subtotal = Number(item.subtotal || unitPrice * quantity);
+      return {
+        productId: item.id || item.productId || null,
+        productNameSnapshot: item.title || item.name || item.productNameSnapshot || 'Item Artesanal',
+        quantity,
+        variationNameSnapshot: item.variation || item.variationNameSnapshot || null,
+        addonsSnapshot: item.addons || item.addonsSnapshot || [],
+        notes: String(item.notes || item.observation || '').slice(0, 140),
+        unitPrice,
+        subtotal,
+      };
+    });
+
+    const created = orderRepo.createWithItems(orderData, itemsList);
+    return { order: created };
+  },
+
+  /**
+   * Busca dados de um pedido pelo ID para rastreamento
+   */
+  getOrderById(orderId) {
+    const order = orderRepo.findById(orderId);
+    if (!order) {
+      throw new AppError('Pedido não encontrado.', 404, 'ORDER_NOT_FOUND');
+    }
+    return { order };
+  },
+
+  /**
+   * Confirmação / Atualização de pagamento do cliente
+   */
+  markOrderAsPaid(orderId, paymentMethod = 'PIX') {
+    const order = orderRepo.findById(orderId);
+    if (!order) {
+      throw new AppError('Pedido não encontrado.', 404, 'ORDER_NOT_FOUND');
+    }
+    const updated = orderRepo.markAsPaid(order.id, paymentMethod);
+    return { order: updated };
+  },
+
+  /**
+   * Lista pedidos de entrega para o aplicativo do motorista
+   */
+  listDriverOrders() {
+    const all = orderRepo.findAll();
+    const deliveryOrders = all.filter((o) => o.orderType === 'DELIVERY');
+    return { orders: deliveryOrders, serverTime: new Date().toISOString() };
+  },
+
+  /**
+   * Confirmação de PIN pelo motorista para entrega realizada
+   */
+  confirmDriverPin(orderId, pin) {
+    const order = orderRepo.findById(orderId);
+    if (!order) {
+      throw new AppError('Pedido não encontrado.', 404, 'ORDER_NOT_FOUND');
+    }
+    const expectedPin = order.deliveryPin || '8492';
+    if (String(pin).trim() !== String(expectedPin).trim()) {
+      throw new AppError('PIN de confirmação incorreto.', 400, 'INVALID_DELIVERY_PIN');
+    }
+    const updated = orderRepo.updateStatus(
+      order.id,
+      ORDER_STATUS.DELIVERED,
+      new Date().toISOString()
+    );
+    return { order: updated, success: true };
+  },
 };

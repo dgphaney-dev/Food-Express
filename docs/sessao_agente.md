@@ -1252,3 +1252,27 @@ pm run build bem-sucedido.
   3. **Validação:**
      - Build de produção verificado com sucesso (`npm run build:frontend`).
      - Testes automatizados executados com 7/7 aprovados (`npm test`).
+
+
+---
+
+### [2026-11-15 00:53] — Integração Completa Fullstack (Frontend Conectado aos Endpoints do Backend SQLite)
+- **Papel Ativo:** Desenvolvedor Fullstack Sênior & Especialista em Arquitetura de APIs
+- **Etapa SDD:** `Fase 3 — Conexão Completa do Frontend aos Serviços do Backend`
+- **Ações Executadas:**
+  1. **Expansão da API REST no Backend (`site/backend/`):**
+     - `POST /api/public/orders`: Criação de novos pedidos diretamente na tabela `orders` e `order_items` do SQLite.
+     - `GET /api/public/orders/:id`: Consulta e sincronização de rastreamento de pedidos em tempo real.
+     - `POST /api/public/orders/:id/pay`: Confirmação de pagamento via PIX/Cartão com ativação do pedido.
+     - `GET /api/driver/orders`: Listagem de corridas para o app do entregador.
+     - `POST /api/driver/orders/:id/confirm-pin`: Confirmação do PIN (ex: 8492) pelo entregador e finalização para `DELIVERED`.
+  2. **Integração no Frontend (`site/frontend/`):**
+     - `services/api.js`: Exportadas as instâncias `publicApi` e `driverApi`.
+     - `contexts/OrderContext.jsx`: Conectado para salvar pedidos no backend SQLite via `publicApi.createOrder()`, consultar status via `publicApi.getOrder()` e sincronizar pagamentos via `publicApi.markOrderAsPaid()`.
+     - `pages/CustomerMenuPage.jsx`: Integrado para carregar categorias e produtos oficiais do SQLite via `publicApi.getMenu()`.
+     - `pages/AdminOrdersPage.jsx`: Polling atualizado para consumir diretamente `adminApi.fetchOrders()`.
+     - `pages/DriverDeliveryPage.jsx`: Integrado para validar e registrar a confirmação de PIN via `driverApi.confirmPin()`.
+  3. **Validação & Testes:**
+     - 8/8 testes de integração executados com 100% de sucesso (`npm test`).
+     - Build do frontend validado com sucesso (`npm run build:frontend`).
+     - Testes ponta a ponta via proxy HTTP (`/api/public/menu`, `/api/public/orders`, `/api/public/orders/:id/pay`, `/api/driver/orders/:id/confirm-pin`) executados com sucesso total.

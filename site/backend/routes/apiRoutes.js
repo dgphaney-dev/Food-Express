@@ -21,9 +21,19 @@ apiRouter.get('/health', (_req, res) => {
 apiRouter.post('/auth/login', authController.login);
 
 // ============================================================================
-// Rotas Públicas de Cardápio (API-002)
+// Rotas Públicas de Cardápio e Pedidos (API-002, API-003, API-004, API-005)
 // ============================================================================
 apiRouter.get('/public/menu', menuController.getPublicMenu);
+apiRouter.post('/public/orders', orderController.createCustomerOrder);
+apiRouter.get('/public/orders/:id', orderController.getOrderById);
+apiRouter.post('/public/orders/:id/pay', orderController.markOrderAsPaid);
+apiRouter.post('/public/orders/:id/cancel', orderController.cancelOrderByCustomer);
+
+// ============================================================================
+// Rotas da Operação do Entregador / Motorista
+// ============================================================================
+apiRouter.get('/driver/orders', orderController.listDriverOrders);
+apiRouter.post('/driver/orders/:id/confirm-pin', orderController.confirmDriverPin);
 
 // ============================================================================
 // Rotas Administrativas Protegidas por Token JWT (RN-010 / TR-006)

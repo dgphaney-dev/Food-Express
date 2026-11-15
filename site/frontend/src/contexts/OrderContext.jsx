@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { MOCK_ORDERS } from '../data/mockData';
+import { adminApi, publicApi } from '../services/api';
 
 const OrderContext = createContext(null);
 
@@ -19,6 +20,25 @@ export function OrderProvider({ children }) {
   const [adminOrders, setAdminOrders] = useState(loadInitialOrders);
   const [currentOrder, setCurrentOrder] = useState(null);
 
+  // Carrega pedidos reais do backend SQLite ao inicializar
+  useEffect(() => {
+    let isMounted = true;
+    adminApi
+      .fetchOrders()
+      .then((data) => {
+        if (isMounted && data?.orders && data.orders.length > 0) {
+          setAdminOrders(data.orders);
+        }
+      })
+      .catch(() => {
+        // Modo offline / mock fallback
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   // Sync orders to localStorage whenever updated
   useEffect(() => {
     try {
@@ -28,24 +48,71 @@ export function OrderProvider({ children }) {
     }
   }, [adminOrders]);
 
-  const createOrder = useCallback((orderData) => {
-    const newId = Date.now() % 100000;
-    const newOrder = {
-      id: newId,
+  const createOrder = useCallback(async (orderData) => {
+    const tempId = Date.now() % 100000;
+    const optimisticOrder = {
+      id: tempId,
       ...orderData,
       status: 'RECEIVED',
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
 
-    setCurrentOrder(newOrder);
-    setAdminOrders((prev) => [newOrder, ...prev]);
-    localStorage.setItem(LAST_ORDER_KEY, String(newOrder.id));
-    return newOrder;
+    // Atualização otimista imediata para feedback instantâneo na UI
+    setCurrentOrder(optimisticOrder);
+    setAdminOrders((prev) => [optimisticOrder, ...prev]);
+    localStorage.setItem(LAST_ORDER_KEY, String(optimisticOrder.id));
+
+    // Persistência no Backend SQLite
+    try {
+      const response = await publicApi.createOrder({
+        orderType: orderData.orderType || (orderData.tableNumber ? 'DINE_IN' : 'DELIVERY'),
+        customerName: orderData.customerName || (orderData.deliveryAddress ? 'Cliente FoodExpress' : null),
+        customerPhone: orderData.customerPhone || null,
+        deliveryAddress: orderData.deliveryAddress || null,
+        tableNumber: orderData.tableNumber || null,
+        paymentMethod: orderData.paymentMethod || 'PIX',
+        isPaid: Boolean(orderData.isPaid),
+        deliveryPin: orderData.deliveryPin || '8492',
+        totalAmount: Number(orderData.totalPrice || orderData.totalAmount || 0),
+        items: orderData.items || [],
+      });
+
+      if (response?.order) {
+        const persistedOrder = response.order;
+        setCurrentOrder(persistedOrder);
+        setAdminOrders((prev) =>
+          prev.map((o) => (o.id === tempId ? persistedOrder : o))
+        );
+        localStorage.setItem(LAST_ORDER_KEY, String(persistedOrder.id));
+        return persistedOrder;
+      }
+    } catch (err) {
+      console.warn('Backend indisponível ao salvar pedido, mantendo local:', err);
+    }
+
+    return optimisticOrder;
   }, []);
 
   const getOrder = useCallback((orderId) => {
-    return adminOrders.find((o) => o.id === Number(orderId)) || null;
+    const numericId = Number(orderId);
+    const local = adminOrders.find((o) => o.id === numericId);
+
+    // Consulta em background ao backend para atualizar status
+    if (numericId) {
+      publicApi
+        .getOrder(numericId)
+        .then((data) => {
+          if (data?.order) {
+            setAdminOrders((prev) =>
+              prev.map((o) => (o.id === numericId ? data.order : o))
+            );
+          }
+        })
+        .catch(() => {});
+    }
+
+    return local || null;
   }, [adminOrders]);
 
   const advanceOrderStatus = useCallback((orderId, targetStatus) => {
@@ -61,6 +128,8 @@ export function OrderProvider({ children }) {
         ? { ...prev, status: targetStatus, updatedAt: new Date().toISOString() }
         : prev
     );
+
+    adminApi.advanceOrder(orderId, targetStatus).catch(() => {});
   }, []);
 
   const cancelOrder = useCallback((orderId) => {
@@ -76,6 +145,10 @@ export function OrderProvider({ children }) {
         ? { ...prev, status: 'CANCELLED', updatedAt: new Date().toISOString() }
         : prev
     );
+
+    publicApi.cancelOrder(orderId).catch(() => {
+      adminApi.cancelOrder(orderId).catch(() => {});
+    });
   }, []);
 
   const markOrderAsPaid = useCallback((orderId, paymentMethod = 'PIX') => {
@@ -91,6 +164,8 @@ export function OrderProvider({ children }) {
         ? { ...prev, isPaid: true, paymentMethod, paidAt: new Date().toISOString() }
         : prev
     );
+
+    publicApi.markOrderAsPaid(orderId, paymentMethod).catch(() => {});
   }, []);
 
   const lastOrderId = localStorage.getItem(LAST_ORDER_KEY);

@@ -85,16 +85,23 @@ export default function AdminOrdersPage() {
     }
   }, [isAuthenticated, navigate]);
 
-  // Polling / Refresh from localStorage
-  const doRefresh = useCallback(() => {
+  // Polling / Refresh do backend SQLite (com fallback de localStorage)
+  const doRefresh = useCallback(async () => {
     setRefreshing(true);
     try {
-      const saved = localStorage.getItem('foodexpress_orders');
-      if (saved && setAdminOrders) {
-        setAdminOrders(JSON.parse(saved));
+      const data = await adminApi.fetchOrders();
+      if (data?.orders && setAdminOrders) {
+        setAdminOrders(data.orders);
       }
     } catch {
-      // Ignora erro de parsing
+      try {
+        const saved = localStorage.getItem('foodexpress_orders');
+        if (saved && setAdminOrders) {
+          setAdminOrders(JSON.parse(saved));
+        }
+      } catch {
+        // Ignora erro de parsing
+      }
     }
     setTimeout(() => setRefreshing(false), 450);
   }, [setAdminOrders]);
