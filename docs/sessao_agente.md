@@ -1143,3 +1143,32 @@ pm run build bem-sucedido.
 - **Validação:**
   - Build de produção verificado com sucesso (`npm run build` -> código de saída 0).
   - ESLint com 0 erros nos arquivos administrativos.
+
+
+---
+
+### [2026-11-14 23:35] — Implementação da Tela do Motorista / Entregador (/entregador - Estilo iFood / Waze)
+- **Papel Ativo:** Desenvolvedor Fullstack Sênior & Especialista em UI/UX Mobile & GPS
+- **Etapa SDD:** `Fase 3 — Módulo de Logística e Entrega do Motorista (Driver Experience)`
+- **Ações Executadas:**
+  1. **Criação da Página do Motorista (`/entregador` - `DriverDeliveryPage.jsx`):**
+     - **Header do Piloto:** Perfil com foto, avaliação ⭐ 4.98, veículo, toggle Online/Offline e ganhos do dia em tempo real (`R$ 138,40`).
+     - **Seletor de Corridas:** Dropdown para alternar entre pedidos de delivery ativos ou simular nova corrida com 1 clique (`+ Simular Nova Corrida`).
+     - **GPS Navigation HUD:** Painel de manobras estilo Waze/iFood ("Em 350 metros, vire à direita...", tempo estimado e distância restante).
+     - **Mapa Noturno Interativo com Rota Vetorial:** Canvas/SVG com malha urbana escura, linhas viárias de São Paulo (Av. Paulista, Augusta, Alameda Santos), traçado neon luminoso e marcador de moto em deslocamento dinâmico em tempo real.
+     - **Alternância de Visão:** Suporte a mapa vetorial noturno e mapa via satélite Google Maps.
+     - **Atalhos Externos de GPS:** Botões com 1 clique para "Abrir no Waze" e "Abrir no Google Maps".
+     - **Stepper Operacional da Entrega:** Etapas sincronizadas com o `OrderContext`:
+       - 1: Coleta no FoodExpress (`Pegar Bag`)
+       - 2: A Caminho do Cliente (`Cheguei no Local`)
+       - 3: Entrega com Validação de Código PIN de 4 Dígitos.
+     - **Modal de Código PIN (Exclusivo iFood):** Diálogo com teclado e dica rápida de teste para validação imediata do PIN informado pelo cliente, marcando o pedido como `DELIVERED` e creditando a taxa do motorista.
+     - **Dados do Cliente & Contato Direto:** Endereço completo, complemento, botões diretos de "WhatsApp" e "Ligar".
+     - **Checklist da Bag:** Conferência item a item dos produtos do pedido com checkboxes interativas.
+  2. **Integração no Ecossistema:**
+     - Adicionada rota `/entregador` e aliases `/motorista` e `/driver` em `frontend/src/App.jsx`.
+     - Adicionado link "TELA DO MOTORISTA" na `Navbar.jsx` (modo público e modo administrativo).
+     - Adicionado botão de atalho direto para a rota do entregador nos cards de delivery do painel de pedidos (`AdminOrdersPage.jsx`).
+- **Validação:**
+  - Build de produção validado (`npm run build` -> 0 erros).
+  - ESLint verificado e sem erros.

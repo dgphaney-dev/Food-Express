@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { ShoppingBag, LogOut, ClipboardList, UtensilsCrossed, Search, X } from 'lucide-react';
+import { ShoppingBag, LogOut, ClipboardList, UtensilsCrossed, Search, X, Bike } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
 import { formatPrice } from '../utils/helpers';
 
@@ -24,6 +24,7 @@ export default function Navbar({
   const navTabs = [
     { label: 'NOSSOS PRODUTOS', path: '/nossos-produtos', altPaths: ['/delivery', '/cardapio', '/produtos'] },
     { label: 'RESTAURANTE & SALÃO', path: '/restaurante', altPaths: ['/salao'] },
+    { label: 'TELA DO MOTORISTA', path: '/entregador', altPaths: ['/motorista', '/driver'] },
     { label: 'ACESSO DO ATENDENTE', path: '/admin/login', altPaths: [] },
   ];
 
@@ -145,6 +146,19 @@ export default function Navbar({
               >
                 <UtensilsCrossed size={16} />
                 <span>Cardápio</span>
+              </Link>
+
+              <Link
+                to="/entregador"
+                className={`flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold uppercase tracking-wider font-['Oswald',sans-serif] transition-colors ${
+                  isActive('/entregador') || isActive('/motorista')
+                    ? 'bg-orange-600 text-white shadow-md'
+                    : 'text-zinc-400 hover:bg-zinc-800 hover:text-white'
+                }`}
+                title="Abrir tela do motorista/entregador"
+              >
+                <Bike size={16} />
+                <span>Entregador</span>
               </Link>
 
               {/* View Public Menu link */}

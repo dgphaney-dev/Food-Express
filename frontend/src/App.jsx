@@ -9,6 +9,7 @@ import OrderTrackingPage from './pages/OrderTrackingPage'
 import AdminLoginPage from './pages/AdminLoginPage'
 import AdminOrdersPage from './pages/AdminOrdersPage'
 import AdminMenuPage from './pages/AdminMenuPage'
+import DriverDeliveryPage from './pages/DriverDeliveryPage'
 import NotFoundPage from './pages/NotFoundPage'
 
 function App() {
@@ -61,6 +62,11 @@ function App() {
           {/* Aliases for English paths */}
           <Route path="/admin/orders" element={<Navigate to="/admin/pedidos" replace />} />
           <Route path="/admin/menu" element={<Navigate to="/admin/cardapio" replace />} />
+
+          {/* 4. TELA DO MOTORISTA / ENTREGADOR (ESTILO IFOOD / WAZE COM GPS & ROTA) */}
+          <Route path="/entregador" element={<DriverDeliveryPage />} />
+          <Route path="/motorista" element={<Navigate to="/entregador" replace />} />
+          <Route path="/driver" element={<Navigate to="/entregador" replace />} />
 
           {/* 404 */}
           <Route path="*" element={<NotFoundPage />} />

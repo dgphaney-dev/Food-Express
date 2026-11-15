@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import {
   ClipboardList,
   PackageOpen,
@@ -8,6 +8,7 @@ import {
   X,
   Utensils,
   Bike,
+  Navigation,
   MapPin,
   Flame,
   ChefHat,
@@ -796,13 +797,23 @@ function OrderCard({ order, onAdvance, onCancel, onPrint, onWhatsApp, onViewDeta
               </button>
 
               {order.orderType === 'DELIVERY' && (
-                <button
-                  onClick={onWhatsApp}
-                  className="p-1.5 text-emerald-400 hover:text-emerald-300 hover:bg-emerald-950/40 rounded-lg transition-colors cursor-pointer"
-                  title="Avisar Cliente no WhatsApp"
-                >
-                  <MessageCircle size={15} />
-                </button>
+                <>
+                  <Link
+                    to={`/entregador?orderId=${order.id}`}
+                    className="p-1.5 text-orange-400 hover:text-white hover:bg-orange-950/40 rounded-lg transition-colors cursor-pointer"
+                    title="Abrir Rota do Entregador (GPS / iFood)"
+                  >
+                    <Navigation size={15} />
+                  </Link>
+
+                  <button
+                    onClick={onWhatsApp}
+                    className="p-1.5 text-emerald-400 hover:text-emerald-300 hover:bg-emerald-950/40 rounded-lg transition-colors cursor-pointer"
+                    title="Avisar Cliente no WhatsApp"
+                  >
+                    <MessageCircle size={15} />
+                  </button>
+                </>
               )}
             </div>
           </div>
