@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { Link, useLocation } from 'react-router-dom';
 import {
@@ -31,15 +31,43 @@ export default function Navbar({
   const location = useLocation();
   const { totalPrice } = useCart();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
+  const closeTimeoutRef = useRef(null);
+
+  const handleCloseMenu = useCallback(() => {
+    if (isClosing) return;
+    setIsClosing(true);
+    closeTimeoutRef.current = setTimeout(() => {
+      setMobileMenuOpen(false);
+      setIsClosing(false);
+    }, 320);
+  }, [isClosing]);
+
+  const handleToggleMenu = useCallback(() => {
+    if (mobileMenuOpen || isClosing) {
+      handleCloseMenu();
+    } else {
+      setIsClosing(false);
+      setMobileMenuOpen(true);
+    }
+  }, [mobileMenuOpen, isClosing, handleCloseMenu]);
+
+  // Limpa timeout em caso de desmontagem
+  useEffect(() => {
+    return () => {
+      if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current);
+    };
+  }, []);
 
   // Close mobile drawer on route change
   useEffect(() => {
     setMobileMenuOpen(false);
+    setIsClosing(false);
   }, [location.pathname]);
 
   // Lock body scroll when mobile menu is open
   useEffect(() => {
-    if (mobileMenuOpen) {
+    if (mobileMenuOpen || isClosing) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = '';
@@ -47,7 +75,7 @@ export default function Navbar({
     return () => {
       document.body.style.overflow = '';
     };
-  }, [mobileMenuOpen]);
+  }, [mobileMenuOpen, isClosing]);
 
   const isActive = (path) => {
     if (path === '/') return location.pathname === '/';
@@ -292,11 +320,11 @@ export default function Navbar({
               {/* Botão de Menu Hambúrguer Responsivo (Aparece em telas tablet/mobile < xl) */}
               <button
                 type="button"
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                onClick={handleToggleMenu}
                 className="xl:hidden flex items-center justify-center w-10 h-10 rounded-xl bg-[#181411] hover:bg-[#221c17] border border-[#3a3029] text-stone-200 hover:text-white transition-all cursor-pointer shrink-0"
                 aria-label={mobileMenuOpen ? 'Fechar menu' : 'Abrir menu'}
               >
-                {mobileMenuOpen ? <X size={20} className="text-orange-500" /> : <Menu size={20} />}
+                {mobileMenuOpen || isClosing ? <X size={20} className="text-orange-500" /> : <Menu size={20} />}
               </button>
             </>
           )}
@@ -305,25 +333,27 @@ export default function Navbar({
 
       {/* DRAWER RESPONSIVO MOBILE & TABLET (Renderizado via Portal no body para garantir isolamento e z-index absoluto) */}
       {!isAdmin &&
-        mobileMenuOpen &&
+        (mobileMenuOpen || isClosing) &&
         typeof document !== 'undefined' &&
         createPortal(
           <div className="xl:hidden fixed inset-0 z-[99999] flex justify-end">
             {/* 1. Backdrop escurecedor profundo (Dissolução suave & desfoque orgânico) */}
             <div
-              className="fixed inset-0 animate-menu-backdrop"
+              className={`fixed inset-0 ${isClosing ? 'animate-menu-backdrop-out' : 'animate-menu-backdrop'}`}
               style={{ backgroundColor: 'rgba(0, 0, 0, 0.96)', backdropFilter: 'blur(10px)' }}
-              onClick={() => setMobileMenuOpen(false)}
+              onClick={handleCloseMenu}
             />
 
-            {/* 2. Painel do Menu (Abertura com física de desaceleração suave e acabamento de brasa Steakhouse) */}
+            {/* 2. Painel do Menu (Abertura e fechamento com física de desaceleração suave e acabamento de brasa Steakhouse) */}
             <div
-              className="w-full sm:w-[380px] sm:max-w-sm h-full border-l border-[#2e241d]/80 p-5 sm:p-6 flex flex-col justify-between shadow-[-10px_0_40px_rgba(0,0,0,0.95)] relative z-10 animate-menu-drawer overflow-y-auto"
+              className={`w-full sm:w-[380px] sm:max-w-sm h-full border-l border-[#2e241d]/80 p-5 sm:p-6 flex flex-col justify-between shadow-[-10px_0_40px_rgba(0,0,0,0.95)] relative z-10 overflow-y-auto ${
+                isClosing ? 'animate-menu-drawer-out' : 'animate-menu-drawer'
+              }`}
               style={{ backgroundColor: '#0a0807' }}
               onClick={(e) => e.stopPropagation()}
             >
               {/* Topo do Drawer (Fade delicado com leve desfoque inicial) */}
-              <div className="animate-menu-item" style={{ animationDelay: '60ms' }}>
+              <div className={isClosing ? '' : 'animate-menu-item'} style={{ animationDelay: '60ms' }}>
                 <div className="flex items-center justify-between pb-4 border-b border-[#221a14]">
                   <div className="flex items-center gap-2.5">
                     <div className="w-10 h-10 rounded-full bg-black border-2 border-orange-500/50 flex items-center justify-center overflow-hidden shadow-lg transition-transform duration-300 hover:scale-105">
@@ -340,7 +370,7 @@ export default function Navbar({
                   </div>
 
                   <button
-                    onClick={() => setMobileMenuOpen(false)}
+                    onClick={handleCloseMenu}
                     className="w-9 h-9 rounded-xl bg-[#14100d] border border-[#2e231b] text-stone-300 hover:text-white hover:border-orange-500/50 flex items-center justify-center cursor-pointer transition-all duration-300 hover:rotate-90 active:scale-95"
                     aria-label="Fechar menu"
                   >
@@ -352,12 +382,12 @@ export default function Navbar({
                 <nav className="mt-5 space-y-2">
                   <Link
                     to="/"
-                    onClick={() => setMobileMenuOpen(false)}
+                    onClick={handleCloseMenu}
                     style={{
                       backgroundColor: location.pathname === '/' ? '#24170f' : '#14100d',
                       animationDelay: '110ms',
                     }}
-                    className={`animate-menu-item group flex items-center justify-between p-3.5 rounded-xl text-xs font-bold uppercase tracking-wider font-['Oswald',sans-serif] transition-all duration-300 ease-out active:scale-[0.985] hover:translate-x-1.5 shadow-sm ${
+                    className={`${isClosing ? '' : 'animate-menu-item'} group flex items-center justify-between p-3.5 rounded-xl text-xs font-bold uppercase tracking-wider font-['Oswald',sans-serif] transition-all duration-300 ease-out active:scale-[0.985] hover:translate-x-1.5 shadow-sm ${
                       location.pathname === '/'
                         ? 'border border-orange-500/60 text-amber-400 ring-1 ring-orange-500/30 shadow-[0_0_12px_rgba(249,115,22,0.2)]'
                         : 'border border-[#241c16] text-stone-200 hover:text-white hover:border-orange-500/40 hover:bg-[#1a1410]'
@@ -377,12 +407,12 @@ export default function Navbar({
                       <Link
                         key={tab.path}
                         to={tab.path}
-                        onClick={() => setMobileMenuOpen(false)}
+                        onClick={handleCloseMenu}
                         style={{
                           backgroundColor: active ? '#24170f' : '#14100d',
                           animationDelay: `${150 + idx * 40}ms`,
                         }}
-                        className={`animate-menu-item group flex items-center justify-between p-3.5 rounded-xl text-xs font-bold uppercase tracking-wider font-['Oswald',sans-serif] transition-all duration-300 ease-out active:scale-[0.985] hover:translate-x-1.5 shadow-sm ${
+                        className={`${isClosing ? '' : 'animate-menu-item'} group flex items-center justify-between p-3.5 rounded-xl text-xs font-bold uppercase tracking-wider font-['Oswald',sans-serif] transition-all duration-300 ease-out active:scale-[0.985] hover:translate-x-1.5 shadow-sm ${
                           active
                             ? 'border border-orange-500/60 text-amber-400 ring-1 ring-orange-500/30 shadow-[0_0_12px_rgba(249,115,22,0.2)]'
                             : 'border border-[#241c16] text-stone-200 hover:text-white hover:border-orange-500/40 hover:bg-[#1a1410]'
@@ -401,12 +431,12 @@ export default function Navbar({
 
               {/* Rodapé do Drawer com Ações Rápidas */}
               <div
-                className="pt-5 border-t border-[#221a14] space-y-3 mt-6 animate-menu-item"
+                className={`pt-5 border-t border-[#221a14] space-y-3 mt-6 ${isClosing ? '' : 'animate-menu-item'}`}
                 style={{ animationDelay: `${150 + navTabs.length * 40 + 35}ms` }}
               >
                 <Link
                   to="/nossos-produtos"
-                  onClick={() => setMobileMenuOpen(false)}
+                  onClick={handleCloseMenu}
                   className="w-full py-3.5 rounded-xl bg-orange-600 hover:bg-orange-500 active:scale-[0.985] text-white font-bold text-xs uppercase tracking-wider font-['Oswald',sans-serif] flex items-center justify-center gap-2 shadow-xl shadow-orange-950/70 hover:shadow-orange-600/30 transition-all duration-300 cursor-pointer"
                 >
                   <ShoppingBag size={16} />

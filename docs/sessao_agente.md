@@ -1326,3 +1326,20 @@ pm run build bem-sucedido.
   4. **Validação:**
      - Build de produção verificado com sucesso (`npm run build:frontend`).
      - Testes automatizados executados com 8/8 aprovados (`npm test`).
+
+
+---
+
+### [2026-11-15 01:13] — Animação Suave de Fechamento do Menu Mobile (`menu-delicate-drawer-out`)
+- **Papel Ativo:** Designer de Interação & UI/UX Specialist
+- **Etapa SDD:** `Fase 3 — Transições Bidirecionais Elegantes (Entrada e Saída)`
+- **Ações Executadas:**
+  1. **Animação de Fechamento Delicada (`menu-delicate-drawer-out`):**
+     - O menu não desaparece de forma brusca: ao clicar no `X`, no backdrop ou ao alternar pelo botão hambúrguer, o drawer desliza suavemente de volta para a direita em 350ms com leve micro-escala (`scale: 1 -> 0.98`) e dissolução de micro-blur.
+  2. **Backdrop Fade-Out Suave (`menu-delicate-backdrop-out`):**
+     - O overlay preto escuro de 96% dissolve suavemente em 350ms, revelando a página sem cortes abruptos.
+  3. **Gerenciamento de Estado de Saída (`isClosing`):**
+     - Criado controle de ciclo de vida com `isClosing` e timeout sincronizado de 320ms, permitindo que a animação de saída termine antes da desmontagem no DOM.
+  4. **Validação:**
+     - Build de produção validado (`npm run build:frontend`).
+     - Testes automatizados executados com 8/8 aprovados (`npm test`).

@@ -170,3 +170,36 @@ html.lenis body {
   animation: menu-delicate-item 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
   will-change: transform, opacity, filter;
 }
+
+
+/* Delicate Exit Animations for Mobile Menu */
+@keyframes menu-delicate-drawer-out {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 1;
+    filter: blur(0px);
+  }
+  100% {
+    transform: translate3d(100%, 0, 0) scale(0.98);
+    opacity: 0;
+    filter: blur(4px);
+  }
+}
+
+@keyframes menu-delicate-backdrop-out {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.animate-menu-drawer-out {
+  animation: menu-delicate-drawer-out 0.35s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  will-change: transform, opacity, filter;
+}
+
+.animate-menu-backdrop-out {
+  animation: menu-delicate-backdrop-out 0.35s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
