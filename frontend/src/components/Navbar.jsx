@@ -62,7 +62,7 @@ export default function Navbar({
 
         {/* Center Search Bar (Client View - when onSearchChange is passed) */}
         {!isAdmin && onSearchChange && (
-          <div className="hidden lg:flex flex-1 max-w-xs xl:max-w-sm mx-2">
+          <div className="hidden xl:flex flex-1 max-w-xs mx-2">
             <div className="relative w-full">
               <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-500" />
               <input
@@ -86,10 +86,10 @@ export default function Navbar({
 
         {/* Center/Right Outback Style Navigation Tabs (Matches user screenshot) */}
         {!isAdmin && (
-          <nav className="hidden md:flex items-center gap-6 lg:gap-8">
+          <nav className="hidden md:flex items-center gap-4 lg:gap-6 xl:gap-8 shrink-0">
             <Link
               to="/"
-              className={`text-xs font-black uppercase tracking-wider transition-all font-['Oswald',sans-serif] pb-1 border-b-2 ${
+              className={`text-xs font-black uppercase tracking-wider transition-all font-['Oswald',sans-serif] pb-1 border-b-2 whitespace-nowrap shrink-0 ${
                 location.pathname === '/'
                   ? 'text-amber-400 border-orange-500 shadow-sm'
                   : 'text-stone-300 hover:text-amber-400 border-transparent'
@@ -104,7 +104,7 @@ export default function Navbar({
                 <Link
                   key={tab.path}
                   to={tab.path}
-                  className={`text-xs font-black uppercase tracking-wider transition-all font-['Oswald',sans-serif] pb-1 border-b-2 ${
+                  className={`text-xs font-black uppercase tracking-wider transition-all font-['Oswald',sans-serif] pb-1 border-b-2 whitespace-nowrap shrink-0 ${
                     active
                       ? 'text-amber-400 border-orange-500 shadow-sm'
                       : 'text-stone-300 hover:text-amber-400 border-transparent'
