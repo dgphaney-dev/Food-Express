@@ -1,6 +1,8 @@
 node_modules/
 frontend/node_modules/
 frontend/dist/
+site/frontend/node_modules/
+site/frontend/dist/
 data/*.sqlite
 data/*.sqlite-shm
 data/*.sqlite-wal

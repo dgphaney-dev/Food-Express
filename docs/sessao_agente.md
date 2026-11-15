@@ -1213,3 +1213,23 @@ pm run build bem-sucedido.
      - Database SQLite populada com sucesso (`npm run seed`).
      - Servidor de backend ativo e respondendo em `http://127.0.0.1:3333/api` (Healthcheck OK).
      - Frontend compilando com código 0 (`npm run build`).
+
+
+---
+
+### [2026-11-15 00:26] — Reorganização Estrutural do Repositório: Frontend e Backend na Pasta `site/`
+- **Papel Ativo:** Engenheiro de DevOps e Arquitetura de Software
+- **Etapa SDD:** `Fase 3 — Reorganização e Padronização de Estrutura de Diretórios`
+- **Ações Executadas:**
+  1. **Migração para Diretório Unificado `site/`:**
+     - Movido `frontend/` para `site/frontend/`.
+     - Movido `src/backend/` para `site/backend/` e removida a pasta `src/` vazia.
+  2. **Atualização de Scripts e Configurações:**
+     - `package.json` raiz atualizado para referenciar `site/backend/server.js`, `site/backend/db/seedCli.js` e `--prefix site/frontend`.
+     - `tests/integration/adminApi.test.js` e `tests/unit/adminBackend.test.js` atualizados com caminhos relativos para `../../site/backend/`.
+     - Workflow do GitHub Actions (`.github/workflows/node.js.yml`) atualizado com caminhos `site/frontend` e deploy do `site/frontend/dist`.
+     - `.gitignore` atualizado para ignorar `site/frontend/node_modules/` e `site/frontend/dist/`.
+  3. **Validação de Testes e Build:**
+     - Testes automatizados executados e aprovados: 7/7 suites verdes (`npm test`).
+     - Build do frontend validado com sucesso (`npm run build:frontend`).
+     - Lint verificado e sem erros.

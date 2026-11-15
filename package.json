@@ -5,14 +5,14 @@
   "type": "module",
   "description": "FoodExpress — Backend do Painel Administrativo (Node.js + Express + SQLite + Drizzle ORM)",
   "scripts": {
-    "dev:backend": "node --watch src/backend/server.js",
-    "start:backend": "node src/backend/server.js",
-    "seed": "node src/backend/db/seedCli.js",
+    "dev:backend": "node --watch site/backend/server.js",
+    "start:backend": "node site/backend/server.js",
+    "seed": "node site/backend/db/seedCli.js",
     "test": "vitest run",
     "test:watch": "vitest",
-    "dev:frontend": "npm --prefix frontend run dev",
-    "build:frontend": "npm --prefix frontend run build",
-    "lint:frontend": "npm --prefix frontend run lint"
+    "dev:frontend": "npm --prefix site/frontend run dev",
+    "build:frontend": "npm --prefix site/frontend run build",
+    "lint:frontend": "npm --prefix site/frontend run lint"
   },
   "dependencies": {
     "cors": "^2.8.5",

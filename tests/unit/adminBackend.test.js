@@ -4,8 +4,8 @@ import {
   hashPassword,
   verifyAdminToken,
   verifyPassword,
-} from '../../src/backend/services/authService.js';
-import { NEXT_STATUS_MAP, ORDER_STATUS } from '../../src/backend/services/orderService.js';
+} from '../../site/backend/services/authService.js';
+import { NEXT_STATUS_MAP, ORDER_STATUS } from '../../site/backend/services/orderService.js';
 
 describe('Unit — Segurança (scrypt + JWT) e Máquina de Estados Admin', () => {
   it('RNF-002 / TR-006: deve gerar hash scrypt irreversível com salt aleatório e validar senha corretamente', () => {

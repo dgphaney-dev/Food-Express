@@ -1,8 +1,8 @@
 import request from 'supertest';
 import { beforeEach, describe, expect, it } from 'vitest';
-import { app } from '../../src/backend/app.js';
-import { initDatabase } from '../../src/backend/db/connection.js';
-import { seedDatabase } from '../../src/backend/db/seed.js';
+import { app } from '../../site/backend/app.js';
+import { initDatabase } from '../../site/backend/db/connection.js';
+import { seedDatabase } from '../../site/backend/db/seed.js';
 
 describe('Integration — Backend Admin API (Auth, Cardápio e Fila de Pedidos)', () => {
   let adminToken = '';
