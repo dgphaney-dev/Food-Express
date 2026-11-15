@@ -310,12 +310,14 @@ export default function Navbar({
         createPortal(
           <div
             className="xl:hidden fixed inset-0 z-[99999] bg-black/85 backdrop-blur-sm flex justify-end animate-in fade-in duration-200"
+            style={{ backgroundColor: 'rgba(0, 0, 0, 0.85)' }}
             onClick={(e) => {
               if (e.target === e.currentTarget) setMobileMenuOpen(false);
             }}
           >
             <div
               className="w-full max-w-xs sm:max-w-sm h-full bg-[#120f0d] border-l border-[#2e241d] p-5 flex flex-col justify-between shadow-2xl relative z-10 animate-in slide-in-from-right duration-300"
+              style={{ backgroundColor: '#120f0d' }}
               onClick={(e) => e.stopPropagation()}
             >
               {/* Topo do Drawer */}
