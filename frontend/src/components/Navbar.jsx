@@ -86,31 +86,61 @@ export default function Navbar({
 
         {/* Center/Right Outback Style Navigation Tabs (Matches user screenshot) */}
         {!isAdmin && (
-          <nav className="hidden md:flex items-center gap-4 lg:gap-6 xl:gap-8 shrink-0">
+          <nav className="hidden md:flex items-center gap-1 lg:gap-2 xl:gap-3 shrink-0">
+            {/* INÍCIO */}
             <Link
               to="/"
-              className={`text-xs font-black uppercase tracking-wider transition-all font-['Oswald',sans-serif] pb-1 border-b-2 whitespace-nowrap shrink-0 ${
+              className={`group relative px-3 py-2 rounded-xl text-xs font-black uppercase tracking-wider font-['Oswald',sans-serif] whitespace-nowrap shrink-0 transition-all duration-300 ${
                 location.pathname === '/'
-                  ? 'text-amber-400 border-orange-500 shadow-sm'
-                  : 'text-stone-300 hover:text-amber-400 border-transparent'
+                  ? 'text-amber-400'
+                  : 'text-stone-300 hover:text-white hover:bg-white/[0.05]'
               }`}
             >
-              INÍCIO
+              <span className="relative z-10 transition-transform duration-300 inline-block group-hover:-translate-y-0.5 group-hover:drop-shadow-[0_0_8px_rgba(251,191,36,0.5)]">
+                INÍCIO
+              </span>
+
+              {/* Active / Hover Glowing Indicator Line */}
+              <span
+                className={`absolute bottom-0 left-2 right-2 h-[2.5px] rounded-full transition-all duration-300 origin-center ${
+                  location.pathname === '/'
+                    ? 'bg-gradient-to-r from-orange-500 via-amber-400 to-orange-500 opacity-100 shadow-[0_0_10px_rgba(249,115,22,0.9)]'
+                    : 'bg-gradient-to-r from-orange-500/20 via-amber-400 to-orange-500/20 opacity-0 group-hover:opacity-100 scale-x-0 group-hover:scale-x-100 group-hover:shadow-[0_0_8px_rgba(251,191,36,0.7)]'
+                }`}
+              />
+
+              {/* Ambient Ember Glow on Hover */}
+              <span className="absolute inset-0 rounded-xl bg-gradient-to-b from-orange-500/0 via-amber-500/[0.04] to-orange-500/[0.08] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
             </Link>
 
+            {/* Abas Dinâmicas */}
             {navTabs.map((tab) => {
               const active = isTabActive(tab);
               return (
                 <Link
                   key={tab.path}
                   to={tab.path}
-                  className={`text-xs font-black uppercase tracking-wider transition-all font-['Oswald',sans-serif] pb-1 border-b-2 whitespace-nowrap shrink-0 ${
+                  className={`group relative px-3 py-2 rounded-xl text-xs font-black uppercase tracking-wider font-['Oswald',sans-serif] whitespace-nowrap shrink-0 transition-all duration-300 ${
                     active
-                      ? 'text-amber-400 border-orange-500 shadow-sm'
-                      : 'text-stone-300 hover:text-amber-400 border-transparent'
+                      ? 'text-amber-400'
+                      : 'text-stone-300 hover:text-white hover:bg-white/[0.05]'
                   }`}
                 >
-                  {tab.label}
+                  <span className="relative z-10 transition-transform duration-300 inline-block group-hover:-translate-y-0.5 group-hover:drop-shadow-[0_0_8px_rgba(251,191,36,0.5)]">
+                    {tab.label}
+                  </span>
+
+                  {/* Active / Hover Glowing Indicator Line */}
+                  <span
+                    className={`absolute bottom-0 left-2 right-2 h-[2.5px] rounded-full transition-all duration-300 origin-center ${
+                      active
+                        ? 'bg-gradient-to-r from-orange-500 via-amber-400 to-orange-500 opacity-100 shadow-[0_0_10px_rgba(249,115,22,0.9)]'
+                        : 'bg-gradient-to-r from-orange-500/20 via-amber-400 to-orange-500/20 opacity-0 group-hover:opacity-100 scale-x-0 group-hover:scale-x-100 group-hover:shadow-[0_0_8px_rgba(251,191,36,0.7)]'
+                    }`}
+                  />
+
+                  {/* Ambient Ember Glow on Hover */}
+                  <span className="absolute inset-0 rounded-xl bg-gradient-to-b from-orange-500/0 via-amber-500/[0.04] to-orange-500/[0.08] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
                 </Link>
               );
             })}
