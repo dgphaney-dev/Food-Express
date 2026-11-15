@@ -1172,3 +1172,22 @@ pm run build bem-sucedido.
 - **Validação:**
   - Build de produção validado (`npm run build` -> 0 erros).
   - ESLint verificado e sem erros.
+
+
+---
+
+### [2026-11-14 23:45] — Ativação de Pedido ao Pagar e Rastreamento ao Vivo do Cliente (PIX Instantâneo & Código PIN iFood)
+- **Papel Ativo:** Desenvolvedor Fullstack Sênior & Especialista em Pagamentos & UX do Cliente
+- **Etapa SDD:** `Fase 3 — Fluxo de Pagamento e Rastreamento Ativo do Cliente`
+- **Ações Executadas:**
+  1. **Checkout com Pagamento (`CartDrawer.jsx` & `CustomerMenuPage.jsx`):**
+     - Seleção de forma de pagamento: `PIX Rápido` (destaque com aprovação instantânea), `Cartão Online` e `Pagar na Entrega`.
+     - Modal de Pagamento PIX integrado com QR Code visual, código copia-e-cola, validação instantânea e simulação bancária.
+     - Ao pagar, o pedido é criado com `isPaid: true` e imediatamente ativado na cozinha e para o entregador.
+  2. **Rastreamento Ativo do Cliente (`OrderTrackingPage.jsx`):**
+     - **Status de Pagamento:** Se pago, exibe banner verde luminoso `PAGAMENTO CONFIRMADO · PEDIDO ATIVO`; se pendente, exibe banner com botão para pagar via PIX na hora e ativar o pedido imediatamente.
+     - **Código de Confirmação do Cliente (PIN de 4 Dígitos):** Exibe em destaque o PIN que o cliente deve informar ao entregador (*Carlos Roberto*) na entrega.
+     - **Rastreamento do Motorista ao Vivo:** Card do piloto Carlos com foto, veículo, avaliação ⭐ 4.98, botões diretos de contato (WhatsApp e Ligação) e mapa GPS com a moto se deslocando em tempo real até o endereço do cliente.
+- **Validação:**
+  - Build de produção verificado (`npm run build` -> 0 erros).
+  - ESLint verificado e sem erros.

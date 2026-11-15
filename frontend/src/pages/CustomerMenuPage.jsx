@@ -184,6 +184,11 @@ export default function CustomerMenuPage() {
         subtotal: item.unitPrice * item.quantity,
       }));
 
+      const isPaid =
+        checkoutData?.isPaid ??
+        (checkoutData?.paymentMethod === 'PIX' || checkoutData?.paymentMethod === 'CREDIT_CARD');
+      const paymentMethod = checkoutData?.paymentMethod || 'PIX';
+
       const orderData = {
         orderType,
         tableNumber: orderType === 'DINE_IN' ? tableNumber : null,
@@ -191,6 +196,9 @@ export default function CustomerMenuPage() {
         deliveryAddress: orderType === 'DELIVERY' ? deliveryAddress : null,
         totalAmount: cart.totalPrice,
         items: orderItems,
+        isPaid,
+        paymentMethod,
+        paidAt: isPaid ? new Date().toISOString() : null,
       };
 
       const newOrder = orders.createOrder(orderData);

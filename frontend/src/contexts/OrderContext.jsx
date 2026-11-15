@@ -78,6 +78,21 @@ export function OrderProvider({ children }) {
     );
   }, []);
 
+  const markOrderAsPaid = useCallback((orderId, paymentMethod = 'PIX') => {
+    setAdminOrders((prev) =>
+      prev.map((order) =>
+        order.id === orderId
+          ? { ...order, isPaid: true, paymentMethod, paidAt: new Date().toISOString() }
+          : order
+      )
+    );
+    setCurrentOrder((prev) =>
+      prev && prev.id === orderId
+        ? { ...prev, isPaid: true, paymentMethod, paidAt: new Date().toISOString() }
+        : prev
+    );
+  }, []);
+
   const lastOrderId = localStorage.getItem(LAST_ORDER_KEY);
 
   return (
@@ -91,6 +106,7 @@ export function OrderProvider({ children }) {
         getOrder,
         advanceOrderStatus,
         cancelOrder,
+        markOrderAsPaid,
         lastOrderId,
       }}
     >
