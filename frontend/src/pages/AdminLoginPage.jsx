@@ -45,6 +45,14 @@ export default function AdminLoginPage() {
     setError('');
   };
 
+  const handleQuickDemoLogin = async () => {
+    setError('');
+    setLoading(true);
+    await new Promise((r) => setTimeout(r, 250));
+    login('mock-token-123', { username: 'admin' });
+    navigate('/admin/pedidos', { replace: true });
+  };
+
   return (
     <div className="min-h-screen bg-black text-zinc-100 font-['Plus_Jakarta_Sans',sans-serif] antialiased flex flex-col selection:bg-orange-600">
       {/* 1. TOP NAVBAR */}
@@ -167,6 +175,17 @@ export default function AdminLoginPage() {
                       <ArrowRight size={16} />
                     </>
                   )}
+                </button>
+
+                {/* 1-Click Fast Demo Login */}
+                <button
+                  type="button"
+                  onClick={handleQuickDemoLogin}
+                  disabled={loading}
+                  className="w-full h-11 bg-zinc-900/90 hover:bg-zinc-800 border border-zinc-700/80 text-amber-400 hover:text-white font-bold text-xs uppercase tracking-wider font-['Oswald',sans-serif] rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm"
+                >
+                  <Sparkles size={14} className="text-amber-400" />
+                  <span>Acesso Rápido de Teste (1 Clique)</span>
                 </button>
               </form>
             </div>
