@@ -309,24 +309,24 @@ export default function Navbar({
         typeof document !== 'undefined' &&
         createPortal(
           <div className="xl:hidden fixed inset-0 z-[99999] flex justify-end">
-            {/* 1. Backdrop escurecedor profundo (Escurece 100% da tela de fundo com blur de brasa escura) */}
+            {/* 1. Backdrop escurecedor profundo (Dissolução suave & desfoque orgânico) */}
             <div
-              className="fixed inset-0 transition-opacity duration-300 animate-in fade-in"
-              style={{ backgroundColor: 'rgba(0, 0, 0, 0.96)', backdropFilter: 'blur(8px)' }}
+              className="fixed inset-0 animate-menu-backdrop"
+              style={{ backgroundColor: 'rgba(0, 0, 0, 0.96)', backdropFilter: 'blur(10px)' }}
               onClick={() => setMobileMenuOpen(false)}
             />
 
-            {/* 2. Painel do Menu (100% escuro sólido na paleta Steakhouse com física suave) */}
+            {/* 2. Painel do Menu (Abertura com física de desaceleração suave e acabamento de brasa Steakhouse) */}
             <div
-              className="w-full sm:w-[380px] sm:max-w-sm h-full border-l border-[#2e241d] p-5 sm:p-6 flex flex-col justify-between shadow-[0_0_60px_rgba(0,0,0,0.95)] relative z-10 animate-menu-drawer overflow-y-auto"
+              className="w-full sm:w-[380px] sm:max-w-sm h-full border-l border-[#2e241d]/80 p-5 sm:p-6 flex flex-col justify-between shadow-[-10px_0_40px_rgba(0,0,0,0.95)] relative z-10 animate-menu-drawer overflow-y-auto"
               style={{ backgroundColor: '#0a0807' }}
               onClick={(e) => e.stopPropagation()}
             >
-              {/* Topo do Drawer */}
-              <div className="animate-menu-item" style={{ animationDelay: '40ms' }}>
+              {/* Topo do Drawer (Fade delicado com leve desfoque inicial) */}
+              <div className="animate-menu-item" style={{ animationDelay: '60ms' }}>
                 <div className="flex items-center justify-between pb-4 border-b border-[#221a14]">
                   <div className="flex items-center gap-2.5">
-                    <div className="w-10 h-10 rounded-full bg-black border-2 border-orange-500/50 flex items-center justify-center overflow-hidden shadow-lg transition-transform hover:scale-105">
+                    <div className="w-10 h-10 rounded-full bg-black border-2 border-orange-500/50 flex items-center justify-center overflow-hidden shadow-lg transition-transform duration-300 hover:scale-105">
                       <img src="/logo.jpg" alt="Logo" className="w-full h-full object-cover scale-105" />
                     </div>
                     <div>
@@ -341,33 +341,33 @@ export default function Navbar({
 
                   <button
                     onClick={() => setMobileMenuOpen(false)}
-                    className="w-9 h-9 rounded-xl bg-[#14100d] border border-[#2e231b] text-stone-300 hover:text-white hover:border-orange-500/50 flex items-center justify-center cursor-pointer transition-all hover:rotate-90 active:scale-90"
+                    className="w-9 h-9 rounded-xl bg-[#14100d] border border-[#2e231b] text-stone-300 hover:text-white hover:border-orange-500/50 flex items-center justify-center cursor-pointer transition-all duration-300 hover:rotate-90 active:scale-95"
                     aria-label="Fechar menu"
                   >
                     <X size={18} />
                   </button>
                 </div>
 
-                {/* Lista de Links no Drawer (Efeito cascata sequencial suave + micro-interação ao passar o mouse) */}
+                {/* Lista de Links no Drawer (Cascata suave em ondas de 40ms com deslizamento suave) */}
                 <nav className="mt-5 space-y-2">
                   <Link
                     to="/"
                     onClick={() => setMobileMenuOpen(false)}
                     style={{
                       backgroundColor: location.pathname === '/' ? '#24170f' : '#14100d',
-                      animationDelay: '90ms',
+                      animationDelay: '110ms',
                     }}
-                    className={`animate-menu-item group flex items-center justify-between p-3.5 rounded-xl text-xs font-bold uppercase tracking-wider font-['Oswald',sans-serif] transition-all duration-200 active:scale-[0.98] hover:translate-x-1.5 shadow-sm ${
+                    className={`animate-menu-item group flex items-center justify-between p-3.5 rounded-xl text-xs font-bold uppercase tracking-wider font-['Oswald',sans-serif] transition-all duration-300 ease-out active:scale-[0.985] hover:translate-x-1.5 shadow-sm ${
                       location.pathname === '/'
                         ? 'border border-orange-500/60 text-amber-400 ring-1 ring-orange-500/30 shadow-[0_0_12px_rgba(249,115,22,0.2)]'
                         : 'border border-[#241c16] text-stone-200 hover:text-white hover:border-orange-500/40 hover:bg-[#1a1410]'
                     }`}
                   >
                     <div className="flex items-center gap-3">
-                      <Home size={17} className={`transition-transform duration-200 group-hover:scale-110 ${location.pathname === '/' ? 'text-amber-400' : 'text-stone-400'}`} />
+                      <Home size={17} className={`transition-transform duration-300 group-hover:scale-110 ${location.pathname === '/' ? 'text-amber-400' : 'text-stone-400'}`} />
                       <span className="text-sm">Início</span>
                     </div>
-                    <ChevronRight size={15} className="opacity-60 transition-transform duration-200 group-hover:translate-x-1 group-hover:opacity-100 text-amber-400" />
+                    <ChevronRight size={15} className="opacity-60 transition-all duration-300 group-hover:translate-x-1 group-hover:opacity-100 text-amber-400" />
                   </Link>
 
                   {navTabs.map((tab, idx) => {
@@ -380,19 +380,19 @@ export default function Navbar({
                         onClick={() => setMobileMenuOpen(false)}
                         style={{
                           backgroundColor: active ? '#24170f' : '#14100d',
-                          animationDelay: `${140 + idx * 50}ms`,
+                          animationDelay: `${150 + idx * 40}ms`,
                         }}
-                        className={`animate-menu-item group flex items-center justify-between p-3.5 rounded-xl text-xs font-bold uppercase tracking-wider font-['Oswald',sans-serif] transition-all duration-200 active:scale-[0.98] hover:translate-x-1.5 shadow-sm ${
+                        className={`animate-menu-item group flex items-center justify-between p-3.5 rounded-xl text-xs font-bold uppercase tracking-wider font-['Oswald',sans-serif] transition-all duration-300 ease-out active:scale-[0.985] hover:translate-x-1.5 shadow-sm ${
                           active
                             ? 'border border-orange-500/60 text-amber-400 ring-1 ring-orange-500/30 shadow-[0_0_12px_rgba(249,115,22,0.2)]'
                             : 'border border-[#241c16] text-stone-200 hover:text-white hover:border-orange-500/40 hover:bg-[#1a1410]'
                         }`}
                       >
                         <div className="flex items-center gap-3">
-                          <Icon size={17} className={`transition-transform duration-200 group-hover:scale-110 ${active ? 'text-amber-400' : 'text-stone-400'}`} />
+                          <Icon size={17} className={`transition-transform duration-300 group-hover:scale-110 ${active ? 'text-amber-400' : 'text-stone-400'}`} />
                           <span className="text-sm">{tab.label}</span>
                         </div>
-                        <ChevronRight size={15} className="opacity-60 transition-transform duration-200 group-hover:translate-x-1 group-hover:opacity-100 text-amber-400" />
+                        <ChevronRight size={15} className="opacity-60 transition-all duration-300 group-hover:translate-x-1 group-hover:opacity-100 text-amber-400" />
                       </Link>
                     );
                   })}
@@ -402,12 +402,12 @@ export default function Navbar({
               {/* Rodapé do Drawer com Ações Rápidas */}
               <div
                 className="pt-5 border-t border-[#221a14] space-y-3 mt-6 animate-menu-item"
-                style={{ animationDelay: `${140 + navTabs.length * 50 + 40}ms` }}
+                style={{ animationDelay: `${150 + navTabs.length * 40 + 35}ms` }}
               >
                 <Link
                   to="/nossos-produtos"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="w-full py-3.5 rounded-xl bg-orange-600 hover:bg-orange-500 active:scale-[0.98] text-white font-bold text-xs uppercase tracking-wider font-['Oswald',sans-serif] flex items-center justify-center gap-2 shadow-xl shadow-orange-950/70 hover:shadow-orange-600/30 transition-all cursor-pointer"
+                  className="w-full py-3.5 rounded-xl bg-orange-600 hover:bg-orange-500 active:scale-[0.985] text-white font-bold text-xs uppercase tracking-wider font-['Oswald',sans-serif] flex items-center justify-center gap-2 shadow-xl shadow-orange-950/70 hover:shadow-orange-600/30 transition-all duration-300 cursor-pointer"
                 >
                   <ShoppingBag size={16} />
                   <span>Pedir no Cardápio</span>

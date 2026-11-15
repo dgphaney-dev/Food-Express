@@ -118,33 +118,55 @@ html.lenis body {
 }
 
 
-/* Premium Mobile Menu Drawer Animations */
-@keyframes menu-drawer-slide-in {
+/* Premium Mobile Menu Drawer Animations — Delicada, Orgânica & Ultra-Moderna */
+@keyframes menu-delicate-backdrop {
   0% {
-    transform: translateX(100%);
-    opacity: 0.7;
+    opacity: 0;
   }
   100% {
-    transform: translateX(0);
     opacity: 1;
   }
 }
 
-@keyframes menu-item-cascade {
+@keyframes menu-delicate-drawer {
+  0% {
+    transform: translate3d(100%, 0, 0) scale(0.985);
+    opacity: 0.8;
+    filter: blur(4px);
+  }
+  60% {
+    filter: blur(0.5px);
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 1;
+    filter: blur(0px);
+  }
+}
+
+@keyframes menu-delicate-item {
   0% {
     opacity: 0;
-    transform: translateX(30px);
+    transform: translate3d(14px, 5px, 0);
+    filter: blur(3px);
   }
   100% {
     opacity: 1;
-    transform: translateX(0);
+    transform: translate3d(0, 0, 0);
+    filter: blur(0px);
   }
+}
+
+.animate-menu-backdrop {
+  animation: menu-delicate-backdrop 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 .animate-menu-drawer {
-  animation: menu-drawer-slide-in 0.38s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: menu-delicate-drawer 0.52s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  will-change: transform, opacity, filter;
 }
 
 .animate-menu-item {
-  animation: menu-item-cascade 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: menu-delicate-item 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
+  will-change: transform, opacity, filter;
 }
