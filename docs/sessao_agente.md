@@ -1111,3 +1111,292 @@ pm run build bem-sucedido.
      - `npm test` (Vitest + Supertest): **7/7 testes passando** (`tests/unit/adminBackend.test.js` e `tests/integration/adminApi.test.js`).
      - `npm run lint:frontend` (0 erros) e `npm run build:frontend` aprovados.
 
+---
+
+### [2026-11-14 15:04] — Redesign Completo e Harmonização do Gerenciador de Cardápio (/admin/cardapio)
+- **Papel Ativo:** Designer UI/UX & Engenheiro Fullstack
+- **Etapa SDD:** Fase 3 — Modernização do Painel Administrativo de Produtos e Categorias
+- **Ações Executadas:**
+  1. **Correção de Contraste e Legibilidade Crítica ([`AdminMenuPage.jsx`](file:///c:/Users/PICHAU/Documents/foodexpress/frontend/src/pages/AdminMenuPage.jsx)):**
+     - Corrigido o preço base nos cards de produto que utilizava `text-gray-900` (preto sobre fundo escuro, tornando o preço invisível). Agora exibido em dourado/âmbar vibrante (`text-amber-400 font-black text-lg sm:text-xl font-['Oswald',sans-serif]`).
+     - Eliminadas todas as classes residuais de tema claro (`bg-white`, `text-gray-700`, `border-gray-200`, `hover:bg-orange-50`, etc.).
+  2. **Modernização dos Modais de Cadastro e Edição (Dark Theme Steakhouse):**
+     - Tanto o modal de **Novo/Editar Produto** quanto o modal de **Nova/Editar Categoria** foram totalmente reconstruídos no padrão dark escuro (`bg-[#141210]`, `border-zinc-800`, campos em `#0c0a08` e botões estilizados em laranja).
+     - **Pré-visualização de Imagem em Tempo Real:** Criada área de preview da foto com fallbacks automáticos e uma barra de atalhos rápidos com fotos em alta definição prontas para uso (Hambúrguer Artesanal, Smash Burger, Frango Crispy, Batata Rústica, Onion Rings, Brownie, Chopp).
+     - **Variações e Adicionais:** Interface simplificada em cards escuros para adicionar, precificar e remover tamanhos e adicionais com um clique.
+  3. **Barra de Busca Inteligente e Filtro por Categoria:**
+     - Adicionado campo de busca instantânea por nome ou ingrediente do produto.
+     - Indicador dinâmico de quantidade de itens filtrados.
+  4. **Painel de Indicadores Operacionais (KPIs):**
+     - Linha de 4 cards com resumo em tempo real: Total de Produtos, Produtos Ativos (visíveis ao público), Produtos Pausados/Ocultos e Categorias organizadas.
+  5. **Tabela de Categorias e Exclusão Segura:**
+     - Adicionada confirmação inteligente para exclusão de categorias (com aviso caso contenha produtos vinculados).
+  6. **Validação:**
+     - `npm run lint`: 0 erros.
+     - `npm run build`: gerado com sucesso em 1.16s.
+
+
+---
+
+### [2026-11-14 23:25] — Reformulação Completa do Painel Administrativo (/admin/cardapio, /admin/pedidos, /admin/login)
+- **Papel Ativo:** Desenvolvedor Fullstack Sênior & Especialista em UI/UX
+- **Etapa SDD:** `Fase 3 — Refinamento de Interface e Experiência do Painel Operacional`
+- **Ações Executadas:**
+  1. **Gestão do Cardápio (`/admin/cardapio` - `AdminMenuPage.jsx`):**
+     - Correção definitiva de contraste: remoção de classes claras (`text-gray-900`) que deixavam preços e textos invisíveis em modo escuro.
+     - Conversão de todos os modais para a identidade Steakhouse Dark (`#121214`, `#0c0a08`, bordas `zinc-800`, destaques âmbar/laranja).
+     - Adição de barra de KPIs operacionais (total de itens, ativos, pausados e categorias).
+     - Integração de busca em tempo real e filtro por categoria.
+     - Presets rápidos de imagem com 1 clique e live preview ao cadastrar ou editar produtos.
+  2. **KDS & Monitor de Pedidos (`/admin/pedidos` - `AdminOrdersPage.jsx`):**
+     - Adição de barra de busca instantânea (#ID do pedido, mesa, nome do cliente, endereço e itens).
+     - Filtro por tipo de atendimento (Todos, Salão / Mesa, Delivery).
+     - Botões de simulação rápida para teste com 1 clique (`+ Mesa Teste`, `+ Delivery Teste`).
+     - Contador de receita entregue (`Receita Entregue R$`) no topo do painel.
+     - Impressão térmica direta de comanda para cozinha (`handlePrintReceipt`).
+     - Disparo rápido de notificação via WhatsApp para clientes de delivery.
+     - Modal completo de visualização de comanda (`onViewDetails`).
+  3. **Acesso do Atendente (`/admin/login` - `AdminLoginPage.jsx`):**
+     - Adição do botão "Acesso Rápido de Teste (1 Clique)" (`handleQuickDemoLogin`) com credenciais automáticas.
+     - Estilo steakhouse elegante com tema escuro e visual premium.
+- **Validação:**
+  - Build de produção verificado com sucesso (`npm run build` -> código de saída 0).
+  - ESLint com 0 erros nos arquivos administrativos.
+
+
+---
+
+### [2026-11-14 23:35] — Implementação da Tela do Motorista / Entregador (/entregador - Estilo iFood / Waze)
+- **Papel Ativo:** Desenvolvedor Fullstack Sênior & Especialista em UI/UX Mobile & GPS
+- **Etapa SDD:** `Fase 3 — Módulo de Logística e Entrega do Motorista (Driver Experience)`
+- **Ações Executadas:**
+  1. **Criação da Página do Motorista (`/entregador` - `DriverDeliveryPage.jsx`):**
+     - **Header do Piloto:** Perfil com foto, avaliação ⭐ 4.98, veículo, toggle Online/Offline e ganhos do dia em tempo real (`R$ 138,40`).
+     - **Seletor de Corridas:** Dropdown para alternar entre pedidos de delivery ativos ou simular nova corrida com 1 clique (`+ Simular Nova Corrida`).
+     - **GPS Navigation HUD:** Painel de manobras estilo Waze/iFood ("Em 350 metros, vire à direita...", tempo estimado e distância restante).
+     - **Mapa Noturno Interativo com Rota Vetorial:** Canvas/SVG com malha urbana escura, linhas viárias de São Paulo (Av. Paulista, Augusta, Alameda Santos), traçado neon luminoso e marcador de moto em deslocamento dinâmico em tempo real.
+     - **Alternância de Visão:** Suporte a mapa vetorial noturno e mapa via satélite Google Maps.
+     - **Atalhos Externos de GPS:** Botões com 1 clique para "Abrir no Waze" e "Abrir no Google Maps".
+     - **Stepper Operacional da Entrega:** Etapas sincronizadas com o `OrderContext`:
+       - 1: Coleta no FoodExpress (`Pegar Bag`)
+       - 2: A Caminho do Cliente (`Cheguei no Local`)
+       - 3: Entrega com Validação de Código PIN de 4 Dígitos.
+     - **Modal de Código PIN (Exclusivo iFood):** Diálogo com teclado e dica rápida de teste para validação imediata do PIN informado pelo cliente, marcando o pedido como `DELIVERED` e creditando a taxa do motorista.
+     - **Dados do Cliente & Contato Direto:** Endereço completo, complemento, botões diretos de "WhatsApp" e "Ligar".
+     - **Checklist da Bag:** Conferência item a item dos produtos do pedido com checkboxes interativas.
+  2. **Integração no Ecossistema:**
+     - Adicionada rota `/entregador` e aliases `/motorista` e `/driver` em `frontend/src/App.jsx`.
+     - Adicionado link "TELA DO MOTORISTA" na `Navbar.jsx` (modo público e modo administrativo).
+     - Adicionado botão de atalho direto para a rota do entregador nos cards de delivery do painel de pedidos (`AdminOrdersPage.jsx`).
+- **Validação:**
+  - Build de produção validado (`npm run build` -> 0 erros).
+  - ESLint verificado e sem erros.
+
+
+---
+
+### [2026-11-14 23:45] — Ativação de Pedido ao Pagar e Rastreamento ao Vivo do Cliente (PIX Instantâneo & Código PIN iFood)
+- **Papel Ativo:** Desenvolvedor Fullstack Sênior & Especialista em Pagamentos & UX do Cliente
+- **Etapa SDD:** `Fase 3 — Fluxo de Pagamento e Rastreamento Ativo do Cliente`
+- **Ações Executadas:**
+  1. **Checkout com Pagamento (`CartDrawer.jsx` & `CustomerMenuPage.jsx`):**
+     - Seleção de forma de pagamento: `PIX Rápido` (destaque com aprovação instantânea), `Cartão Online` e `Pagar na Entrega`.
+     - Modal de Pagamento PIX integrado com QR Code visual, código copia-e-cola, validação instantânea e simulação bancária.
+     - Ao pagar, o pedido é criado com `isPaid: true` e imediatamente ativado na cozinha e para o entregador.
+  2. **Rastreamento Ativo do Cliente (`OrderTrackingPage.jsx`):**
+     - **Status de Pagamento:** Se pago, exibe banner verde luminoso `PAGAMENTO CONFIRMADO · PEDIDO ATIVO`; se pendente, exibe banner com botão para pagar via PIX na hora e ativar o pedido imediatamente.
+     - **Código de Confirmação do Cliente (PIN de 4 Dígitos):** Exibe em destaque o PIN que o cliente deve informar ao entregador (*Carlos Roberto*) na entrega.
+     - **Rastreamento do Motorista ao Vivo:** Card do piloto Carlos com foto, veículo, avaliação ⭐ 4.98, botões diretos de contato (WhatsApp e Ligação) e mapa GPS com a moto se deslocando em tempo real até o endereço do cliente.
+- **Validação:**
+  - Build de produção verificado (`npm run build` -> 0 erros).
+  - ESLint verificado e sem erros.
+
+
+---
+
+### [2026-11-15 00:09] — Integração Completa do Backend (Node.js + Express + SQLite + Drizzle) com o Frontend
+- **Papel Ativo:** Desenvolvedor Fullstack Sênior & Especialista em Integração e Arquitetura
+- **Etapa SDD:** `Fase 3 — Integração Fullstack (Merge da feature/painel-admin e conexão com API REST)`
+- **Ações Executadas:**
+  1. **Merge e Unificação dos Módulos:**
+     - Incorporados todos os artefatos de backend da branch `feature/painel-admin`:
+       - `src/backend/` (Controllers, Services, Repositories, Middlewares, Schemas e Seeds Drizzle).
+       - `tests/` (Testes unitários e de integração com Vitest e Supertest).
+       - `frontend/src/services/api.js` (Cliente HTTP para comunicação com a API).
+       - `frontend/vite.config.js` (Proxy reverso para `/api` apontando para `http://127.0.0.1:3333`).
+     - Preservadas e integradas 100% das telas modernas do frontend: Dark Steakhouse, GPS do Entregador (`/entregador`), Pagamento PIX com ativação imediata e acompanhamento de pedido (`/pedido/:orderId`).
+  2. **Compatibilidade Nativa SQLite no Windows:**
+     - Implementado wrapper resiliente utilizando `node:sqlite` nativo do Node.js v24 (zero dependência de compilação C++ externa).
+  3. **Validação:**
+     - 7/7 testes de backend aprovados (`npm test` -> 100% green).
+     - Database SQLite populada com sucesso (`npm run seed`).
+     - Servidor de backend ativo e respondendo em `http://127.0.0.1:3333/api` (Healthcheck OK).
+     - Frontend compilando com código 0 (`npm run build`).
+
+
+---
+
+### [2026-11-15 00:26] — Reorganização Estrutural do Repositório: Frontend e Backend na Pasta `site/`
+- **Papel Ativo:** Engenheiro de DevOps e Arquitetura de Software
+- **Etapa SDD:** `Fase 3 — Reorganização e Padronização de Estrutura de Diretórios`
+- **Ações Executadas:**
+  1. **Migração para Diretório Unificado `site/`:**
+     - Movido `frontend/` para `site/frontend/`.
+     - Movido `src/backend/` para `site/backend/` e removida a pasta `src/` vazia.
+  2. **Atualização de Scripts e Configurações:**
+     - `package.json` raiz atualizado para referenciar `site/backend/server.js`, `site/backend/db/seedCli.js` e `--prefix site/frontend`.
+     - `tests/integration/adminApi.test.js` e `tests/unit/adminBackend.test.js` atualizados com caminhos relativos para `../../site/backend/`.
+     - Workflow do GitHub Actions (`.github/workflows/node.js.yml`) atualizado com caminhos `site/frontend` e deploy do `site/frontend/dist`.
+     - `.gitignore` atualizado para ignorar `site/frontend/node_modules/` e `site/frontend/dist/`.
+  3. **Validação de Testes e Build:**
+     - Testes automatizados executados e aprovados: 7/7 suites verdes (`npm test`).
+     - Build do frontend validado com sucesso (`npm run build:frontend`).
+     - Lint verificado e sem erros.
+
+
+---
+
+### [2026-11-15 00:36] — Correção de Sobreposição do Menu Drawer Mobile (React Portal & z-[99999])
+- **Papel Ativo:** Desenvolvedor Frontend Sênior & Especialista em UX/CSS
+- **Etapa SDD:** `Fase 3 — Correção de Layout e Isolamento de Stacking Context no Mobile Drawer`
+- **Ações Executadas:**
+  1. **Diagnóstico do Bug de Sobreposição:**
+     - O menu hambúrguer responsivo estava aninhado diretamente dentro do `<header className="sticky top-0 z-50 backdrop-blur-md">`.
+     - De acordo com a especificação CSS de `backdrop-filter`, o header se tornava o bloco de contenção (*containing block*) do elemento `position: fixed`.
+     - Como resultado, os elementos seguintes do DOM (o banner Hero com texto "THUNDER BROWNIE COM SORVETE" e o botão "PEDIR NO CARDÁPIO") com seus próprios stacking contexts estavam pintando por cima do drawer.
+  2. **Implementação de React Portal (`createPortal`):**
+     - O drawer mobile foi desacoplado do `<header>` e agora é montado diretamente no `document.body` via `createPortal`.
+     - Aplicado `z-[99999]` absoluto e backdrop com `backdrop-blur-sm bg-black/85` e painel opaco com `relative z-10`.
+     - Adicionado suporte a fechar ao clicar no backdrop e prevenção de clique dentro do painel.
+  3. **Validação:**
+     - Build de produção verificado com sucesso (`npm run build:frontend`).
+     - Testes automatizados executados com 7/7 aprovados (`npm test`).
+
+
+---
+
+### [2026-11-15 00:53] — Integração Completa Fullstack (Frontend Conectado aos Endpoints do Backend SQLite)
+- **Papel Ativo:** Desenvolvedor Fullstack Sênior & Especialista em Arquitetura de APIs
+- **Etapa SDD:** `Fase 3 — Conexão Completa do Frontend aos Serviços do Backend`
+- **Ações Executadas:**
+  1. **Expansão da API REST no Backend (`site/backend/`):**
+     - `POST /api/public/orders`: Criação de novos pedidos diretamente na tabela `orders` e `order_items` do SQLite.
+     - `GET /api/public/orders/:id`: Consulta e sincronização de rastreamento de pedidos em tempo real.
+     - `POST /api/public/orders/:id/pay`: Confirmação de pagamento via PIX/Cartão com ativação do pedido.
+     - `GET /api/driver/orders`: Listagem de corridas para o app do entregador.
+     - `POST /api/driver/orders/:id/confirm-pin`: Confirmação do PIN (ex: 8492) pelo entregador e finalização para `DELIVERED`.
+  2. **Integração no Frontend (`site/frontend/`):**
+     - `services/api.js`: Exportadas as instâncias `publicApi` e `driverApi`.
+     - `contexts/OrderContext.jsx`: Conectado para salvar pedidos no backend SQLite via `publicApi.createOrder()`, consultar status via `publicApi.getOrder()` e sincronizar pagamentos via `publicApi.markOrderAsPaid()`.
+     - `pages/CustomerMenuPage.jsx`: Integrado para carregar categorias e produtos oficiais do SQLite via `publicApi.getMenu()`.
+     - `pages/AdminOrdersPage.jsx`: Polling atualizado para consumir diretamente `adminApi.fetchOrders()`.
+     - `pages/DriverDeliveryPage.jsx`: Integrado para validar e registrar a confirmação de PIN via `driverApi.confirmPin()`.
+  3. **Validação & Testes:**
+     - 8/8 testes de integração executados com 100% de sucesso (`npm test`).
+     - Build do frontend validado com sucesso (`npm run build:frontend`).
+     - Testes ponta a ponta via proxy HTTP (`/api/public/menu`, `/api/public/orders`, `/api/public/orders/:id/pay`, `/api/driver/orders/:id/confirm-pin`) executados com sucesso total.
+
+
+---
+
+### [2026-11-15 00:56] — Ajuste de Fundo Escuro Opaco para o Menu Hambúrguer (96% Black Overlay & Cards Sólidos)
+- **Papel Ativo:** Designer de Interface & Engenheiro Frontend
+- **Etapa SDD:** `Fase 3 — Refinamento Visual do Menu Drawer Mobile`
+- **Ações Executadas:**
+  1. **Fundo 96% Dark Pitch Black:**
+     - O overlay do backdrop agora utiliza `rgba(0, 0, 0, 0.96)` escurecendo completamente toda a tela de fundo ao abrir o menu, eliminando qualquer transparência ou texto do hero visível.
+  2. **Estrutura Sólida do Drawer:**
+     - O painel do menu utiliza fundo `#0c0a09` opaco e cada botão de navegação possui fundo card `#14100d` com borda sutil `#261e18` (e destaque em âmbar/brasa na aba ativa).
+     - No mobile, o drawer expande com `w-full` cobrindo a tela de forma imersiva.
+  3. **Validação:**
+     - Build de produção validado (`npm run build:frontend`).
+     - Testes automatizados executados com 8/8 aprovados (`npm test`).
+
+
+---
+
+### [2026-11-15 01:04] — Animações Fluidas do Menu Mobile (Cubic-Bezier Easing & Cascata Sequencial)
+- **Papel Ativo:** Designer de Interação & Desenvolvedor Frontend Sênior
+- **Etapa SDD:** `Fase 3 — Refinamento de Micro-interações e Animações do Drawer`
+- **Ações Executadas:**
+  1. **Transição Suave de Entrada (`menu-drawer-slide-in`):**
+     - Curva de aceleração de desaceleração elástica `cubic-bezier(0.16, 1, 0.3, 1)` em 380ms para abertura suave e sem solavancos.
+  2. **Efeito Cascata nos Itens de Navegação (`menu-item-cascade`):**
+     - Cada link do menu entra sequencialmente com transição da direita para a esquerda e fade de opacidade com atraso de 50ms por item.
+  3. **Micro-interações ao Passar o Mouse:**
+     - Leve deslocamento horizontal (`translate-x-1.5`), realce de borda em âmbar (`border-orange-500/40`) e rotação interativa de 90° no botão de fechar (`X`).
+  4. **Validação:**
+     - Build de produção verificado com sucesso (`npm run build:frontend`).
+     - 8/8 testes automatizados aprovados (`npm test`).
+
+
+---
+
+### [2026-11-15 01:08] — Refinamento de Animação Delicada e Orgânica no Menu Mobile
+- **Papel Ativo:** Designer de Interação & UI/UX Specialist
+- **Etapa SDD:** `Fase 3 — Polimento de Animação Delicada e Micro-interações`
+- **Ações Executadas:**
+  1. **Física Suave & Micro-escala (`menu-delicate-drawer`):**
+     - Transição de 520ms com curva `cubic-bezier(0.22, 1, 0.36, 1)`, combinando leve escala inicial (`0.985 -> 1`), deslizamento suave e dissipação progressiva de micro-blur (`4px -> 0px`).
+  2. **Entrada Flutuante em Ondas de Luz nos Itens (`menu-delicate-item`):**
+     - Cada link entra em 420ms com discreto deslocamento vertical e horizontal (`translate3d(14px, 5px, 0)`), micro-blur inicial dissolvendo suavemente e cascata intervalada de 40ms.
+  3. **Backdrop com Dissolução Suave (`menu-delicate-backdrop`):**
+     - Dissolução progressiva em 450ms com desfoque de 10px e 96% de opacidade preta profunda.
+  4. **Validação:**
+     - Build de produção verificado com sucesso (`npm run build:frontend`).
+     - Testes automatizados executados com 8/8 aprovados (`npm test`).
+
+
+---
+
+### [2026-11-15 01:13] — Animação Suave de Fechamento do Menu Mobile (`menu-delicate-drawer-out`)
+- **Papel Ativo:** Designer de Interação & UI/UX Specialist
+- **Etapa SDD:** `Fase 3 — Transições Bidirecionais Elegantes (Entrada e Saída)`
+- **Ações Executadas:**
+  1. **Animação de Fechamento Delicada (`menu-delicate-drawer-out`):**
+     - O menu não desaparece de forma brusca: ao clicar no `X`, no backdrop ou ao alternar pelo botão hambúrguer, o drawer desliza suavemente de volta para a direita em 350ms com leve micro-escala (`scale: 1 -> 0.98`) e dissolução de micro-blur.
+  2. **Backdrop Fade-Out Suave (`menu-delicate-backdrop-out`):**
+     - O overlay preto escuro de 96% dissolve suavemente em 350ms, revelando a página sem cortes abruptos.
+  3. **Gerenciamento de Estado de Saída (`isClosing`):**
+     - Criado controle de ciclo de vida com `isClosing` e timeout sincronizado de 320ms, permitindo que a animação de saída termine antes da desmontagem no DOM.
+  4. **Validação:**
+     - Build de produção validado (`npm run build:frontend`).
+     - Testes automatizados executados com 8/8 aprovados (`npm test`).
+
+
+---
+
+### [2026-11-15 01:28] — Refinamento Responsivo do Navbar Desktop e Harmonia Visual Fullstack
+- **Papel Ativo:** Engenheiro Frontend Especialista em UI/UX e Responsividade
+- **Etapa SDD:** `Fase 3 — Execução e Refinamento de Interface`
+- **Ações Executadas:**
+  1. **Ajuste Proporcional do Navbar Desktop para Resoluções Standard (1280px e 1366px):**
+     - Ajuste proporcional dos paddings do container (`px-3 sm:px-4 xl:px-6`).
+     - Refinamento do espaçamento entre as 5 abas de navegação (`INÍCIO`, `NOSSOS PRODUTOS`, `RESTAURANTE & SALÃO`, `TELA DO MOTORISTA`, `ACESSO DO ATENDENTE`) com tipografia `text-[11px] xl:text-xs font-black` e gaps dinâmicos (`gap-0.5 2xl:gap-1.5`).
+     - Subtítulo do logo ajustado para compactar suavemente em larguras intermediárias, garantindo respiro e integridade visual de 100% dos elementos sem truncar o botão `PEDIR AGORA`.
+  2. **Validação Automatizada no Navegador:**
+     - Testado e comprovado via subagent headless browser em viewports de 1280x800 e 1366x768. Todos os 5 links e o botão `PEDIR AGORA` permanecem perfeitamente visíveis, com margem de folga e sem clipping.
+  3. **Verificação de Sincronização do Repositório Git:**
+     - Estrutura consolidada na pasta `site/` e commits perfeitamente sincronizados na branch `main`.
+- **Status:** Testado e aprovado com 0 erros.
+
+---
+
+### [2026-11-15 20:32] — Refatoração Modular da Arquitetura Admin (`site/frontend/admin` e `site/backend/admin`)
+- **Papel Ativo:** Arquiteto de Software & Engenheiro Full-Stack Sênior
+- **Etapa SDD:** `Refatoração Arquitetural e Resolução de Conflitos — Isolamento do Módulo Admin`
+- **Escopo Estrito:** Isolamento das camadas administrativas em `site/frontend/admin/` e `site/backend/admin/`, resolução dos conflitos de merge entre `feature/painel-admin` e `origin/main`, e remoção das pastas legadas duplicadas (`src/` e `frontend/`), preservando integralmente as páginas públicas e do motorista criadas pela equipe.
+- **Ações Executadas:**
+  1. **Backend Admin (`site/backend/admin/`):**
+     - Estruturado módulo isolado contendo `controllers/` (`authController.js`, `menuController.js`, `orderController.js`), `services/` (`authService.js`, `menuService.js`, `orderService.js`), `repositories/` (`userRepo.js`, `categoryRepo.js`, `productRepo.js`, `orderRepo.js`), `middlewares/` (`authMiddleware.js`, `errorHandler.js`) e `routes/adminRoutes.js`.
+     - Atualizados `site/backend/app.js`, `site/backend/routes/apiRoutes.js` e `site/backend/db/seed.js` para consumir o módulo `site/backend/admin/`.
+  2. **Frontend Admin (`site/frontend/admin/`):**
+     - Estruturado módulo isolado contendo `pages/` (`AdminLoginPage.jsx`, `AdminOrdersPage.jsx`, `AdminMenuPage.jsx`), `services/adminApi.js` e `index.js`.
+     - Atualizados `site/frontend/src/App.jsx`, `site/frontend/src/services/api.js` e `site/frontend/src/index.css` (`@source "../admin";`) para integrar o módulo administrativo sem impactar as páginas de clientes e entregadores.
+  3. **Limpeza e Resolução de Conflitos:**
+     - Removidas as pastas antigas duplicadas (`src/`, `frontend/`, `site/backend/{controllers,services,repositories,middlewares}` e `site/frontend/src/pages/Admin*.jsx`).
+     - Resolvidos conflitos de merge em `package.json`, `.gitignore`, `tests/unit/adminBackend.test.js`, `tests/integration/adminApi.test.js` e `docs/sessao_agente.md`.
+  4. **Validação Automatizada:**
+     - `npm test`: **8/8 testes passando** (`tests/unit/adminBackend.test.js` e `tests/integration/adminApi.test.js`).
+     - `npm run lint:frontend` e `npm run build:frontend` validados com 0 erros.
+

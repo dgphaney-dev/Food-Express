@@ -1,0 +1,206 @@
+@import "tailwindcss";
+@source "../admin";
+
+@theme {
+  --color-primary-50: #fff7ed;
+  --color-primary-100: #ffedd5;
+  --color-primary-200: #fed7aa;
+  --color-primary-300: #fdba74;
+  --color-primary-400: #fb923c;
+  --color-primary-500: #f97316;
+  --color-primary-600: #ea580c;
+  --color-primary-700: #c2410c;
+  --color-primary-800: #9a3412;
+  --color-primary-900: #7c2d12;
+  --color-primary-950: #431407;
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-display: 'Oswald', sans-serif;
+  --font-bebas: 'Bebas Neue', sans-serif;
+}
+
+/* Steakhouse Clean Dark Theme */
+.steakhouse-glow {
+  background: #0b0908;
+}
+
+/* Custom scrollbar for category tabs */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Smooth transitions & scroll */
+html:not(.lenis) {
+  scroll-behavior: smooth;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: clip;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Modal backdrop */
+.backdrop-blur-sm {
+  backdrop-filter: blur(4px);
+}
+
+/* Status badge animations */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+.animate-pulse-dot {
+  animation: pulse-dot 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Cart slide-up animation */
+@keyframes slide-up {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+.animate-slide-up {
+  animation: slide-up 0.3s ease-out;
+}
+
+/* Convertecom-style Preloader Keyframes */
+@keyframes tc-orbit {
+  0% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: -100;
+  }
+}
+
+@keyframes tc-name {
+  0% {
+    clip-path: inset(0 100% 0 0);
+  }
+  100% {
+    clip-path: inset(0 0% 0 0);
+  }
+}
+
+@keyframes tc-bar {
+  0% {
+    transform: scaleX(0);
+  }
+  100% {
+    transform: scaleX(1);
+  }
+}
+
+/* Fade in animation */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.animate-fade-in {
+  animation: fade-in 0.2s ease-out;
+}
+
+
+/* Premium Mobile Menu Drawer Animations — Delicada, Orgânica & Ultra-Moderna */
+@keyframes menu-delicate-backdrop {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes menu-delicate-drawer {
+  0% {
+    transform: translate3d(100%, 0, 0) scale(0.985);
+    opacity: 0.8;
+    filter: blur(4px);
+  }
+  60% {
+    filter: blur(0.5px);
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 1;
+    filter: blur(0px);
+  }
+}
+
+@keyframes menu-delicate-item {
+  0% {
+    opacity: 0;
+    transform: translate3d(14px, 5px, 0);
+    filter: blur(3px);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+    filter: blur(0px);
+  }
+}
+
+.animate-menu-backdrop {
+  animation: menu-delicate-backdrop 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.animate-menu-drawer {
+  animation: menu-delicate-drawer 0.52s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  will-change: transform, opacity, filter;
+}
+
+.animate-menu-item {
+  animation: menu-delicate-item 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
+  will-change: transform, opacity, filter;
+}
+
+
+/* Delicate Exit Animations for Mobile Menu */
+@keyframes menu-delicate-drawer-out {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 1;
+    filter: blur(0px);
+  }
+  100% {
+    transform: translate3d(100%, 0, 0) scale(0.98);
+    opacity: 0;
+    filter: blur(4px);
+  }
+}
+
+@keyframes menu-delicate-backdrop-out {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.animate-menu-drawer-out {
+  animation: menu-delicate-drawer-out 0.35s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  will-change: transform, opacity, filter;
+}
+
+.animate-menu-backdrop-out {
+  animation: menu-delicate-backdrop-out 0.35s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}

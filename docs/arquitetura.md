@@ -87,60 +87,29 @@ Para garantir alta performance em celulares (`RNF-001`) sem dependências comple
 foodexpress/
 ├── docs/                          # Fonte Única de Verdade SDD (contexto, arquitetura, brd, trd, sessao_agente)
 ├── data/                          # Arquivo SQLite local (foodexpress.sqlite) gerado automaticamente
-├── src/
+├── site/
 │   ├── backend/
-│   │   ├── config/                # Configurações de ambiente e variáveis (.env)
-│   │   ├── db/
-│   │   │   ├── schema.js          # Definição das tabelas (Drizzle ORM / SQLite)
-│   │   │   ├── connection.js      # Conexão SQLite em modo WAL e inicialização de tabelas
-│   │   │   └── seed.js            # Carga inicial de atendente padrão, categorias, produtos, variações e adicionais
-│   │   ├── middlewares/
-│   │   │   ├── authMiddleware.js  # Verificação de token nas rotas administrativas (RN-010)
-│   │   │   └── errorHandler.js    # Tratamento padronizado de erros HTTP (400, 401, 403, 404, 422, 500)
-│   │   ├── repositories/
-│   │   │   ├── categoryRepo.js    # Persistência de categorias
-│   │   │   ├── productRepo.js     # Persistência de produtos, variações e adicionais
-│   │   │   ├── orderRepo.js       # Persistência de pedidos e itens do pedido
-│   │   │   └── userRepo.js        # Consulta de credenciais de atendentes
-│   │   ├── services/
-│   │   │   ├── authService.js     # Hash scrypt, verificação de senha e emissão de token
-│   │   │   ├── menuService.js     # Regras RN-001 e RN-011 (validação de preço > 0, filtro de ativos, cálculo de opcionais)
-│   │   │   └── orderService.js    # Regras RN-002 a RN-008 (sacola, mesa/nome, WhatsApp, máquina de estados, trava 5 min)
-│   │   ├── controllers/
-│   │   │   ├── authController.js  # POST /api/auth/login
-│   │   │   ├── menuController.js  # Rotas públicas e administrativas do cardápio
-│   │   │   └── orderController.js # Criação, consulta de status, avanço linear e cancelamento de pedidos
-│   │   ├── routes/
-│   │   │   └── apiRoutes.js       # Registro centralizado de endpoints da API
-│   │   └── app.js                 # Instância Express (exportável para Supertest sem subir porta TCP)
+│   │   ├── admin/                 # Módulo Administrativo Isolado (Backend)
+│   │   │   ├── controllers/       # authController.js, menuController.js, orderController.js
+│   │   │   ├── middlewares/       # authMiddleware.js (RN-010), errorHandler.js
+│   │   │   ├── repositories/      # userRepo.js, categoryRepo.js, productRepo.js, orderRepo.js
+│   │   │   ├── routes/            # adminRoutes.js (/api/auth/* e /api/admin/*)
+│   │   │   └── services/          # authService.js, menuService.js, orderService.js
+│   │   ├── db/                    # schema.js, connection.js (SQLite WAL), seed.js, seedCli.js
+│   │   ├── routes/                # apiRoutes.js (integra rotas públicas, driver e adminRoutes)
+│   │   ├── app.js                 # Instância Express
+│   │   └── server.js              # Bootstrap HTTP Server
 │   └── frontend/
-│       ├── index.html             # Entrada única da SPA (Mobile-First)
-│       ├── main.js                # Bootstrap da aplicação, roteador e delegação de eventos global
-│       ├── styles/
-│       │   └── main.css           # Diretivas Tailwind CSS e utilitários visuais
-│       ├── state/
-│       │   └── store.js           # Store Pub/Sub centralizada (sacola, cardápio, pedido ativo, painel admin)
-│       ├── services/
-│       │   ├── api.js             # Cliente HTTP para comunicação com /api/*
-│       │   ├── whatsapp.js        # Gerador de mensagem padronizada e link wa.me (RN-005)
-│       │   └── polling.js         # Gerenciador do timer configurável (padrão 5 min) e refresh manual (RN-009)
-│       ├── components/            # Componentes visuais puros (Template Literals)
-│       │   ├── Navbar.js
-│       │   ├── ProductCard.js
-│       │   ├── ProductModal.js    # Seleção de variação, adicionais e observação (máx 140 chars)
-│       │   ├── CartDrawer.js      # Sacola, alternância Local/Entrega, validação de Mesa/Nome
-│       │   └── OrderBadge.js      # Indicadores visuais de status e cronômetro regressivo de 5 min
-│       └── views/
-│           ├── CustomerMenuView.js    # Cardápio público e sacola (US02, US03, US04, US05, US06, US13)
-│           ├── OrderTrackingView.js   # Acompanhamento pelo cliente, botão WhatsApp e cancelamento <= 5 min (US08, US11, US12)
-│           ├── AdminLoginView.js      # Tela de login restrito (US07)
-│           ├── AdminOrdersView.js     # Fila de preparo, avanço linear, cancelamento e polling 5 min (US09, US10, US11)
-│           └── AdminMenuView.js       # CRUD de categorias, produtos, variações e adicionais (US01, US13)
+│       ├── admin/                 # Módulo Administrativo Isolado (Frontend)
+│       │   ├── pages/             # AdminLoginPage.jsx, AdminOrdersPage.jsx, AdminMenuPage.jsx
+│       │   ├── services/          # adminApi.js (Cliente HTTP JWT & CRUD Admin)
+│       │   └── index.js           # Exportações centralizadas do módulo Admin
+│       ├── src/                   # Aplicação Pública, Cliente, Motorista e Contextos Compartilhados
+│       └── vite.config.js
 ├── tests/
-│   ├── unit/                      # Testes de unidade das regras de negócio (preço, 140 chars, estados, 5 min, WhatsApp)
-│   └── integration/               # Testes de integração dos endpoints da API (Supertest + SQLite em memória/teste)
-├── package.json
-└── vite.config.js
+│   ├── unit/                      # Testes de unidade das regras de negócio (adminBackend.test.js)
+│   └── integration/               # Testes de integração dos endpoints da API (adminApi.test.js)
+└── package.json
 ```
 
 ### Convenções de Engenharia
