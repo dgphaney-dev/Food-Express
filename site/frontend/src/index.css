@@ -116,3 +116,35 @@ html.lenis body {
 .animate-fade-in {
   animation: fade-in 0.2s ease-out;
 }
+
+
+/* Premium Mobile Menu Drawer Animations */
+@keyframes menu-drawer-slide-in {
+  0% {
+    transform: translateX(100%);
+    opacity: 0.7;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes menu-item-cascade {
+  0% {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-menu-drawer {
+  animation: menu-drawer-slide-in 0.38s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-menu-item {
+  animation: menu-item-cascade 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
