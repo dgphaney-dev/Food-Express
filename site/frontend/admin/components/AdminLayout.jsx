@@ -70,9 +70,6 @@ export default function AdminLayout({
     const next = !soundActive;
     setSoundActive(next);
     setSoundEnabled(next);
-    if (next) {
-      playNewOrderChime();
-    }
   };
 
   const handleLogout = () => {

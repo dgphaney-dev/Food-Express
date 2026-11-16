@@ -9,9 +9,9 @@ const AUDIO_ENABLED_KEY = 'foodexpress_kds_sound_enabled';
 export function isSoundEnabled() {
   try {
     const val = localStorage.getItem(AUDIO_ENABLED_KEY);
-    return val === null ? true : val === 'true';
+    return val === 'true'; // Padrão MUDO / Sem som (false)
   } catch {
-    return true;
+    return false;
   }
 }
 
