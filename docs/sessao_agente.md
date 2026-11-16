@@ -7,6 +7,24 @@
 
 ## Histórico de Sessões e Decisões
 
+### [2026-11-16 17:38] — Efeitos Interativos de Movimentação do Mouse (Tilt 3D, Parallax Hero & Spotlight)
+- **Papel Ativo:** Engenheiro Frontend & Especialista em Animações Interativas (Skill `/passo3`)
+- **Ações Executadas:**
+  1. Criação do componente `TiltCard.jsx` (`site/frontend/src/components/TiltCard.jsx`):
+     - Inclinação 3D dinâmica baseada nas coordenadas do cursor (`perspective(1000px)`, `rotateX`, `rotateY`, `scale3d(1.02)`).
+     - Reflexo especular suave de luz da brasa (`radial-gradient`) que acompanha o mouse sobre cada card.
+     - Captura síncrona de `clientX`/`clientY` para garantir suporte total ao ciclo de vida de SyntheticEvents e `requestAnimationFrame`.
+  2. Implementação de Parallax Interativo no Hero Banner (`HomePage.jsx`):
+     - Foto gastronômica se movimenta em contra-fluxo suave com as coordenadas do mouse (`translate3d(-11px, -6px, 0)`).
+     - Linha divisória ondulada em degradê de fogo laranja e textos acompanham dinamicamente com profundidades complementares.
+  3. Criação do `MouseSpotlight.jsx` (`site/frontend/src/components/MouseSpotlight.jsx`):
+     - Feixe de luz ambiental sutil em tom de brasa âmbar que segue o cursor pelo fundo escuro com interpolação suave (lerp).
+  4. Aplicação do `TiltCard` em todos os cards de produtos (`ProductCard.jsx`), destaques da Home (`HomePage.jsx`) e diferenciais do salão (`RestaurantPage.jsx`).
+  5. Build de produção concluído com sucesso e 12/12 testes automatizados validados.
+  6. Commits enviados para o repositório remoto `main` (`commit dcc343f`).
+
+---
+
 ### [2026-11-16 17:16] — Resolução de Tela em Branco no Painel Administrativo & Proteção com ErrorBoundary
 - **Papel Ativo:** Engenheiro Frontend & Especialista em Confiabilidade React (Skill `/passo3`)
 - **Ações Executadas:**
