@@ -80,7 +80,7 @@ export default function RestaurantPage() {
               <div className="pt-2 flex flex-wrap items-center gap-3">
                 <button
                   onClick={() => navigate('/cardapio')}
-                  className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-xl bg-[#c2410c] hover:bg-[#d9531e] active:scale-95 text-white font-bold text-xs sm:text-sm uppercase tracking-wider font-['Oswald',sans-serif] shadow-lg shadow-black/50 transition-all cursor-pointer"
+                  className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-xl bg-[#1c1714] hover:bg-[#261f1a] active:scale-95 text-amber-400 hover:text-amber-300 border border-[#3d3128] hover:border-[#524135] font-bold text-xs sm:text-sm uppercase tracking-wider font-['Oswald',sans-serif] shadow-sm transition-all cursor-pointer"
                 >
                   <UtensilsCrossed size={16} />
                   <span>Pedir na Mesa do Salão</span>

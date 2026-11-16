@@ -138,7 +138,7 @@ export default function PromoCarousel({ onActionClick }) {
                   {/* Category / Promo Badge (Unified Steakhouse Theme) */}
                   <div className="flex items-center gap-2">
                     <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-wider bg-[#1c1714] text-stone-300 border border-[#382b22] shadow-sm font-['Oswald',sans-serif]">
-                      <SlideIcon size={12} className="text-[#c2410c] shrink-0" />
+                      <SlideIcon size={12} className="text-amber-500 shrink-0" />
                       {slide.badge}
                     </span>
                     {slide.saveText && (
@@ -173,7 +173,7 @@ export default function PromoCarousel({ onActionClick }) {
 
                     <button
                       onClick={() => onActionClick && onActionClick(slide)}
-                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#c2410c] hover:bg-[#d9531e] active:scale-95 text-white font-bold text-xs uppercase tracking-wider font-['Oswald',sans-serif] shadow-md shadow-black/50 transition-all cursor-pointer"
+                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#1c1714] hover:bg-[#261f1a] active:scale-95 text-amber-400 hover:text-amber-300 border border-[#3d3128] hover:border-[#524135] font-bold text-xs uppercase tracking-wider font-['Oswald',sans-serif] shadow-sm transition-all cursor-pointer"
                     >
                       <span>{slide.ctaText}</span>
                       <ArrowRight size={14} />
@@ -203,7 +203,7 @@ export default function PromoCarousel({ onActionClick }) {
         <button
           onClick={prevSlide}
           aria-label="Slide anterior"
-          className="absolute left-3 top-1/2 -translate-y-1/2 z-20 flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full bg-black/70 hover:bg-orange-600 text-stone-300 hover:text-white border border-[#382b22] backdrop-blur-md transition-all shadow-xl opacity-90 sm:opacity-0 group-hover:opacity-100 cursor-pointer"
+          className="absolute left-3 top-1/2 -translate-y-1/2 z-20 flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full bg-black/70 hover:bg-[#201a15] text-stone-300 hover:text-amber-400 border border-[#382b22] hover:border-[#4d3c30] backdrop-blur-md transition-all shadow-xl opacity-90 sm:opacity-0 group-hover:opacity-100 cursor-pointer"
         >
           <ChevronLeft size={18} />
         </button>
@@ -211,7 +211,7 @@ export default function PromoCarousel({ onActionClick }) {
         <button
           onClick={nextSlide}
           aria-label="Próximo slide"
-          className="absolute right-3 top-1/2 -translate-y-1/2 z-20 flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full bg-black/70 hover:bg-orange-600 text-stone-300 hover:text-white border border-[#382b22] backdrop-blur-md transition-all shadow-xl opacity-90 sm:opacity-0 group-hover:opacity-100 cursor-pointer"
+          className="absolute right-3 top-1/2 -translate-y-1/2 z-20 flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full bg-black/70 hover:bg-[#201a15] text-stone-300 hover:text-amber-400 border border-[#382b22] hover:border-[#4d3c30] backdrop-blur-md transition-all shadow-xl opacity-90 sm:opacity-0 group-hover:opacity-100 cursor-pointer"
         >
           <ChevronRight size={18} />
         </button>
@@ -225,7 +225,7 @@ export default function PromoCarousel({ onActionClick }) {
               aria-label={`Ir para o slide ${idx + 1}`}
               className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
                 idx === currentIndex
-                  ? 'w-6 bg-[#c2410c]'
+                  ? 'w-6 bg-amber-500'
                   : 'w-2 bg-stone-700 hover:bg-stone-500'
               }`}
             />

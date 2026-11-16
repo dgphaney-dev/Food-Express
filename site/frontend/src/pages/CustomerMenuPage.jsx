@@ -431,14 +431,14 @@ export default function CustomerMenuPage() {
                       onClick={() => handleCategoryClick(cat.id)}
                       className={`flex items-center gap-2 rounded-xl px-4 py-2 text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 cursor-pointer uppercase font-['Oswald',sans-serif] tracking-wider ${
                         isSelected
-                          ? 'bg-[#c2410c] text-white shadow-md shadow-black/50 border border-[#832604]'
+                          ? 'bg-[#1c1714] text-amber-400 border border-[#3d3128] shadow-sm'
                           : 'bg-[#161210] text-stone-400 hover:bg-[#1e1915] hover:text-stone-200 border border-[#2b231d]'
                       }`}
                     >
                       <span>{cat.name}</span>
                       <span
                         className={`rounded-md px-1.5 py-0.2 text-[10px] font-bold ${
-                          isSelected ? 'bg-black/30 text-white' : 'bg-[#221c17] text-stone-400'
+                          isSelected ? 'bg-[#261f19] text-amber-400 border border-[#3d3128]' : 'bg-[#221c17] text-stone-400'
                         }`}
                       >
                         {activeCount}

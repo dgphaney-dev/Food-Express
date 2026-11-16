@@ -92,7 +92,7 @@ export default function AdminLayout({
       shortLabel: 'Pedidos',
       icon: ClipboardList,
       badge: activeOrdersCount > 0 ? activeOrdersCount : null,
-      badgeColor: 'bg-orange-500 text-black',
+      badgeColor: 'bg-[#221b16] text-amber-400 border border-[#3a2f26]',
     },
     {
       to: '/admin/metricas',
@@ -135,7 +135,7 @@ export default function AdminLayout({
   };
 
   return (
-    <div className="min-h-screen bg-[#090807] text-zinc-100 flex overflow-x-clip font-sans selection:bg-orange-500 selection:text-white">
+    <div className="min-h-screen bg-[#090807] text-zinc-100 flex overflow-x-clip font-sans selection:bg-amber-500/20 selection:text-amber-200">
       {/* ================= MOBILE BACKDROP ================= */}
       {mobileMenuOpen && (
         <div
@@ -156,15 +156,15 @@ export default function AdminLayout({
             to="/admin/dashboard"
             className="flex items-center gap-3 overflow-hidden group"
           >
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-black border border-orange-500/40 text-white shrink-0 shadow-lg ring-1 ring-orange-500/20 group-hover:scale-105 transition-transform overflow-hidden">
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-black border border-[#332921] text-white shrink-0 shadow-lg ring-1 ring-[#26201b] group-hover:scale-105 transition-transform overflow-hidden">
               <img src="/logo.jpg" alt="Logo" className="w-full h-full object-cover scale-105" />
             </div>
             {!isCollapsed && (
               <div className="flex flex-col truncate">
                 <span className="text-lg font-black tracking-tight text-white leading-none font-['Oswald',sans-serif]">
-                  Food<span className="text-orange-500">Express</span>
+                  Food<span className="text-amber-500">Express</span>
                 </span>
-                <span className="text-[10px] font-bold text-amber-500 tracking-widest uppercase mt-0.5 font-['Oswald',sans-serif]">
+                <span className="text-[10px] font-bold text-stone-400 tracking-widest uppercase mt-0.5 font-['Oswald',sans-serif]">
                   Painel Operacional
                 </span>
               </div>
@@ -192,21 +192,21 @@ export default function AdminLayout({
                 title={item.label}
                 className={`relative flex items-center gap-3.5 px-3 py-3 rounded-xl font-bold uppercase tracking-wider text-xs font-['Oswald',sans-serif] transition-all duration-200 group ${
                   active
-                    ? 'bg-gradient-to-r from-orange-600 to-amber-600 text-white shadow-lg shadow-orange-950/40'
+                    ? 'bg-[#1a1613] text-amber-400 border border-[#3a2f26] shadow-sm'
                     : 'text-zinc-400 hover:text-zinc-100 hover:bg-[#181411]'
                 }`}
               >
                 <Icon
                   size={20}
                   className={`shrink-0 transition-transform group-hover:scale-110 ${
-                    active ? 'text-white' : 'text-zinc-400 group-hover:text-amber-400'
+                    active ? 'text-amber-400' : 'text-zinc-400 group-hover:text-amber-400'
                   }`}
                 />
                 {!isCollapsed && <span className="truncate">{item.label}</span>}
                 {item.badge !== null && (
                   <span
-                    className={`ml-auto flex items-center justify-center font-black rounded-full px-2 py-0.5 text-[10px] shadow-sm animate-pulse ${
-                      item.badgeColor || 'bg-orange-500 text-black'
+                    className={`ml-auto flex items-center justify-center font-black rounded-full px-2 py-0.5 text-[10px] shadow-sm ${
+                      item.badgeColor || 'bg-[#221b16] text-amber-400 border border-[#3a2f26]'
                     }`}
                   >
                     {item.badge}
@@ -226,7 +226,7 @@ export default function AdminLayout({
             title="Abrir Cardápio Público do Cliente"
             className="flex items-center gap-3.5 px-3 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider font-['Oswald',sans-serif] text-zinc-400 hover:text-amber-400 hover:bg-[#181411] transition-all"
           >
-            <Store size={18} className="shrink-0 text-amber-500" />
+            <Store size={18} className="shrink-0 text-amber-500/80" />
             {!isCollapsed && <span className="truncate">Ver Cardápio Público ↗</span>}
           </Link>
         </nav>
@@ -235,16 +235,16 @@ export default function AdminLayout({
         <div className="p-3 border-t border-[#26201b] space-y-2">
           {/* User Profile */}
           <div className="flex items-center gap-3 p-2 rounded-xl bg-[#14110e] border border-[#2d2520]">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-orange-600/20 text-orange-400 font-black text-sm shrink-0 border border-orange-500/30">
-              <ShieldCheck size={18} />
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#1c1714] text-stone-300 font-black text-sm shrink-0 border border-[#332921]">
+              <ShieldCheck size={18} className="text-amber-400" />
             </div>
             {!isCollapsed && (
               <div className="truncate flex-1">
                 <p className="text-xs font-bold text-white uppercase font-['Oswald',sans-serif] leading-tight">
                   Atendente / Admin
                 </p>
-                <p className="text-[10px] text-emerald-400 flex items-center gap-1 mt-0.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                <p className="text-[10px] text-stone-400 flex items-center gap-1 mt-0.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400/80 animate-pulse" />
                   Sessão Ativa
                 </p>
               </div>
@@ -296,8 +296,8 @@ export default function AdminLayout({
           {/* Right: Actions, Sound Toggle, Simulations & Refresh */}
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             {/* Status SQLite */}
-            <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-[10px] font-bold text-emerald-400 uppercase font-['Oswald',sans-serif] tracking-wider">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#14110e] border border-[#2d2520] text-[10px] font-bold text-stone-300 uppercase font-['Oswald',sans-serif] tracking-wider">
+              <span className="w-2 h-2 rounded-full bg-emerald-400/80 animate-pulse" />
               <span>API SQLite</span>
             </div>
 
@@ -306,12 +306,12 @@ export default function AdminLayout({
               onClick={toggleSound}
               className={`p-2 rounded-xl border text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
                 soundActive
-                  ? 'bg-amber-500/10 border-amber-500/40 text-amber-400 hover:bg-amber-500/20 shadow-sm'
+                  ? 'bg-[#181411] border-[#3a2f26] text-amber-400 hover:bg-[#201a15] shadow-sm'
                   : 'bg-zinc-900 border-zinc-800 text-zinc-500 hover:text-zinc-300'
               }`}
               title={soundActive ? 'Som de novo pedido ATIVO (clique para silenciar)' : 'Som SILENCIADO (clique para ativar)'}
             >
-              {soundActive ? <Bell size={16} className="text-amber-400 animate-bounce" /> : <BellOff size={16} />}
+              {soundActive ? <Bell size={16} className="text-amber-400" /> : <BellOff size={16} />}
               <span className="hidden xl:inline text-[11px] uppercase font-['Oswald',sans-serif]">
                 {soundActive ? 'Som: On' : 'Mudo'}
               </span>
@@ -322,18 +322,18 @@ export default function AdminLayout({
               <div className="hidden sm:flex items-center gap-1.5">
                 <button
                   onClick={() => onSimulateOrder(false)}
-                  className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-bold uppercase font-['Oswald',sans-serif] tracking-wider bg-orange-600/15 hover:bg-orange-600 hover:text-white border border-orange-500/30 text-orange-400 rounded-xl transition-all cursor-pointer shadow-sm active:scale-95"
+                  className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-bold uppercase font-['Oswald',sans-serif] tracking-wider bg-[#161310] hover:bg-[#221c17] border border-[#332921] hover:border-[#4d3c30] text-stone-200 hover:text-amber-400 rounded-xl transition-all cursor-pointer shadow-sm active:scale-95"
                   title="Criar novo pedido de mesa para teste da cozinha"
                 >
-                  <Plus size={14} />
+                  <Plus size={14} className="text-amber-400" />
                   <span>Mesa Teste</span>
                 </button>
                 <button
                   onClick={() => onSimulateOrder(true)}
-                  className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-bold uppercase font-['Oswald',sans-serif] tracking-wider bg-blue-600/15 hover:bg-blue-600 hover:text-white border border-blue-500/30 text-blue-400 rounded-xl transition-all cursor-pointer shadow-sm active:scale-95"
+                  className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-bold uppercase font-['Oswald',sans-serif] tracking-wider bg-[#161310] hover:bg-[#221c17] border border-[#332921] hover:border-[#4d3c30] text-stone-200 hover:text-amber-400 rounded-xl transition-all cursor-pointer shadow-sm active:scale-95"
                   title="Criar novo pedido de delivery para teste"
                 >
-                  <Plus size={14} />
+                  <Plus size={14} className="text-amber-400" />
                   <span>Delivery Teste</span>
                 </button>
               </div>
@@ -344,22 +344,22 @@ export default function AdminLayout({
               <button
                 onClick={onRefresh}
                 disabled={refreshing}
-                className="p-2 sm:px-3 sm:py-1.5 rounded-xl bg-[#181411] hover:bg-[#221c18] border border-[#2d2520] text-zinc-300 text-xs font-bold uppercase font-['Oswald',sans-serif] tracking-wider flex items-center gap-1.5 cursor-pointer disabled:opacity-60 transition-all active:scale-95 shadow-sm"
+                className="p-2 sm:px-3 sm:py-1.5 rounded-xl bg-[#161310] hover:bg-[#221c17] border border-[#2d2520] hover:border-[#3d3128] text-stone-300 text-xs font-bold uppercase font-['Oswald',sans-serif] tracking-wider flex items-center gap-1.5 cursor-pointer disabled:opacity-60 transition-all active:scale-95 shadow-sm"
                 title="Atualizar dados agora"
               >
-                <RefreshCw size={15} className={refreshing ? 'animate-spin text-orange-500' : 'text-zinc-400'} />
+                <RefreshCw size={15} className={refreshing ? 'animate-spin text-amber-400' : 'text-stone-400'} />
                 <span className="hidden md:inline">Atualizar</span>
               </button>
             )}
 
             {/* Poll interval */}
             {onPollChange && pollOptions.length > 0 && (
-              <div className="hidden xl:flex items-center gap-1.5 bg-[#181411] border border-[#2d2520] rounded-xl px-2.5 py-1.5 shadow-sm">
-                <Timer size={14} className="text-orange-500" />
+              <div className="hidden xl:flex items-center gap-1.5 bg-[#161310] border border-[#2d2520] rounded-xl px-2.5 py-1.5 shadow-sm">
+                <Timer size={14} className="text-stone-400" />
                 <select
                   value={pollMs}
                   onChange={onPollChange}
-                  className="text-xs font-bold uppercase font-['Oswald',sans-serif] tracking-wider bg-transparent border-none focus:outline-none text-zinc-300 cursor-pointer"
+                  className="text-xs font-bold uppercase font-['Oswald',sans-serif] tracking-wider bg-transparent border-none focus:outline-none text-stone-300 cursor-pointer"
                 >
                   {pollOptions.map((opt) => (
                     <option key={opt.value} value={opt.value} className="bg-zinc-900 text-zinc-200">

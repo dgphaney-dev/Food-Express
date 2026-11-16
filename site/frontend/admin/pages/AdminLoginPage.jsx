@@ -66,26 +66,26 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-zinc-100 font-['Plus_Jakarta_Sans',sans-serif] antialiased flex flex-col selection:bg-orange-600">
+    <div className="min-h-screen bg-black text-zinc-100 font-['Plus_Jakarta_Sans',sans-serif] antialiased flex flex-col selection:bg-amber-500/20 selection:text-amber-200">
       {/* 1. DEDICATED ADMIN PORTAL HEADER */}
-      <header className="sticky top-0 z-50 bg-[#0b0908]/95 backdrop-blur-md border-b border-zinc-800/80 shadow-xl w-full">
+      <header className="sticky top-0 z-50 bg-[#0b0908]/95 backdrop-blur-md border-b border-[#26201b] shadow-xl w-full">
         <div className="max-w-7xl mx-auto w-full flex h-18 items-center justify-between px-4 sm:px-6">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-full bg-black border-2 border-orange-500/50 text-white overflow-hidden shadow-xl ring-2 ring-orange-500/20 shrink-0">
+            <div className="flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-full bg-black border border-[#3d3128] text-white overflow-hidden shadow-xl ring-1 ring-[#26201b] shrink-0">
               <img src="/logo.jpg" alt="FoodExpress" className="w-full h-full object-cover scale-105" />
             </div>
             <div className="flex flex-col">
               <span className="text-xl sm:text-2xl font-black tracking-tight text-white leading-none font-['Oswald',sans-serif]">
-                Food<span className="bg-gradient-to-r from-orange-500 via-amber-400 to-red-500 bg-clip-text text-transparent">Express</span>
+                Food<span className="text-amber-500">Express</span>
               </span>
-              <span className="text-[10px] font-bold text-amber-500/90 tracking-widest uppercase mt-0.5 font-['Oswald',sans-serif]">
+              <span className="text-[10px] font-bold text-stone-400 tracking-widest uppercase mt-0.5 font-['Oswald',sans-serif]">
                 Portal Administrativo &amp; KDS
               </span>
             </div>
           </div>
 
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-zinc-900 border border-zinc-800 text-[11px] font-bold text-orange-400 uppercase tracking-wider font-['Oswald',sans-serif]">
-            <ShieldCheck size={14} className="text-orange-500" />
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#14110e] border border-[#2d2520] text-[11px] font-bold text-stone-300 uppercase tracking-wider font-['Oswald',sans-serif]">
+            <ShieldCheck size={14} className="text-amber-400" />
             <span>Acesso Exclusivo via URL</span>
           </div>
         </div>
@@ -119,12 +119,12 @@ export default function AdminLoginPage() {
                 </div>
 
                 {isAuthenticated && (
-                  <div className="mb-4 p-3 rounded-xl bg-orange-950/40 border border-orange-500/40 flex items-center justify-between gap-3 text-xs">
+                  <div className="mb-4 p-3 rounded-xl bg-[#1c1714] border border-[#3d3128] flex items-center justify-between gap-3 text-xs">
                     <span className="text-amber-300 font-medium">Você já possui uma sessão ativa iniciada.</span>
                     <button
                       type="button"
                       onClick={() => navigate('/admin/pedidos')}
-                      className="px-3 py-1 rounded-lg bg-orange-600 hover:bg-orange-500 text-white font-bold uppercase tracking-wider text-[11px] font-['Oswald',sans-serif] shrink-0 cursor-pointer"
+                      className="px-3 py-1 rounded-lg bg-[#251e18] hover:bg-[#30261f] text-amber-400 border border-[#423429] font-bold uppercase tracking-wider text-[11px] font-['Oswald',sans-serif] shrink-0 cursor-pointer"
                     >
                       Ir para Pedidos →
                     </button>
@@ -132,19 +132,19 @@ export default function AdminLoginPage() {
                 )}
 
                 {/* Test Credentials Box */}
-                <div className="mb-6 p-3 sm:p-3.5 rounded-xl bg-zinc-900/90 border border-zinc-800 flex items-center justify-between gap-3">
+                <div className="mb-6 p-3 sm:p-3.5 rounded-xl bg-[#12100e] border border-[#26201b] flex items-center justify-between gap-3">
                   <div className="text-left text-xs leading-relaxed">
                     <span className="block font-bold text-zinc-300">Credenciais de Teste:</span>
                     <span className="text-zinc-400">
-                      Usuário: <code className="text-amber-400 font-bold bg-black px-1.5 py-0.5 rounded border border-zinc-800">admin</code>
+                      Usuário: <code className="text-amber-400 font-bold bg-black px-1.5 py-0.5 rounded border border-[#2d2520]">admin</code>
                       <span className="mx-1 text-zinc-600">|</span>
-                      Senha: <code className="text-amber-400 font-bold bg-black px-1.5 py-0.5 rounded border border-zinc-800">admin123</code>
+                      Senha: <code className="text-amber-400 font-bold bg-black px-1.5 py-0.5 rounded border border-[#2d2520]">admin123</code>
                     </span>
                   </div>
                   <button
                     type="button"
                     onClick={handleFillDemoCredentials}
-                    className="shrink-0 px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-orange-600 hover:text-white border border-zinc-700 hover:border-orange-500 text-[10px] sm:text-[11px] font-bold text-amber-400 uppercase tracking-wider font-['Oswald',sans-serif] transition-colors cursor-pointer"
+                    className="shrink-0 px-3 py-1.5 rounded-lg bg-[#1a1613] hover:bg-[#251f1a] hover:text-amber-400 border border-[#332921] hover:border-[#4d3c30] text-[10px] sm:text-[11px] font-bold text-stone-200 uppercase tracking-wider font-['Oswald',sans-serif] transition-colors cursor-pointer"
                   >
                     PREENCHER DADOS
                   </button>
@@ -167,7 +167,7 @@ export default function AdminLoginPage() {
                         placeholder="Ex: admin"
                         required
                         autoComplete="username"
-                        className="w-full h-12 pl-10 pr-4 border border-zinc-800 bg-zinc-900/70 focus:bg-zinc-900 focus:border-zinc-600 rounded-xl text-white placeholder-zinc-600 text-sm font-medium transition-colors outline-none"
+                        className="w-full h-12 pl-10 pr-4 border border-[#2d2520] bg-[#12100e] focus:bg-[#161310] focus:border-amber-500/50 rounded-xl text-white placeholder-zinc-600 text-sm font-medium transition-colors outline-none"
                       />
                     </div>
                   </div>
@@ -187,7 +187,7 @@ export default function AdminLoginPage() {
                         placeholder="Digite sua senha"
                         required
                         autoComplete="current-password"
-                        className="w-full h-12 pl-10 pr-11 border border-zinc-800 bg-zinc-900/70 focus:bg-zinc-900 focus:border-zinc-600 rounded-xl text-white placeholder-zinc-600 text-sm font-medium transition-colors outline-none"
+                        className="w-full h-12 pl-10 pr-11 border border-[#2d2520] bg-[#12100e] focus:bg-[#161310] focus:border-amber-500/50 rounded-xl text-white placeholder-zinc-600 text-sm font-medium transition-colors outline-none"
                       />
                       <button
                         type="button"
@@ -211,10 +211,10 @@ export default function AdminLoginPage() {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full h-12 mt-2 bg-orange-600 hover:bg-orange-500 active:scale-[0.99] text-white font-bold text-sm uppercase tracking-wider font-['Oswald',sans-serif] rounded-xl transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer shadow-md"
+                    className="w-full h-12 mt-2 bg-[#1c1714] hover:bg-[#261f1a] active:scale-[0.99] text-amber-400 hover:text-amber-300 border border-[#3d3128] hover:border-[#524135] font-bold text-sm uppercase tracking-wider font-['Oswald',sans-serif] rounded-xl transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer shadow-sm"
                   >
                     {loading ? (
-                      <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      <span className="w-5 h-5 border-2 border-amber-400 border-t-transparent rounded-full animate-spin" />
                     ) : (
                       <>
                         <span>ENTRAR NO PAINEL</span>

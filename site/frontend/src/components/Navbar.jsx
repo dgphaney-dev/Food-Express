@@ -128,14 +128,14 @@ export default function Navbar({
         {/* Brand / Logo */}
         <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
           <Link to={isAdmin ? '/admin/pedidos' : '/'} className="flex items-center gap-2 sm:gap-2.5 group">
-            <div className="flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-full bg-black border-2 border-orange-500/50 text-white transition-transform group-hover:scale-105 overflow-hidden shadow-xl ring-2 ring-orange-500/20 shrink-0">
+            <div className="flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-full bg-black border border-[#3d3128] text-white transition-transform group-hover:scale-105 overflow-hidden shadow-lg shrink-0">
               <img src="/logo.jpg" alt="FoodExpress" className="w-full h-full object-cover scale-105" />
             </div>
             <div className="flex flex-col">
               <span className="text-xl sm:text-2xl font-black tracking-tight text-white leading-none font-['Oswald',sans-serif]">
-                Food<span className="bg-gradient-to-r from-orange-500 via-amber-400 to-red-500 bg-clip-text text-transparent">Express</span>
+                Food<span className="text-amber-500">Express</span>
               </span>
-              <span className="hidden xl:inline text-[9px] 2xl:text-[10px] font-bold text-amber-500/90 tracking-widest uppercase mt-0.5 font-['Oswald',sans-serif]">
+              <span className="hidden xl:inline text-[9px] 2xl:text-[10px] font-bold text-stone-400 tracking-widest uppercase mt-0.5 font-['Oswald',sans-serif]">
                 {isAdmin ? 'Painel Operacional' : 'Steakhouse & Artisan Burgers'}
               </span>
             </div>
@@ -182,17 +182,14 @@ export default function Navbar({
                 INÍCIO
               </span>
 
-              {/* Active / Hover Glowing Indicator Line */}
+              {/* Active Indicator Line */}
               <span
-                className={`absolute bottom-0 left-2 right-2 h-[2.5px] rounded-full transition-all duration-300 origin-center ${
+                className={`absolute bottom-0 left-2 right-2 h-[2px] rounded-full transition-all duration-300 origin-center ${
                   location.pathname === '/'
-                    ? 'bg-gradient-to-r from-orange-500 via-amber-400 to-orange-500 opacity-100 shadow-[0_0_10px_rgba(249,115,22,0.9)]'
-                    : 'bg-gradient-to-r from-orange-500/20 via-amber-400 to-orange-500/20 opacity-0 group-hover:opacity-100 scale-x-0 group-hover:scale-x-100 group-hover:shadow-[0_0_8px_rgba(251,191,36,0.7)]'
+                    ? 'bg-amber-400 opacity-100'
+                    : 'bg-amber-400/30 opacity-0 group-hover:opacity-100 scale-x-0 group-hover:scale-x-100'
                 }`}
               />
-
-              {/* Ambient Ember Glow on Hover */}
-              <span className="absolute inset-0 rounded-xl bg-gradient-to-b from-orange-500/0 via-amber-500/[0.04] to-orange-500/[0.08] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
             </Link>
 
             {/* Abas Dinâmicas */}
@@ -208,21 +205,18 @@ export default function Navbar({
                       : 'text-stone-300 hover:text-white hover:bg-white/[0.05]'
                   }`}
                 >
-                  <span className="relative z-10 transition-transform duration-300 inline-block group-hover:-translate-y-0.5 group-hover:drop-shadow-[0_0_8px_rgba(251,191,36,0.5)]">
+                  <span className="relative z-10 transition-transform duration-300 inline-block group-hover:-translate-y-0.5">
                     {tab.label}
                   </span>
 
-                  {/* Active / Hover Glowing Indicator Line */}
+                  {/* Active Indicator Line */}
                   <span
-                    className={`absolute bottom-0 left-2 right-2 h-[2.5px] rounded-full transition-all duration-300 origin-center ${
+                    className={`absolute bottom-0 left-2 right-2 h-[2px] rounded-full transition-all duration-300 origin-center ${
                       active
-                        ? 'bg-gradient-to-r from-orange-500 via-amber-400 to-orange-500 opacity-100 shadow-[0_0_10px_rgba(249,115,22,0.9)]'
-                        : 'bg-gradient-to-r from-orange-500/20 via-amber-400 to-orange-500/20 opacity-0 group-hover:opacity-100 scale-x-0 group-hover:scale-x-100 group-hover:shadow-[0_0_8px_rgba(251,191,36,0.7)]'
+                        ? 'bg-amber-400 opacity-100'
+                        : 'bg-amber-400/30 opacity-0 group-hover:opacity-100 scale-x-0 group-hover:scale-x-100'
                     }`}
                   />
-
-                  {/* Ambient Ember Glow on Hover */}
-                  <span className="absolute inset-0 rounded-xl bg-gradient-to-b from-orange-500/0 via-amber-500/[0.04] to-orange-500/[0.08] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
                 </Link>
               );
             })}
@@ -238,7 +232,7 @@ export default function Navbar({
                 to="/admin/pedidos"
                 className={`flex items-center gap-1.5 sm:gap-2 rounded-xl px-2.5 sm:px-3.5 py-1.5 sm:py-2 text-[11px] sm:text-xs font-bold uppercase tracking-wider font-['Oswald',sans-serif] transition-colors whitespace-nowrap shrink-0 ${
                   isActive('/admin/pedidos') || isActive('/admin/orders')
-                    ? 'bg-orange-600 text-white shadow-md'
+                    ? 'bg-[#1f1915] text-amber-400 border border-[#3d3128]'
                     : 'text-zinc-400 hover:bg-zinc-800 hover:text-white'
                 }`}
                 title="Fila de Pedidos"
@@ -251,7 +245,7 @@ export default function Navbar({
                 to="/admin/metricas"
                 className={`flex items-center gap-1.5 sm:gap-2 rounded-xl px-2.5 sm:px-3.5 py-1.5 sm:py-2 text-[11px] sm:text-xs font-bold uppercase tracking-wider font-['Oswald',sans-serif] transition-colors whitespace-nowrap shrink-0 ${
                   isActive('/admin/metricas') || isActive('/admin/dashboard')
-                    ? 'bg-orange-600 text-white shadow-md'
+                    ? 'bg-[#1f1915] text-amber-400 border border-[#3d3128]'
                     : 'text-zinc-400 hover:bg-zinc-800 hover:text-white'
                 }`}
                 title="Dashboard de Métricas e Relatórios"
@@ -264,7 +258,7 @@ export default function Navbar({
                 to="/admin/cardapio"
                 className={`flex items-center gap-1.5 sm:gap-2 rounded-xl px-2.5 sm:px-3.5 py-1.5 sm:py-2 text-[11px] sm:text-xs font-bold uppercase tracking-wider font-['Oswald',sans-serif] transition-colors whitespace-nowrap shrink-0 ${
                   isActive('/admin/cardapio') || isActive('/admin/menu')
-                    ? 'bg-orange-600 text-white shadow-md'
+                    ? 'bg-[#1f1915] text-amber-400 border border-[#3d3128]'
                     : 'text-zinc-400 hover:bg-zinc-800 hover:text-white'
                 }`}
                 title="Gerenciar Cardápio"
@@ -277,7 +271,7 @@ export default function Navbar({
                 to="/admin/usuarios"
                 className={`flex items-center gap-1.5 sm:gap-2 rounded-xl px-2.5 sm:px-3.5 py-1.5 sm:py-2 text-[11px] sm:text-xs font-bold uppercase tracking-wider font-['Oswald',sans-serif] transition-colors whitespace-nowrap shrink-0 ${
                   isActive('/admin/usuarios') || isActive('/admin/users') || isActive('/admin/acessos')
-                    ? 'bg-orange-600 text-white shadow-md'
+                    ? 'bg-[#1f1915] text-amber-400 border border-[#3d3128]'
                     : 'text-zinc-400 hover:bg-zinc-800 hover:text-white'
                 }`}
                 title="Gestão de Usuários e Acessos ao Sistema"
@@ -290,7 +284,7 @@ export default function Navbar({
                 to="/entregador"
                 className={`hidden md:flex items-center gap-1.5 sm:gap-2 rounded-xl px-2.5 sm:px-3.5 py-1.5 sm:py-2 text-[11px] sm:text-xs font-bold uppercase tracking-wider font-['Oswald',sans-serif] transition-colors whitespace-nowrap shrink-0 ${
                   isActive('/entregador') || isActive('/motorista')
-                    ? 'bg-orange-600 text-white shadow-md'
+                    ? 'bg-[#1f1915] text-amber-400 border border-[#3d3128]'
                     : 'text-zinc-400 hover:bg-zinc-800 hover:text-white'
                 }`}
                 title="Abrir tela do motorista/entregador"
@@ -302,7 +296,7 @@ export default function Navbar({
               {/* Logout button */}
               <button
                 onClick={onLogout}
-                className="ml-1 flex items-center gap-1.5 rounded-xl px-2.5 sm:px-3 py-1.5 sm:py-2 text-[11px] sm:text-xs font-bold uppercase tracking-wider font-['Oswald',sans-serif] text-zinc-400 hover:bg-red-950/40 hover:text-red-400 border border-transparent hover:border-red-900/40 transition-colors cursor-pointer shrink-0"
+                className="ml-1 flex items-center gap-1.5 rounded-xl px-2.5 sm:px-3 py-1.5 sm:py-2 text-[11px] sm:text-xs font-bold uppercase tracking-wider font-['Oswald',sans-serif] text-zinc-400 hover:bg-zinc-800 hover:text-stone-200 transition-colors cursor-pointer shrink-0"
                 title="Sair do painel"
               >
                 <LogOut size={15} />
@@ -322,7 +316,7 @@ export default function Navbar({
                   <span className="font-bold text-xs sm:text-sm text-stone-100">Sacola</span>
                   {count > 0 ? (
                     <div className="flex items-center gap-1.5 sm:gap-2 pl-1 border-l border-[#3a3029] ml-1">
-                      <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-[#c2410c] px-1.5 text-xs font-bold text-white shadow-sm">
+                      <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-[#241c17] border border-[#3d3128] px-1.5 text-xs font-bold text-amber-400 shadow-sm">
                         {count}
                       </span>
                       <span className="hidden sm:inline text-xs font-semibold text-amber-400">
@@ -334,10 +328,10 @@ export default function Navbar({
                   )}
                 </button>
               ) : (
-                /* Botão Pedir Agora Responsivo (Sem truncar) */
+                /* Botão Pedir Agora Responsivo Sóbrio Steakhouse */
                 <Link
                   to="/nossos-produtos"
-                  className="inline-flex items-center gap-1.5 sm:gap-2 rounded-xl bg-[#c2410c] hover:bg-[#d9531e] active:scale-95 text-white px-3.5 sm:px-4 py-2 text-xs sm:text-sm font-bold shadow-md shadow-black/50 uppercase font-['Oswald',sans-serif] tracking-wider transition-all cursor-pointer whitespace-nowrap shrink-0"
+                  className="inline-flex items-center gap-1.5 sm:gap-2 rounded-xl bg-[#1c1714] hover:bg-[#261f1a] text-amber-400 hover:text-amber-300 border border-[#3d3128] hover:border-[#524135] active:scale-95 px-3.5 sm:px-4 py-2 text-xs sm:text-sm font-bold shadow-sm uppercase font-['Oswald',sans-serif] tracking-wider transition-all cursor-pointer whitespace-nowrap shrink-0"
                 >
                   <ShoppingBag size={14} className="shrink-0" />
                   <span>Pedir Agora</span>
@@ -464,7 +458,7 @@ export default function Navbar({
                 <Link
                   to="/nossos-produtos"
                   onClick={handleCloseMenu}
-                  className="w-full py-3.5 rounded-xl bg-orange-600 hover:bg-orange-500 active:scale-[0.985] text-white font-bold text-xs uppercase tracking-wider font-['Oswald',sans-serif] flex items-center justify-center gap-2 shadow-xl shadow-orange-950/70 hover:shadow-orange-600/30 transition-all duration-300 cursor-pointer"
+                  className="w-full py-3.5 rounded-xl bg-[#1f1915] hover:bg-[#28201a] active:scale-[0.985] text-amber-400 hover:text-amber-300 border border-[#3d3128] font-bold text-xs uppercase tracking-wider font-['Oswald',sans-serif] flex items-center justify-center gap-2 shadow-sm transition-all duration-300 cursor-pointer"
                 >
                   <ShoppingBag size={16} />
                   <span>Pedir no Cardápio</span>

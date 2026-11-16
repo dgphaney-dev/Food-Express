@@ -324,7 +324,7 @@ export default function AdminOrdersPage() {
       <div className="w-full">
         {/* Barra de Filtros & Busca em Tempo Real */}
         <ScrollReveal direction="up" duration={600}>
-          <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3 mb-6 bg-[#121214] border border-zinc-800 p-3 sm:p-4 rounded-2xl shadow-xl">
+          <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3 mb-6 bg-[#12100e] border border-[#26201b] p-3 sm:p-4 rounded-2xl shadow-xl">
             {/* Search Input */}
             <div className="relative flex-1">
               <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-500" />
@@ -333,7 +333,7 @@ export default function AdminOrdersPage() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Buscar por #pedido, cliente, mesa ou item..."
-                className="w-full bg-[#0c0a08] border border-zinc-800 rounded-xl pl-9 pr-9 py-2.5 text-xs sm:text-sm text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-orange-500 transition-colors"
+                className="w-full bg-[#0a0908] border border-[#2d2520] rounded-xl pl-9 pr-9 py-2.5 text-xs sm:text-sm text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-amber-500/50 transition-colors"
               />
               {searchQuery && (
                 <button
@@ -346,12 +346,12 @@ export default function AdminOrdersPage() {
             </div>
 
             {/* Tipo de Atendimento: Salão / Delivery */}
-            <div className="flex items-center gap-1.5 bg-[#0c0a08] border border-zinc-800 p-1 rounded-xl shrink-0">
+            <div className="flex items-center gap-1.5 bg-[#0a0908] border border-[#2d2520] p-1 rounded-xl shrink-0">
               <button
                 onClick={() => setTypeFilter('ALL')}
                 className={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase font-['Oswald',sans-serif] tracking-wider transition-all cursor-pointer ${
                   typeFilter === 'ALL'
-                    ? 'bg-orange-600 text-white shadow-xs'
+                    ? 'bg-[#1c1714] text-amber-400 border border-[#3d3128] shadow-sm'
                     : 'text-zinc-400 hover:text-white'
                 }`}
               >
@@ -361,7 +361,7 @@ export default function AdminOrdersPage() {
                 onClick={() => setTypeFilter('DINE_IN')}
                 className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold uppercase font-['Oswald',sans-serif] tracking-wider transition-all cursor-pointer ${
                   typeFilter === 'DINE_IN'
-                    ? 'bg-orange-600 text-white shadow-xs'
+                    ? 'bg-[#1c1714] text-amber-400 border border-[#3d3128] shadow-sm'
                     : 'text-zinc-400 hover:text-white'
                 }`}
               >
@@ -372,7 +372,7 @@ export default function AdminOrdersPage() {
                 onClick={() => setTypeFilter('DELIVERY')}
                 className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold uppercase font-['Oswald',sans-serif] tracking-wider transition-all cursor-pointer ${
                   typeFilter === 'DELIVERY'
-                    ? 'bg-orange-600 text-white shadow-xs'
+                    ? 'bg-[#1c1714] text-amber-400 border border-[#3d3128] shadow-sm'
                     : 'text-zinc-400 hover:text-white'
                 }`}
               >
@@ -385,7 +385,7 @@ export default function AdminOrdersPage() {
 
         {/* Abas de Status com Contadores */}
         <ScrollReveal direction="up" delay={80} duration={600}>
-          <div className="flex gap-1.5 bg-[#121214] rounded-2xl p-1.5 border border-zinc-800 mb-7 overflow-x-auto shadow-xl">
+          <div className="flex gap-1.5 bg-[#12100e] rounded-2xl p-1.5 border border-[#26201b] mb-7 overflow-x-auto shadow-xl">
             {TAB_FILTERS.map((tab) => {
               const count =
                 tab.key === 'active'
@@ -403,14 +403,14 @@ export default function AdminOrdersPage() {
                   onClick={() => setActiveTab(tab.key)}
                   className={`flex-1 min-w-fit px-4 py-2.5 text-xs sm:text-sm font-bold uppercase tracking-wider font-['Oswald',sans-serif] rounded-xl transition-all whitespace-nowrap cursor-pointer flex items-center justify-center gap-2 ${
                     isSelected
-                      ? 'bg-orange-600 text-white shadow-lg shadow-orange-950/60'
-                      : 'text-zinc-400 hover:bg-zinc-900/60 hover:text-white'
+                      ? 'bg-[#1c1714] text-amber-400 border border-[#3d3128] shadow-sm'
+                      : 'text-zinc-400 hover:bg-[#181411] hover:text-white'
                   }`}
                 >
                   <span>{tab.label}</span>
                   <span
                     className={`px-2 py-0.5 rounded-md text-[10px] font-black ${
-                      isSelected ? 'bg-orange-900/80 text-orange-200' : 'bg-zinc-800 text-zinc-400'
+                      isSelected ? 'bg-[#241c17] text-amber-400 border border-[#3a2f26]' : 'bg-[#1a1714] text-zinc-400'
                     }`}
                   >
                     {count}
@@ -457,10 +457,10 @@ export default function AdminOrdersPage() {
       {/* ================= ORDER DETAILS MODAL ================= */}
       {selectedOrderDetails && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in">
-          <div className="bg-[#141210] border border-zinc-800 rounded-3xl max-w-md w-full p-6 shadow-2xl text-white animate-scale-up">
-            <div className="flex items-center justify-between pb-3 border-b border-zinc-800 mb-4">
+          <div className="bg-[#12100e] border border-[#26201b] rounded-3xl max-w-md w-full p-6 shadow-2xl text-white animate-scale-up">
+            <div className="flex items-center justify-between pb-3 border-b border-[#26201b] mb-4">
               <div>
-                <span className="text-xs font-bold text-orange-500 uppercase font-['Oswald',sans-serif] tracking-wider">
+                <span className="text-xs font-bold text-amber-400 uppercase font-['Oswald',sans-serif] tracking-wider">
                   Detalhes Operacionais
                 </span>
                 <h2 className="text-xl font-black text-white uppercase font-['Oswald',sans-serif]">
@@ -476,7 +476,7 @@ export default function AdminOrdersPage() {
             </div>
 
             <div className="space-y-3 text-sm">
-              <div className="p-3 rounded-xl bg-[#0c0a08] border border-zinc-800 flex justify-between items-center">
+              <div className="p-3 rounded-xl bg-[#0a0908] border border-[#26201b] flex justify-between items-center">
                 <span className="text-xs text-zinc-400">Modalidade:</span>
                 <span className="font-bold text-white">
                   {selectedOrderDetails.orderType === 'DINE_IN'
@@ -486,18 +486,18 @@ export default function AdminOrdersPage() {
               </div>
 
               {selectedOrderDetails.deliveryAddress && (
-                <div className="p-3 rounded-xl bg-[#0c0a08] border border-zinc-800 text-xs">
+                <div className="p-3 rounded-xl bg-[#0a0908] border border-[#26201b] text-xs">
                   <span className="text-zinc-400 block mb-1">Endereço de Entrega:</span>
                   <span className="text-white font-medium">{selectedOrderDetails.deliveryAddress}</span>
                 </div>
               )}
 
-              <div className="p-3 rounded-xl bg-[#0c0a08] border border-zinc-800 text-xs space-y-2">
+              <div className="p-3 rounded-xl bg-[#0a0908] border border-[#26201b] text-xs space-y-2">
                 <span className="text-zinc-400 block mb-1 font-bold uppercase font-['Oswald',sans-serif] tracking-wider">
                   Itens Cadastrados:
                 </span>
                 {selectedOrderDetails.items.map((it) => (
-                  <div key={it.id} className="flex justify-between items-center text-xs border-b border-zinc-800/60 pb-1.5 last:border-0 last:pb-0">
+                  <div key={it.id} className="flex justify-between items-center text-xs border-b border-[#26201b] pb-1.5 last:border-0 last:pb-0">
                     <span className="text-zinc-200">
                       <strong>{it.quantity}x</strong> {it.productNameSnapshot}
                     </span>
@@ -506,7 +506,7 @@ export default function AdminOrdersPage() {
                 ))}
               </div>
 
-              <div className="flex justify-between items-center p-3 rounded-xl bg-[#0c0a08] border border-zinc-800">
+              <div className="flex justify-between items-center p-3 rounded-xl bg-[#0a0908] border border-[#26201b]">
                 <span className="text-xs font-bold uppercase font-['Oswald',sans-serif] text-zinc-400">
                   Total Final:
                 </span>
@@ -516,19 +516,19 @@ export default function AdminOrdersPage() {
               </div>
             </div>
 
-            <div className="flex gap-2.5 pt-4 mt-4 border-t border-zinc-800">
+            <div className="flex gap-2.5 pt-4 mt-4 border-t border-[#26201b]">
               <button
                 onClick={() => {
                   handlePrintReceipt(selectedOrderDetails);
                 }}
-                className="flex-1 py-2.5 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-white font-bold text-xs uppercase font-['Oswald',sans-serif] tracking-wider rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer"
+                className="flex-1 py-2.5 bg-[#161310] hover:bg-[#201a15] border border-[#332921] text-stone-200 font-bold text-xs uppercase font-['Oswald',sans-serif] tracking-wider rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm"
               >
-                <Printer size={15} />
+                <Printer size={15} className="text-stone-400" />
                 <span>Imprimir Comanda</span>
               </button>
               <button
                 onClick={() => setSelectedOrderDetails(null)}
-                className="px-5 py-2.5 bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs uppercase font-['Oswald',sans-serif] tracking-wider rounded-xl transition-all cursor-pointer"
+                className="px-5 py-2.5 bg-[#1c1714] hover:bg-[#261f1a] text-amber-400 border border-[#3d3128] font-bold text-xs uppercase font-['Oswald',sans-serif] tracking-wider rounded-xl transition-all cursor-pointer shadow-sm"
               >
                 Fechar
               </button>
@@ -548,44 +548,44 @@ function OrderCard({ order, onAdvance, onCancel, onPrint, onWhatsApp, onViewDeta
   const statusConfig = {
     RECEIVED: {
       label: 'Novo Pedido',
-      badgeClass: 'bg-blue-500/10 text-blue-400 border border-blue-500/30',
-      dotClass: 'bg-blue-400 animate-ping',
-      btnBg: 'bg-orange-600 hover:bg-orange-500 shadow-orange-950/50',
+      badgeClass: 'bg-[#181411] text-amber-300 border border-[#3d3128]',
+      dotClass: 'bg-amber-400',
+      btnBg: 'bg-[#1c1714] hover:bg-[#261f1a] text-amber-400 border border-[#3d3128]',
       icon: Flame,
     },
     PREPARING: {
       label: 'Em Preparo',
-      badgeClass: 'bg-amber-500/10 text-amber-400 border border-amber-500/30',
-      dotClass: 'bg-amber-400 animate-pulse',
-      btnBg: 'bg-amber-600 hover:bg-amber-500 shadow-amber-950/50',
+      badgeClass: 'bg-[#181411] text-amber-400 border border-[#3d3128]',
+      dotClass: 'bg-amber-400',
+      btnBg: 'bg-[#1c1714] hover:bg-[#261f1a] text-amber-400 border border-[#3d3128]',
       icon: ChefHat,
     },
     READY: {
       label: 'Pronto p/ Entrega',
-      badgeClass: 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30',
-      dotClass: 'bg-emerald-400',
-      btnBg: 'bg-emerald-600 hover:bg-emerald-500 shadow-emerald-950/50',
+      badgeClass: 'bg-[#131713] text-emerald-400/90 border border-emerald-900/30',
+      dotClass: 'bg-emerald-400/80',
+      btnBg: 'bg-[#131713] hover:bg-[#1a221a] text-emerald-400 border border-emerald-900/40',
       icon: CheckCircle2,
     },
     DELIVERED: {
       label: 'Entregue',
-      badgeClass: 'bg-zinc-800/80 text-zinc-400 border border-zinc-700/50',
+      badgeClass: 'bg-[#141414] text-zinc-400 border border-zinc-800',
       dotClass: 'bg-zinc-500',
-      btnBg: 'bg-zinc-700',
+      btnBg: 'bg-zinc-800 text-zinc-300',
       icon: CheckCircle2,
     },
     CANCELLED: {
       label: 'Cancelado',
-      badgeClass: 'bg-red-500/10 text-red-400 border border-red-500/30',
-      dotClass: 'bg-red-500',
-      btnBg: 'bg-zinc-800',
+      badgeClass: 'bg-[#1a1212] text-red-400/80 border border-red-950/60',
+      dotClass: 'bg-red-500/80',
+      btnBg: 'bg-zinc-800 text-zinc-400',
       icon: X,
     },
   }[order.status] || {
     label: order.status,
     badgeClass: 'bg-zinc-800 text-zinc-300 border border-zinc-700',
     dotClass: 'bg-zinc-400',
-    btnBg: 'bg-orange-600',
+    btnBg: 'bg-[#1c1714] text-amber-400 border border-[#3d3128]',
     icon: Flame,
   };
 
@@ -622,13 +622,13 @@ function OrderCard({ order, onAdvance, onCancel, onPrint, onWhatsApp, onViewDeta
             {/* Tipo de Atendimento: Salão / Delivery */}
             <div className="mt-1 flex items-center gap-2">
               {order.orderType === 'DINE_IN' ? (
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-orange-500/10 border border-orange-500/20 text-xs font-bold text-orange-400 uppercase font-['Oswald',sans-serif] tracking-wider">
-                  <Utensils className="w-3.5 h-3.5" />
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#181411] border border-[#2d2520] text-xs font-bold text-stone-300 uppercase font-['Oswald',sans-serif] tracking-wider">
+                  <Utensils className="w-3.5 h-3.5 text-amber-500/80" />
                   Salão — Mesa {order.tableNumber}
                 </span>
               ) : (
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-500/10 border border-blue-500/20 text-xs font-bold text-blue-400 uppercase font-['Oswald',sans-serif] tracking-wider">
-                  <Bike className="w-3.5 h-3.5" />
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#181411] border border-[#2d2520] text-xs font-bold text-stone-300 uppercase font-['Oswald',sans-serif] tracking-wider">
+                  <Bike className="w-3.5 h-3.5 text-stone-400" />
                   Delivery — {order.customerName || 'Cliente'}
                 </span>
               )}
@@ -673,7 +673,7 @@ function OrderCard({ order, onAdvance, onCancel, onPrint, onWhatsApp, onViewDeta
                 <>
                   <Link
                     to={`/entregador?orderId=${order.id}`}
-                    className="p-1.5 text-orange-400 hover:text-white hover:bg-orange-950/40 rounded-lg transition-colors cursor-pointer"
+                    className="p-1.5 text-stone-400 hover:text-amber-400 hover:bg-[#1f1915] rounded-lg transition-colors cursor-pointer"
                     title="Abrir Rota do Entregador (GPS / iFood)"
                   >
                     <Navigation size={15} />
@@ -681,7 +681,7 @@ function OrderCard({ order, onAdvance, onCancel, onPrint, onWhatsApp, onViewDeta
 
                   <button
                     onClick={onWhatsApp}
-                    className="p-1.5 text-emerald-400 hover:text-emerald-300 hover:bg-emerald-950/40 rounded-lg transition-colors cursor-pointer"
+                    className="p-1.5 text-emerald-400/90 hover:text-emerald-300 hover:bg-[#141a14] rounded-lg transition-colors cursor-pointer"
                     title="Avisar Cliente no WhatsApp"
                   >
                     <MessageCircle size={15} />
@@ -700,11 +700,11 @@ function OrderCard({ order, onAdvance, onCancel, onPrint, onWhatsApp, onViewDeta
               return (
                 <div
                   key={item.id}
-                  className="p-3 rounded-xl bg-zinc-900/60 border border-zinc-800/80 flex items-start justify-between gap-3 text-sm"
+                  className="p-3 rounded-xl bg-[#0e0c0a] border border-[#26201b] flex items-start justify-between gap-3 text-sm"
                 >
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
-                      <span className="px-2 py-0.5 rounded-md bg-orange-500/20 text-orange-400 font-black text-xs font-['Oswald',sans-serif]">
+                      <span className="px-2 py-0.5 rounded-md bg-[#1c1714] text-amber-400 border border-[#382d24] font-black text-xs font-['Oswald',sans-serif]">
                         {item.quantity}x
                       </span>
                       <span className="font-bold text-white text-sm">
@@ -722,7 +722,7 @@ function OrderCard({ order, onAdvance, onCancel, onPrint, onWhatsApp, onViewDeta
                         {itemAddons.map((addon, idx) => (
                           <span
                             key={idx}
-                            className="text-[11px] px-2 py-0.5 rounded bg-zinc-800 text-zinc-300 font-medium"
+                            className="text-[11px] px-2 py-0.5 rounded bg-[#181411] border border-[#2d2520] text-zinc-300 font-medium"
                           >
                             + {addon.name}
                           </span>
@@ -731,7 +731,7 @@ function OrderCard({ order, onAdvance, onCancel, onPrint, onWhatsApp, onViewDeta
                     )}
 
                     {item.notes && (
-                      <div className="mt-1.5 px-2.5 py-1 rounded-lg bg-amber-950/40 border border-amber-800/50 text-xs text-amber-300 flex items-center gap-1.5 font-medium">
+                      <div className="mt-1.5 px-2.5 py-1 rounded-lg bg-[#1a1510] border border-[#3d2e1e] text-xs text-amber-300/90 flex items-center gap-1.5 font-medium">
                         <span>⚠️ Obs:</span>
                         <span>{item.notes}</span>
                       </div>
@@ -763,7 +763,7 @@ function OrderCard({ order, onAdvance, onCancel, onPrint, onWhatsApp, onViewDeta
         <div className="flex gap-2.5 p-5 pt-0">
           <button
             onClick={onAdvance}
-            className={`flex-1 h-12 ${statusConfig.btnBg} active:scale-[0.98] text-white font-bold uppercase tracking-wider font-['Oswald',sans-serif] text-sm rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer`}
+            className={`flex-1 h-12 ${statusConfig.btnBg} active:scale-[0.98] font-bold uppercase tracking-wider font-['Oswald',sans-serif] text-sm rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer`}
           >
             <ActionIcon className="w-4 h-4" />
             <span>{getNextStatusLabel(order.status)}</span>
@@ -771,7 +771,7 @@ function OrderCard({ order, onAdvance, onCancel, onPrint, onWhatsApp, onViewDeta
           </button>
           <button
             onClick={onCancel}
-            className="h-12 px-4 rounded-xl border border-zinc-700/80 hover:border-red-500/60 hover:bg-red-950/40 text-zinc-400 hover:text-red-400 font-bold uppercase tracking-wider font-['Oswald',sans-serif] text-xs transition-all flex items-center gap-1.5 cursor-pointer"
+            className="h-12 px-4 rounded-xl border border-zinc-800 hover:border-red-900/50 hover:bg-red-950/30 text-zinc-400 hover:text-red-400 font-bold uppercase tracking-wider font-['Oswald',sans-serif] text-xs transition-all flex items-center gap-1.5 cursor-pointer"
             title="Cancelar este pedido"
           >
             <X className="w-4 h-4" />

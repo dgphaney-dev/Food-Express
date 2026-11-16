@@ -30,7 +30,7 @@ const HERO_SLIDES = [
     ctaSubText: 'FAZER MEU PEDIDO AGORA',
     photoUrl: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1200&h=900&fit=crop',
     photoAlt: 'Mesa repleta de hambúrgueres artesanais, porções e amigos comemorando no FoodExpress',
-    accentColor: 'from-orange-600 to-amber-500',
+    accentColor: 'from-[#1c1714] to-[#0e0c0a]',
   },
   {
     id: 'slide-aussie-combos',
@@ -43,7 +43,7 @@ const HERO_SLIDES = [
     ctaSubText: 'VER PORÇÕES DISPONÍVEIS',
     photoUrl: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=1200&h=900&fit=crop',
     photoAlt: 'Costela grelhada com batatas rústicas e porções generosas na mesa',
-    accentColor: 'from-red-600 to-orange-500',
+    accentColor: 'from-[#1c1714] to-[#0e0c0a]',
   },
   {
     id: 'slide-sobremesa-thunder',
@@ -56,7 +56,7 @@ const HERO_SLIDES = [
     ctaSubText: 'CARDÁPIO DE DOCES & BEBIDAS',
     photoUrl: 'https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=1200&h=900&fit=crop',
     photoAlt: 'Delicioso brownie quente com calda de chocolate e sorvete artesanal',
-    accentColor: 'from-amber-600 to-yellow-500',
+    accentColor: 'from-[#1c1714] to-[#0e0c0a]',
   },
 ];
 
@@ -175,7 +175,7 @@ export default function HomePage() {
                 {/* Floating Steakhouse Experience Tag */}
                 <div className="absolute top-4 left-4 z-20">
                   <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-zinc-950/90 text-stone-300 border border-zinc-800 text-[10px] sm:text-xs font-bold uppercase font-['Oswald',sans-serif] tracking-wider shadow-md">
-                    <Flame size={12} className="text-[#c2410c] fill-[#c2410c]" />
+                    <Flame size={12} className="text-amber-500 fill-amber-500" />
                     Steakhouse Experience
                   </span>
                 </div>
@@ -184,42 +184,22 @@ export default function HomePage() {
               {/* Full-width continuous horizontal degradê overlay in deep dark tones */}
               <div className="hidden md:block absolute inset-0 bg-gradient-to-r from-transparent 0% via-transparent 36% via-black/30 48% via-[#060504]/72 62% via-[#090706]/94 76% to-[#0b0908] 88% pointer-events-none z-10" />
 
-              {/* Subtle Warm Hearth Atmosphere — Tonalidade mais escura e refinada */}
-              <div className="absolute top-1/2 right-[10%] -translate-y-1/2 w-[550px] h-[480px] bg-gradient-to-br from-orange-600/8 via-amber-600/5 to-transparent rounded-full blur-[140px] pointer-events-none z-10" />
-              <div className="absolute -top-16 right-8 w-72 h-72 bg-amber-600/5 rounded-full blur-[100px] pointer-events-none z-10" />
-              <div className="absolute -bottom-16 right-[25%] w-72 h-72 bg-red-600/4 rounded-full blur-[100px] pointer-events-none z-10" />
+              {/* Subtle Warm Hearth Atmosphere — Sóbrio e refinado */}
+              <div className="absolute top-1/2 right-[10%] -translate-y-1/2 w-[550px] h-[480px] bg-gradient-to-br from-amber-600/[0.03] to-transparent rounded-full blur-[140px] pointer-events-none z-10" />
 
-              {/* Clear, well-defined organic curves close together framing the text */}
+              {/* Linha divisória vertical orgânica discreta em pedra escura */}
               <svg
                 className="hidden md:block absolute left-[51%] lg:left-[58%] -translate-x-1/2 top-0 bottom-0 h-full w-56 pointer-events-none z-20"
                 viewBox="0 0 160 800"
                 preserveAspectRatio="none"
                 fill="none"
               >
-                {/* Linha tracejada em âmbar próxima da linha principal */}
-                <path
-                  d="M52,0 C122,230 27,420 97,600 C127,700 62,800 47,800"
-                  stroke="#f59e0b"
-                  strokeWidth="1.75"
-                  strokeDasharray="6 8"
-                  className="opacity-80"
-                />
-                {/* Linha fluida principal em gradiente de fogo da brasa (Nítida, sem neon) */}
                 <path
                   d="M70,0 C140,230 45,420 115,600 C145,700 80,800 65,800"
-                  stroke="url(#warmGradientHero)"
-                  strokeWidth="2.25"
-                  className="opacity-90"
+                  stroke="#2e251e"
+                  strokeWidth="1.5"
+                  className="opacity-70"
                 />
-                <defs>
-                  {/* Gradiente de fogo vibrante da brasa */}
-                  <linearGradient id="warmGradientHero" x1="0%" y1="0%" x2="0%" y2="100%">
-                    <stop offset="0%" stopColor="#ea580c" />
-                    <stop offset="40%" stopColor="#f59e0b" />
-                    <stop offset="75%" stopColor="#d97706" />
-                    <stop offset="100%" stopColor="#dc2626" />
-                  </linearGradient>
-                </defs>
               </svg>
 
               {/* Content Grid (Transparent columns allowing the rich degradê to shine through smoothly) */}
@@ -254,15 +234,15 @@ export default function HomePage() {
                     </p>
 
                     {/* Operating / Info Tag */}
-                    <div className="inline-block px-3 py-1 rounded-lg bg-[#1a1411]/90 backdrop-blur-xs border border-[#382b22] text-[10px] sm:text-[11px] font-semibold text-amber-400/90 font-['Oswald',sans-serif] tracking-wider uppercase shadow-md">
+                    <div className="inline-block px-3 py-1 rounded-lg bg-[#14100d] border border-[#2b221b] text-[10px] sm:text-[11px] font-semibold text-stone-300 font-['Oswald',sans-serif] tracking-wider uppercase shadow-sm">
                       {slide.schedule}
                     </div>
 
-                    {/* Big Prominent Outback Button */}
+                    {/* Big Prominent Sóbrio Steakhouse Button */}
                     <div className="pt-1 flex flex-col sm:flex-row items-center justify-center md:justify-start gap-2.5 sm:gap-3">
                       <button
                         onClick={handleNavigateToProducts}
-                        className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3 sm:py-3.5 rounded-xl bg-[#c2410c] hover:bg-[#d9531e] active:scale-95 text-white font-bold text-xs sm:text-sm uppercase tracking-wider font-['Oswald',sans-serif] shadow-lg shadow-black/50 transition-all cursor-pointer"
+                        className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3 sm:py-3.5 rounded-xl bg-[#1c1714] hover:bg-[#261f1a] active:scale-95 text-amber-400 hover:text-amber-300 border border-[#3d3128] hover:border-[#524135] font-bold text-xs sm:text-sm uppercase tracking-wider font-['Oswald',sans-serif] shadow-sm transition-all cursor-pointer"
                       >
                         <span>{slide.ctaText}</span>
                         <ArrowRight size={16} />
@@ -270,7 +250,7 @@ export default function HomePage() {
 
                       <button
                         onClick={scrollToProducts}
-                        className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 sm:py-3.5 rounded-xl bg-[#171310] hover:bg-[#201a15] border border-[#382c23] hover:border-stone-600 text-stone-300 hover:text-white font-bold text-xs uppercase tracking-wider font-['Oswald',sans-serif] transition-colors cursor-pointer"
+                        className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 sm:py-3.5 rounded-xl bg-[#14100d] hover:bg-[#1a1511] border border-[#26201b] hover:border-[#382d25] text-stone-300 hover:text-white font-bold text-xs uppercase tracking-wider font-['Oswald',sans-serif] transition-colors cursor-pointer"
                       >
                         <span>Explorar Produtos</span>
                       </button>
@@ -279,7 +259,7 @@ export default function HomePage() {
                     {/* Carousel Navigation Indicators & Outback Signature Seal */}
                     <div className="pt-2 sm:pt-3 border-t border-[#241d18]/70 flex flex-col sm:flex-row items-center justify-between gap-2.5 sm:gap-3 text-stone-500">
                       <div className="flex items-center gap-2.5">
-                        <div className="flex h-7 w-7 items-center justify-center rounded-full bg-black border border-[#3a2d24] text-[#c2410c] shrink-0">
+                        <div className="flex h-7 w-7 items-center justify-center rounded-full bg-black border border-[#3a2d24] text-amber-500 shrink-0">
                           <UtensilsCrossed size={13} />
                         </div>
                         <span className="text-[11px] sm:text-xs font-bold uppercase tracking-widest text-stone-400 font-['Oswald',sans-serif]">
@@ -288,7 +268,7 @@ export default function HomePage() {
                       </div>
 
                       {/* Integrated Slider Dots & Controls (Never overlaps buttons!) */}
-                      <div className="flex items-center gap-2 bg-[#14100e] px-3 py-1.5 rounded-full border border-[#382b22] shadow-md">
+                      <div className="flex items-center gap-2 bg-[#14100e] px-3 py-1.5 rounded-full border border-[#2b221b] shadow-md">
                         <button
                           type="button"
                           onClick={(e) => {
@@ -312,7 +292,7 @@ export default function HomePage() {
                               }}
                               className={`h-2 transition-all duration-300 rounded-full cursor-pointer ${
                                 sIdx === currentSlideIndex
-                                  ? 'w-6 bg-[#c2410c]'
+                                  ? 'w-6 bg-amber-400'
                                   : 'w-2 bg-stone-700 hover:bg-stone-500'
                               }`}
                               aria-label={`Ir para slide ${sIdx + 1}`}
@@ -349,14 +329,14 @@ export default function HomePage() {
         {/* Section Header */}
         <ScrollReveal direction="up" duration={700}>
           <div className="text-center space-y-3 mb-12">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#161210] border border-[#33261e] text-xs font-bold text-orange-400 uppercase tracking-widest font-['Oswald',sans-serif]">
-              <Flame size={14} className="fill-orange-500" />
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#14100d] border border-[#26201b] text-xs font-bold text-amber-400 uppercase tracking-widest font-['Oswald',sans-serif]">
+              <Flame size={13} className="text-amber-500" />
               DESTAQUES DA CASA
             </div>
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white uppercase tracking-wider font-['Oswald',sans-serif]">
               VIVA O SABOR FOODEXPRESS
             </h2>
-            <div className="h-1 w-20 bg-gradient-to-r from-red-600 via-orange-500 to-amber-400 mx-auto rounded-full mt-3"></div>
+            <div className="h-[2px] w-14 bg-amber-500/40 mx-auto rounded-full mt-3"></div>
             <p className="text-sm sm:text-base text-stone-400 max-w-xl mx-auto pt-2 leading-relaxed">
               Três criações lendárias para você conhecer o autêntico sabor da brasa. Para ver todos os lanches, porções, chopps e sobremesas, acesse a aba <strong className="text-amber-400 font-bold">Nossos Produtos</strong>.
             </p>
@@ -390,14 +370,14 @@ export default function HomePage() {
 
                     {/* Badges */}
                     <div className="absolute top-3 left-3 z-10">
-                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-red-950/90 text-amber-300 border border-red-700/60 text-[10px] font-black uppercase font-['Oswald',sans-serif] tracking-wider shadow-md">
+                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#181411] text-amber-400 border border-[#382d24] text-[10px] font-black uppercase font-['Oswald',sans-serif] tracking-wider shadow-md">
                         {dish.badge}
                       </span>
                     </div>
 
                     <div className="absolute top-3 right-3 z-10">
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-black/85 backdrop-blur-xs text-orange-400 border border-orange-500/40 text-[10px] font-bold font-['Oswald',sans-serif] uppercase tracking-wider shadow-md">
-                        <Flame size={10} className="fill-orange-500" />
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-black/85 backdrop-blur-xs text-stone-300 border border-[#2b221c] text-[10px] font-bold font-['Oswald',sans-serif] uppercase tracking-wider shadow-md">
+                        <Flame size={10} className="text-amber-500" />
                         Na Brasa
                       </span>
                     </div>
@@ -446,7 +426,7 @@ export default function HomePage() {
                     </span>
                   </div>
 
-                  <div className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#c2410c] hover:bg-[#d9531e] text-white text-xs font-bold font-['Oswald',sans-serif] uppercase tracking-wider shadow-sm transition-all">
+                  <div className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#1c1714] hover:bg-[#251f1a] text-amber-400 hover:text-amber-300 border border-[#3d3128] hover:border-[#524135] text-xs font-bold font-['Oswald',sans-serif] uppercase tracking-wider shadow-sm transition-all">
                     <span>Ver Detalhes</span>
                     <ArrowRight size={13} />
                   </div>
@@ -486,7 +466,7 @@ export default function HomePage() {
 
             <div className="space-y-2 text-center md:text-left relative z-10">
               <div className="inline-flex items-center gap-2 text-xs font-bold text-stone-400 uppercase tracking-widest font-['Oswald',sans-serif]">
-                <UtensilsCrossed size={14} className="text-[#c2410c]" />
+                <UtensilsCrossed size={14} className="text-amber-500/80" />
                 CARDÁPIO COMPLETO NAS ABAS SUPERIORES
               </div>
               <h3 className="text-2xl sm:text-3xl font-black text-white uppercase font-['Oswald',sans-serif] tracking-wide">
@@ -500,7 +480,7 @@ export default function HomePage() {
             <div className="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
               <button
                 onClick={() => navigate('/nossos-produtos')}
-                className="w-full sm:w-auto shrink-0 inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-2xl bg-[#c2410c] hover:bg-[#d9531e] active:scale-95 text-white font-bold text-sm uppercase tracking-wider font-['Oswald',sans-serif] shadow-lg shadow-black/50 transition-all cursor-pointer"
+                className="w-full sm:w-auto shrink-0 inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-2xl bg-[#1c1714] hover:bg-[#261f1a] active:scale-95 text-amber-400 hover:text-amber-300 border border-[#3d3128] hover:border-[#524135] font-bold text-sm uppercase tracking-wider font-['Oswald',sans-serif] shadow-md transition-all cursor-pointer"
               >
                 <UtensilsCrossed size={16} />
                 <span>Ver Nossos Produtos</span>
@@ -509,9 +489,9 @@ export default function HomePage() {
 
               <button
                 onClick={() => navigate('/restaurante')}
-                className="w-full sm:w-auto shrink-0 inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-[#191411] hover:bg-[#221b16] border border-[#3a2d24] hover:border-stone-600 text-stone-200 hover:text-white font-bold text-xs uppercase tracking-wider font-['Oswald',sans-serif] transition-colors cursor-pointer"
+                className="w-full sm:w-auto shrink-0 inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-[#14100e] hover:bg-[#1f1915] border border-[#2e241e] hover:border-[#423329] text-stone-300 hover:text-white font-bold text-xs uppercase tracking-wider font-['Oswald',sans-serif] transition-colors cursor-pointer"
               >
-                <UtensilsCrossed size={16} className="text-[#c2410c]" />
+                <UtensilsCrossed size={16} className="text-stone-400" />
                 <span>Conhecer o Salão</span>
               </button>
             </div>
@@ -526,33 +506,8 @@ export default function HomePage() {
             {/* Card 1: Delivery */}
             <ScrollReveal direction="left" duration={750} className="h-full">
               <div className="h-full relative overflow-hidden rounded-3xl bg-[#14100e] border border-[#2b221c] p-8 sm:p-10 flex flex-col justify-between shadow-xl group">
-                {/* Organic wave accent in background */}
-                <svg
-                  className="hidden sm:block absolute -right-6 -top-6 w-48 h-48 text-orange-500/10 pointer-events-none"
-                  viewBox="0 0 150 150"
-                  fill="none"
-                >
-                  <path
-                    d="M10,140 C50,80 80,120 140,20"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeDasharray="4 6"
-                  />
-                  <path
-                    d="M25,145 C65,85 95,125 145,35"
-                    stroke="url(#cardCurveGradient1)"
-                    strokeWidth="1.5"
-                  />
-                  <defs>
-                    <linearGradient id="cardCurveGradient1" x1="0%" y1="100%" x2="100%" y2="0%">
-                      <stop offset="0%" stopColor="#ea580c" />
-                      <stop offset="100%" stopColor="#f59e0b" />
-                    </linearGradient>
-                  </defs>
-                </svg>
-
                 <div className="space-y-4 relative z-10">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#1e1713] border border-[#382b22] text-[#c2410c]">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#1c1714] border border-[#332921] text-amber-400">
                     <Bike size={26} />
                   </div>
                   <h3 className="text-2xl sm:text-3xl font-black text-white font-['Oswald',sans-serif] uppercase tracking-wide">
@@ -566,7 +521,7 @@ export default function HomePage() {
                 <div className="pt-8">
                   <button
                     onClick={handleNavigateToProducts}
-                    className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#c2410c] hover:bg-[#d9531e] text-white font-bold text-xs uppercase tracking-wider font-['Oswald',sans-serif] shadow-md shadow-black/50 cursor-pointer"
+                    className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#1c1714] hover:bg-[#261f1a] text-amber-400 border border-[#3d3128] font-bold text-xs uppercase tracking-wider font-['Oswald',sans-serif] shadow-sm cursor-pointer transition-all active:scale-95"
                   >
                     <span>Fazer Pedido Agora</span>
                     <ArrowRight size={15} />
@@ -578,33 +533,8 @@ export default function HomePage() {
             {/* Card 2: Experiência no Salão */}
             <ScrollReveal direction="right" duration={750} className="h-full">
               <div className="h-full relative overflow-hidden rounded-3xl bg-[#14100e] border border-[#2b221c] p-8 sm:p-10 flex flex-col justify-between shadow-xl group">
-                {/* Organic wave accent in background */}
-                <svg
-                  className="hidden sm:block absolute -right-6 -top-6 w-48 h-48 text-amber-500/10 pointer-events-none"
-                  viewBox="0 0 150 150"
-                  fill="none"
-                >
-                  <path
-                    d="M10,140 C50,80 80,120 140,20"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeDasharray="4 6"
-                  />
-                  <path
-                    d="M25,145 C65,85 95,125 145,35"
-                    stroke="url(#cardCurveGradient2)"
-                    strokeWidth="1.5"
-                  />
-                  <defs>
-                    <linearGradient id="cardCurveGradient2" x1="0%" y1="100%" x2="100%" y2="0%">
-                      <stop offset="0%" stopColor="#f59e0b" />
-                      <stop offset="100%" stopColor="#ea580c" />
-                    </linearGradient>
-                  </defs>
-                </svg>
-
                 <div className="space-y-4 relative z-10">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-400">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#1c1714] border border-[#332921] text-amber-400">
                     <UtensilsCrossed size={26} />
                   </div>
                   <h3 className="text-2xl sm:text-3xl font-black text-white font-['Oswald',sans-serif] uppercase tracking-wide">
@@ -618,7 +548,7 @@ export default function HomePage() {
                 <div className="pt-8">
                   <button
                     onClick={() => navigate('/restaurante')}
-                    className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#1e1814] hover:bg-[#271f1a] border border-[#382b22] text-stone-200 hover:text-white font-bold text-xs uppercase tracking-wider font-['Oswald',sans-serif] transition-colors cursor-pointer"
+                    className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#1c1714] hover:bg-[#261f1a] text-amber-400 border border-[#3d3128] font-bold text-xs uppercase tracking-wider font-['Oswald',sans-serif] shadow-sm cursor-pointer transition-all active:scale-95"
                   >
                     <span>Conhecer Restaurante &amp; Salão</span>
                     <ArrowRight size={15} />
@@ -636,8 +566,8 @@ export default function HomePage() {
           {/* Section Header */}
           <ScrollReveal direction="up" duration={700}>
             <div className="text-center max-w-2xl mx-auto mb-8">
-              <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#181310] border border-[#2e231b] text-orange-400 text-xs font-bold mb-3 font-['Oswald',sans-serif] uppercase tracking-wider shadow-sm">
-                <MapPin size={13} className="text-orange-500" />
+              <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#181310] border border-[#2e231b] text-amber-400 text-xs font-bold mb-3 font-['Oswald',sans-serif] uppercase tracking-wider shadow-sm">
+                <MapPin size={13} className="text-amber-500" />
                 <span>Nossa Casa &amp; Localização</span>
               </div>
               <h2 className="text-3xl sm:text-4xl font-black text-white uppercase font-['Oswald',sans-serif] tracking-tight">
@@ -663,10 +593,10 @@ export default function HomePage() {
                 />
 
                 {/* Floating Status Badge */}
-                <div className="absolute top-4 left-4 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/90 backdrop-blur-md border border-orange-500/40 text-white text-xs font-bold shadow-xl font-['Oswald',sans-serif] tracking-wider pointer-events-none">
-                  <span className="relative flex h-2.5 w-2.5">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-orange-500"></span>
+                <div className="absolute top-4 left-4 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/90 backdrop-blur-md border border-[#3d3128] text-stone-200 text-xs font-bold shadow-xl font-['Oswald',sans-serif] tracking-wider pointer-events-none">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
                   </span>
                   <span>FOODEXPRESS • MAPA DA UNIDADE</span>
                 </div>
@@ -675,14 +605,14 @@ export default function HomePage() {
               {/* Bottom Quick Info Bar */}
               <div className="p-3.5 mt-3 rounded-xl bg-[#1a1411] border border-[#2e231c] flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
                 <div className="flex items-center gap-2 text-stone-300">
-                  <MapPin size={15} className="text-orange-500 shrink-0" />
+                  <MapPin size={15} className="text-amber-500 shrink-0" />
                   <span className="font-medium">Av. Paulista, 1200 · Bela Vista, São Paulo - SP</span>
                 </div>
                 <a
                   href="https://maps.google.com/?q=Av.+Paulista,+1200,+Bela+Vista,+Sao+Paulo+-+SP"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#c2410c] hover:bg-[#d9531e] text-white font-bold text-xs uppercase tracking-wider font-['Oswald',sans-serif] shadow-md shadow-black/50 transition-all cursor-pointer"
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#1c1714] hover:bg-[#261f1a] text-amber-400 border border-[#3d3128] font-bold text-xs uppercase tracking-wider font-['Oswald',sans-serif] shadow-sm transition-all cursor-pointer active:scale-95"
                 >
                   <span>Abrir Rota no Google Maps</span>
                   <Navigation size={13} />
@@ -761,7 +691,7 @@ export default function HomePage() {
 
       {/* 6. STEAKHOUSE FOOTER */}
       <footer className="w-full bg-[#090807] border-t border-[#241d18] text-stone-300 relative overflow-hidden mt-auto">
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-orange-500/50 to-transparent"></div>
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-amber-500/20 to-transparent"></div>
 
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
           <ScrollReveal direction="up" duration={700}>
@@ -769,14 +699,14 @@ export default function HomePage() {
               {/* Col 1: Brand & Manifesto */}
               <div className="md:col-span-6 space-y-5">
                 <div className="flex items-center gap-3.5">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-black border-2 border-orange-500/50 shadow-xl ring-2 ring-orange-500/20 overflow-hidden">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-black border border-[#3d3128] shadow-lg ring-1 ring-[#26201b] overflow-hidden">
                     <img src="/logo.jpg" alt="FoodExpress" className="w-full h-full object-cover scale-105" />
                   </div>
                   <div>
                     <span className="text-2xl font-black text-white tracking-tight leading-none block font-['Oswald',sans-serif]">
-                      Food<span className="bg-gradient-to-r from-orange-500 via-amber-400 to-red-500 bg-clip-text text-transparent">Express</span>
+                      Food<span className="text-amber-500">Express</span>
                     </span>
-                    <span className="text-[11px] font-bold text-amber-500/90 tracking-widest uppercase mt-0.5 block font-['Oswald',sans-serif]">
+                    <span className="text-[11px] font-bold text-stone-400 tracking-widest uppercase mt-0.5 block font-['Oswald',sans-serif]">
                       Steakhouse &amp; Artisan Burgers
                     </span>
                   </div>
@@ -788,13 +718,13 @@ export default function HomePage() {
 
                 <div className="flex flex-wrap gap-2 pt-1">
                   <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#14100d] border border-[#2d221a] text-xs font-bold text-stone-300 font-['Oswald',sans-serif] uppercase tracking-wider">
-                    <Flame size={12} className="text-orange-500 fill-orange-500" /> Grelhado no Fogo
+                    <Flame size={12} className="text-amber-500 fill-amber-500/40" /> Grelhado no Fogo
                   </span>
                   <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#14100d] border border-[#2d221a] text-xs font-bold text-stone-300 font-['Oswald',sans-serif] uppercase tracking-wider">
                     <Sparkles size={12} className="text-amber-400" /> Blends Nobres 180g
                   </span>
                   <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#14100d] border border-[#2d221a] text-xs font-bold text-stone-300 font-['Oswald',sans-serif] uppercase tracking-wider">
-                    <Bike size={12} className="text-emerald-400" /> Entrega Express
+                    <Bike size={12} className="text-stone-300" /> Entrega Express
                   </span>
                 </div>
               </div>
@@ -802,7 +732,7 @@ export default function HomePage() {
               {/* Col 2: Horários */}
               <div className="md:col-span-3 space-y-4">
                 <div className="flex items-center gap-2">
-                  <div className="h-4 w-1 rounded-full bg-orange-500"></div>
+                  <div className="h-4 w-1 rounded-full bg-amber-500/60"></div>
                   <h4 className="text-xs font-black uppercase tracking-wider text-white font-['Oswald',sans-serif]">
                     Atendimento &amp; Salão
                   </h4>
@@ -811,7 +741,7 @@ export default function HomePage() {
                 <div className="space-y-3 text-xs text-stone-400">
                   <div className="rounded-xl bg-[#13100d] border border-[#261f19] p-3.5 space-y-2">
                     <div className="flex items-center gap-2">
-                      <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                      <span className="h-2 w-2 rounded-full bg-emerald-400/80 animate-pulse"></span>
                       <span className="font-bold text-white uppercase font-['Oswald',sans-serif] tracking-wide">Aberto Hoje</span>
                     </div>
                     <p className="text-stone-300">Terça a Domingo: <strong className="text-amber-400 font-['Oswald',sans-serif]">18:00 às 23:30</strong></p>
@@ -819,7 +749,7 @@ export default function HomePage() {
                   </div>
 
                   <div className="flex items-center gap-2 text-stone-400 text-xs">
-                    <Clock size={14} className="text-amber-500 shrink-0" />
+                    <Clock size={14} className="text-stone-400 shrink-0" />
                     <span>Tempo médio: <strong className="text-stone-200">30 a 45 min</strong></span>
                   </div>
                 </div>
@@ -828,7 +758,7 @@ export default function HomePage() {
               {/* Col 3: Formas de Pagamento */}
               <div className="md:col-span-3 space-y-4">
                 <div className="flex items-center gap-2">
-                  <div className="h-4 w-1 rounded-full bg-orange-500"></div>
+                  <div className="h-4 w-1 rounded-full bg-amber-500/60"></div>
                   <h4 className="text-xs font-black uppercase tracking-wider text-white font-['Oswald',sans-serif]">
                     Formas de Pagamento
                   </h4>
@@ -836,15 +766,15 @@ export default function HomePage() {
 
                 <div className="space-y-2 text-xs text-stone-400">
                   <div className="flex items-center gap-2">
-                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-500/80"></span>
                     <span>Pix (aprovação instantânea no balcão)</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-500/80"></span>
                     <span>Cartões de Crédito e Débito</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-500/80"></span>
                     <span>Dinheiro (troco sob solicitação)</span>
                   </div>
                 </div>
@@ -854,7 +784,7 @@ export default function HomePage() {
 
           <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-stone-500">
             <div className="flex items-center gap-2">
-              <UtensilsCrossed size={14} className="text-orange-500" />
+              <UtensilsCrossed size={14} className="text-stone-500" />
               <p>© {new Date().getFullYear()} FoodExpress Steakhouse. Todos os direitos reservados.</p>
             </div>
             <div className="flex items-center gap-4 text-[11px] text-stone-600">
@@ -869,11 +799,11 @@ export default function HomePage() {
                 }}
                 className="inline-flex items-center gap-1.5 text-stone-400 hover:text-amber-400 transition-colors cursor-pointer text-[11px] font-bold uppercase font-['Oswald',sans-serif] tracking-wider"
               >
-                <ArrowUp size={13} className="text-orange-500" />
+                <ArrowUp size={13} className="text-stone-500" />
                 <span>Voltar ao topo</span>
               </button>
               <span>•</span>
-              <span className="text-amber-500/80 font-bold font-['Oswald',sans-serif] uppercase tracking-wider">Sabor da Brasa</span>
+              <span className="text-stone-400 font-bold font-['Oswald',sans-serif] uppercase tracking-wider">Sabor da Brasa</span>
             </div>
           </div>
         </div>

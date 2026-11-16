@@ -421,13 +421,13 @@ export default function AdminMenuPage() {
                 onClick={() => handleOpenCategoryModal()}
                 className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#141210] hover:bg-zinc-900 border border-zinc-800 text-zinc-200 hover:text-white font-bold text-xs uppercase font-['Oswald',sans-serif] tracking-wider rounded-xl shadow-lg transition-all active:scale-95 cursor-pointer"
               >
-                <Plus className="w-4 h-4 text-orange-400" />
+                <Plus className="w-4 h-4 text-stone-400" />
                 <span>Nova Categoria</span>
               </button>
 
               <button
                 onClick={() => handleOpenProductModal()}
-                className="inline-flex items-center gap-2 px-4 py-2.5 bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs uppercase font-['Oswald',sans-serif] tracking-wider rounded-xl shadow-lg shadow-orange-950/60 transition-all active:scale-95 cursor-pointer"
+                className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#1c1714] hover:bg-[#261f1a] text-amber-400 border border-[#3d3128] font-bold text-xs uppercase font-['Oswald',sans-serif] tracking-wider rounded-xl shadow-sm transition-all active:scale-95 cursor-pointer"
               >
                 <Plus className="w-4 h-4" />
                 <span>Novo Produto</span>
@@ -439,7 +439,7 @@ export default function AdminMenuPage() {
         {/* Operational KPI Summary */}
         <ScrollReveal direction="up" delay={50} duration={600}>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-7">
-            <div className="bg-[#121214] p-4 rounded-2xl border border-zinc-800 shadow-xl flex items-center justify-between">
+            <div className="bg-[#12100e] p-4 rounded-2xl border border-[#26201b] shadow-xl flex items-center justify-between">
               <div>
                 <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider font-['Oswald',sans-serif] block">
                   Total de Produtos
@@ -449,42 +449,42 @@ export default function AdminMenuPage() {
                 </span>
                 <span className="text-[10px] text-zinc-500">Cadastrados no sistema</span>
               </div>
-              <div className="w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-400">
+              <div className="w-10 h-10 rounded-xl bg-[#1c1714] border border-[#332921] flex items-center justify-center text-amber-400">
                 <Utensils className="w-5 h-5" />
               </div>
             </div>
 
-            <div className="bg-[#121214] p-4 rounded-2xl border border-zinc-800 shadow-xl flex items-center justify-between">
+            <div className="bg-[#12100e] p-4 rounded-2xl border border-[#26201b] shadow-xl flex items-center justify-between">
               <div>
                 <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider font-['Oswald',sans-serif] block">
                   Itens Ativos
                 </span>
-                <span className="text-2xl sm:text-3xl font-black text-emerald-400 mt-0.5 block font-['Oswald',sans-serif]">
+                <span className="text-2xl sm:text-3xl font-black text-stone-200 mt-0.5 block font-['Oswald',sans-serif]">
                   {activeProductsCount}
                 </span>
                 <span className="text-[10px] text-zinc-500">Visíveis aos clientes</span>
               </div>
-              <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+              <div className="w-10 h-10 rounded-xl bg-[#141814] border border-emerald-900/30 flex items-center justify-center text-emerald-400/80">
                 <CheckCircle2 className="w-5 h-5" />
               </div>
             </div>
 
-            <div className="bg-[#121214] p-4 rounded-2xl border border-zinc-800 shadow-xl flex items-center justify-between">
+            <div className="bg-[#12100e] p-4 rounded-2xl border border-[#26201b] shadow-xl flex items-center justify-between">
               <div>
                 <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider font-['Oswald',sans-serif] block">
                   Pausados / Ocultos
                 </span>
-                <span className="text-2xl sm:text-3xl font-black text-amber-400 mt-0.5 block font-['Oswald',sans-serif]">
+                <span className="text-2xl sm:text-3xl font-black text-stone-400 mt-0.5 block font-['Oswald',sans-serif]">
                   {inactiveProductsCount}
                 </span>
                 <span className="text-[10px] text-zinc-500">Fora do cardápio público</span>
               </div>
-              <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
+              <div className="w-10 h-10 rounded-xl bg-[#181411] border border-[#332921] flex items-center justify-center text-stone-400">
                 <EyeOff className="w-5 h-5" />
               </div>
             </div>
 
-            <div className="bg-[#121214] p-4 rounded-2xl border border-zinc-800 shadow-xl flex items-center justify-between">
+            <div className="bg-[#12100e] p-4 rounded-2xl border border-[#26201b] shadow-xl flex items-center justify-between">
               <div>
                 <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider font-['Oswald',sans-serif] block">
                   Categorias
@@ -494,7 +494,7 @@ export default function AdminMenuPage() {
                 </span>
                 <span className="text-[10px] text-zinc-500">Seções organizadas</span>
               </div>
-              <div className="w-10 h-10 rounded-xl bg-zinc-800/60 border border-zinc-700/40 flex items-center justify-center text-zinc-400">
+              <div className="w-10 h-10 rounded-xl bg-[#181411] border border-[#26201b] flex items-center justify-center text-zinc-400">
                 <Layers className="w-5 h-5" />
               </div>
             </div>
@@ -503,13 +503,13 @@ export default function AdminMenuPage() {
 
         {/* Tab switch */}
         <ScrollReveal direction="up" delay={80} duration={600}>
-          <div className="flex border-b border-zinc-800 mb-6 bg-[#121214] rounded-2xl p-1.5 shadow-xl">
+          <div className="flex border-b border-[#26201b] mb-6 bg-[#12100e] rounded-2xl p-1.5 shadow-xl">
             <button
               onClick={() => setActiveTab('products')}
               className={`flex-1 sm:flex-none flex items-center justify-center gap-2 py-2.5 px-6 rounded-xl font-bold text-xs uppercase font-['Oswald',sans-serif] tracking-wider transition-all cursor-pointer ${
                 activeTab === 'products'
-                  ? 'bg-orange-600 text-white shadow-lg shadow-orange-950/60'
-                  : 'text-zinc-400 hover:text-white hover:bg-zinc-900/60'
+                  ? 'bg-[#1c1714] text-amber-400 border border-[#3d3128] shadow-sm'
+                  : 'text-zinc-400 hover:text-white hover:bg-[#181411]'
               }`}
             >
               <Utensils className="w-4 h-4" />
@@ -519,8 +519,8 @@ export default function AdminMenuPage() {
               onClick={() => setActiveTab('categories')}
               className={`flex-1 sm:flex-none flex items-center justify-center gap-2 py-2.5 px-6 rounded-xl font-bold text-xs uppercase font-['Oswald',sans-serif] tracking-wider transition-all cursor-pointer ${
                 activeTab === 'categories'
-                  ? 'bg-orange-600 text-white shadow-lg shadow-orange-950/60'
-                  : 'text-zinc-400 hover:text-white hover:bg-zinc-900/60'
+                  ? 'bg-[#1c1714] text-amber-400 border border-[#3d3128] shadow-sm'
+                  : 'text-zinc-400 hover:text-white hover:bg-[#181411]'
               }`}
             >
               <Layers className="w-4 h-4" />
@@ -532,8 +532,8 @@ export default function AdminMenuPage() {
         {/* ================= CATEGORIES VIEW ================= */}
         {activeTab === 'categories' && (
           <ScrollReveal direction="up" duration={600}>
-            <div className="bg-[#121214] rounded-2xl sm:rounded-3xl shadow-xl border border-zinc-800 overflow-hidden">
-              <div className="p-4 sm:p-5 border-b border-zinc-800 flex items-center justify-between">
+            <div className="bg-[#12100e] rounded-2xl sm:rounded-3xl shadow-xl border border-[#26201b] overflow-hidden">
+              <div className="p-4 sm:p-5 border-b border-[#26201b] flex items-center justify-between">
                 <div>
                   <h3 className="text-base font-bold text-white uppercase font-['Oswald',sans-serif] tracking-wide">
                     Categorias do Cardápio
@@ -542,7 +542,7 @@ export default function AdminMenuPage() {
                 </div>
                 <button
                   onClick={() => handleOpenCategoryModal()}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs uppercase font-['Oswald',sans-serif] tracking-wider rounded-xl transition-all cursor-pointer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#1c1714] hover:bg-[#261f1a] text-amber-400 border border-[#3d3128] font-bold text-xs uppercase font-['Oswald',sans-serif] tracking-wider rounded-xl transition-all cursor-pointer shadow-sm"
                 >
                   <Plus className="w-3.5 h-3.5" />
                   <span>Nova</span>
@@ -874,7 +874,7 @@ export default function AdminMenuPage() {
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 py-2.5 bg-orange-600 hover:bg-orange-500 text-white font-bold font-['Oswald',sans-serif] text-xs uppercase tracking-wider rounded-xl shadow-lg shadow-orange-950/60 transition-all cursor-pointer"
+                  className="flex-1 py-2.5 bg-[#1c1714] hover:bg-[#261f1a] text-amber-400 border border-[#3d3128] font-bold font-['Oswald',sans-serif] text-xs uppercase tracking-wider rounded-xl shadow-sm transition-all cursor-pointer"
                 >
                   Salvar Categoria
                 </button>
@@ -1202,7 +1202,7 @@ export default function AdminMenuPage() {
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 py-2.5 bg-orange-600 hover:bg-orange-500 text-white font-bold font-['Oswald',sans-serif] text-xs uppercase tracking-wider rounded-xl shadow-lg shadow-orange-950/60 transition-all cursor-pointer"
+                  className="flex-1 py-2.5 bg-[#1c1714] hover:bg-[#261f1a] text-amber-400 border border-[#3d3128] font-bold font-['Oswald',sans-serif] text-xs uppercase tracking-wider rounded-xl shadow-sm transition-all cursor-pointer"
                 >
                   Salvar Produto
                 </button>

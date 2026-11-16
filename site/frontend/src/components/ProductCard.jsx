@@ -49,7 +49,7 @@ export default function ProductCard({ product, onAdd }) {
           {/* Sabor da Brasa badge on first few items or burgers */}
           <div className="absolute top-2.5 right-2.5 z-10">
             <span className="inline-flex items-center gap-1 rounded-full bg-[#181310] px-2 py-0.5 text-[10px] font-bold text-stone-300 border border-[#382b22] shadow-sm uppercase font-['Oswald',sans-serif] tracking-wider">
-              <Flame size={11} className="text-[#c2410c] fill-[#c2410c]" />
+              <Flame size={11} className="text-amber-500 fill-amber-500/40" />
               Na Brasa
             </span>
           </div>
@@ -86,7 +86,7 @@ export default function ProductCard({ product, onAdd }) {
             e.stopPropagation();
             onAdd(product);
           }}
-          className="inline-flex items-center gap-1.5 rounded-xl bg-[#c2410c] hover:bg-[#d9531e] active:scale-95 text-white px-3.5 py-1.5 text-xs sm:text-sm font-bold shadow-md shadow-black/50 transition-all uppercase font-['Oswald',sans-serif] tracking-wider cursor-pointer"
+          className="inline-flex items-center gap-1.5 rounded-xl bg-[#1c1714] hover:bg-[#261f1a] active:scale-95 text-amber-400 hover:text-amber-300 border border-[#3d3128] hover:border-[#524135] px-3.5 py-1.5 text-xs sm:text-sm font-bold shadow-sm transition-all uppercase font-['Oswald',sans-serif] tracking-wider cursor-pointer"
         >
           <Plus size={15} strokeWidth={2.5} />
           <span>Pedir</span>

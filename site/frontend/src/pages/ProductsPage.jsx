@@ -257,7 +257,7 @@ export default function ProductsPage() {
                 onClick={() => setSelectedCategory(cat.id)}
                 className={`group relative overflow-hidden rounded-2xl bg-[#14110f] border p-5 flex flex-col justify-between min-h-[190px] shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer ${
                   isSelected
-                    ? 'border-[#c2410c] shadow-lg shadow-black/50 ring-1 ring-[#c2410c]'
+                    ? 'border-[#3d3128] shadow-md ring-1 ring-[#3d3128]'
                     : 'border-[#2b221c] hover:border-[#42342a]'
                 }`}
               >
@@ -300,11 +300,11 @@ export default function ProductsPage() {
             }}
             className={`flex items-center gap-2 rounded-xl px-4 py-2 text-xs sm:text-sm font-bold whitespace-nowrap transition-all uppercase font-['Oswald',sans-serif] tracking-wider cursor-pointer ${
               selectedCategory === 'ALL'
-                ? 'bg-[#c2410c] text-white shadow-md shadow-black/50 border border-[#832604]'
+                ? 'bg-[#1c1714] text-amber-400 border border-[#3d3128] shadow-sm'
                 : 'bg-[#15110f] text-stone-400 hover:bg-[#1f1915] hover:text-stone-200 border border-[#2b221c]'
             }`}
           >
-            <Flame size={14} className={selectedCategory === 'ALL' ? 'text-white' : 'text-[#c2410c]'} />
+            <Flame size={14} className={selectedCategory === 'ALL' ? 'text-amber-400' : 'text-stone-400'} />
             <span>Todos os Pratos ({allProducts.length})</span>
           </button>
 
@@ -317,7 +317,7 @@ export default function ProductsPage() {
                 onClick={() => setSelectedCategory(cat.id)}
                 className={`flex items-center gap-2 rounded-xl px-4 py-2 text-xs sm:text-sm font-bold whitespace-nowrap transition-all uppercase font-['Oswald',sans-serif] tracking-wider cursor-pointer ${
                   isSelected
-                    ? 'bg-[#c2410c] text-white shadow-md shadow-black/50 border border-[#832604]'
+                    ? 'bg-[#1c1714] text-amber-400 border border-[#3d3128] shadow-sm'
                     : 'bg-[#15110f] text-stone-400 hover:bg-[#1f1915] hover:text-stone-200 border border-[#2b221c]'
                 }`}
               >
