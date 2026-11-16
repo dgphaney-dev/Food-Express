@@ -1,0 +1,1 @@
+import{D as e,F as t,L as n,O as r,P as i,Y as a,at as o,it as s,ot as c,t as l}from"./src-DffQ-YTj.js";var u=c(o(),1),d=s(),f=n();(0,d.createRoot)(document.getElementById(`admin-root`)).render((0,f.jsx)(u.StrictMode,{children:(0,f.jsx)(a,{children:(0,f.jsx)(i,{children:(0,f.jsx)(r,{children:(0,f.jsx)(t,{children:(0,f.jsx)(e,{children:(0,f.jsx)(l,{})})})})})})}));
