@@ -22,6 +22,7 @@ import ProductCard from '../components/ProductCard';
 import ProductModal from '../components/ProductModal';
 import CartDrawer from '../components/CartDrawer';
 import FloatingCartBar from '../components/FloatingCartBar';
+import EmberCanvas from '../components/EmberCanvas';
 
 const CATEGORY_TILES = [
   {
@@ -195,9 +196,12 @@ export default function ProductsPage() {
 
       {/* 2. Page Hero Banner Header */}
       <div className="relative bg-[#100e0c] border-b border-[#241d18] py-10 sm:py-14 steakhouse-glow overflow-hidden">
+        {/* Delicate floating grill embers effect */}
+        <EmberCanvas count={20} speed={0.7} />
+
         {/* Subtle decorative curved fluid waves */}
         <svg
-          className="hidden md:block absolute right-6 -bottom-6 w-80 h-36 text-orange-500/15 pointer-events-none"
+          className="hidden md:block absolute right-6 -bottom-6 w-80 h-36 text-orange-500/15 pointer-events-none z-10"
           viewBox="0 0 300 120"
           fill="none"
         >
@@ -223,8 +227,8 @@ export default function ProductsPage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
             <div className="space-y-3 text-center sm:text-left">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#181310] border border-[#33261f] text-xs font-bold text-orange-400 uppercase tracking-widest font-['Oswald',sans-serif]">
-                <Flame size={14} className="fill-orange-500" />
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#181310] border border-[#33261f] text-xs font-bold text-amber-400 uppercase tracking-widest font-['Oswald',sans-serif]">
+                <Flame size={14} className="fill-amber-500 text-amber-500 animate-flame-dance" />
                 CARDÁPIO OFICIAL FOODEXPRESS
               </div>
               <h1 className="text-3xl sm:text-5xl font-black text-white uppercase tracking-wider font-['Oswald',sans-serif]">
@@ -255,14 +259,14 @@ export default function ProductsPage() {
               <div
                 key={cat.id}
                 onClick={() => setSelectedCategory(cat.id)}
-                className={`group relative overflow-hidden rounded-2xl bg-[#14110f] border p-5 flex flex-col justify-between min-h-[190px] shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer ${
+                className={`group card-glare steakhouse-glow-hover relative overflow-hidden rounded-2xl bg-[#14110f] border p-5 flex flex-col justify-between min-h-[190px] shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer ${
                   isSelected
                     ? 'border-[#3d3128] shadow-md ring-1 ring-[#3d3128]'
                     : 'border-[#2b221c] hover:border-[#42342a]'
                 }`}
               >
-                <div className="absolute inset-0 opacity-20 group-hover:opacity-35 transition-opacity">
-                  <img src={cat.imageUrl} alt={cat.title} className="w-full h-full object-cover" />
+                <div className="absolute inset-0 opacity-20 group-hover:opacity-35 transition-opacity duration-500">
+                  <img src={cat.imageUrl} alt={cat.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#14110f] via-[#14110f]/80 to-transparent" />
                 </div>
 

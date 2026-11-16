@@ -17,7 +17,7 @@ export default function ProductCard({ product, onAdd }) {
   return (
     <div
       onClick={() => onAdd(product)}
-      className="group relative flex flex-col justify-between overflow-hidden rounded-2xl bg-[#14110f] border border-[#2a221c] shadow-[0_4px_20px_rgba(0,0,0,0.5)] transition-all duration-300 hover:border-[#423429] hover:shadow-xl hover:-translate-y-1 cursor-pointer text-stone-100"
+      className="group relative flex flex-col justify-between overflow-hidden rounded-2xl bg-[#14110f] border border-[#2a221c] shadow-[0_4px_20px_rgba(0,0,0,0.5)] steakhouse-glow-hover card-glare cursor-pointer text-stone-100"
     >
       <div>
         {/* Product Image */}
@@ -29,7 +29,7 @@ export default function ProductCard({ product, onAdd }) {
               e.currentTarget.onerror = null;
               e.currentTarget.src = getFallbackFoodImage(product.name);
             }}
-            className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-108"
+            className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
             loading="lazy"
           />
 
@@ -40,7 +40,7 @@ export default function ProductCard({ product, onAdd }) {
           {hasVariations && (
             <div className="absolute bottom-2.5 left-2.5 z-10">
               <span className="inline-flex items-center gap-1 rounded-full bg-[#100d0b]/90 backdrop-blur-xs px-2.5 py-0.5 text-[10px] font-bold text-amber-400 shadow-md border border-[#3a3028] font-['Oswald',sans-serif] uppercase tracking-wider">
-                <SlidersHorizontal size={10} className="text-orange-400" />
+                <SlidersHorizontal size={10} className="text-amber-400" />
                 Variações
               </span>
             </div>
@@ -49,7 +49,7 @@ export default function ProductCard({ product, onAdd }) {
           {/* Sabor da Brasa badge on first few items or burgers */}
           <div className="absolute top-2.5 right-2.5 z-10">
             <span className="inline-flex items-center gap-1 rounded-full bg-[#181310] px-2 py-0.5 text-[10px] font-bold text-stone-300 border border-[#382b22] shadow-sm uppercase font-['Oswald',sans-serif] tracking-wider">
-              <Flame size={11} className="text-amber-500 fill-amber-500/40" />
+              <Flame size={11} className="text-amber-500 fill-amber-500/70 animate-flame-dance" />
               Na Brasa
             </span>
           </div>
@@ -57,7 +57,7 @@ export default function ProductCard({ product, onAdd }) {
 
         {/* Content */}
         <div className="p-4 sm:p-4.5">
-          <h3 className="text-base sm:text-lg font-bold text-white group-hover:text-stone-200 transition-colors line-clamp-1 font-['Oswald',sans-serif] tracking-wide uppercase">
+          <h3 className="text-base sm:text-lg font-bold text-white group-hover:text-amber-400 transition-colors line-clamp-1 font-['Oswald',sans-serif] tracking-wide uppercase">
             {product.name}
           </h3>
 
@@ -86,9 +86,9 @@ export default function ProductCard({ product, onAdd }) {
             e.stopPropagation();
             onAdd(product);
           }}
-          className="inline-flex items-center gap-1.5 rounded-xl bg-[#1c1714] hover:bg-[#261f1a] active:scale-95 text-amber-400 hover:text-amber-300 border border-[#3d3128] hover:border-[#524135] px-3.5 py-1.5 text-xs sm:text-sm font-bold shadow-sm transition-all uppercase font-['Oswald',sans-serif] tracking-wider cursor-pointer"
+          className="btn-luxury inline-flex items-center gap-1.5 rounded-xl bg-[#1c1714] hover:bg-[#261f1a] active:scale-95 text-amber-400 hover:text-amber-300 border border-[#3d3128] hover:border-[#524135] px-3.5 py-1.5 text-xs sm:text-sm font-bold shadow-sm transition-all uppercase font-['Oswald',sans-serif] tracking-wider cursor-pointer group-hover:border-amber-500/50"
         >
-          <Plus size={15} strokeWidth={2.5} />
+          <Plus size={15} strokeWidth={2.5} className="transition-transform group-hover:rotate-90 duration-300" />
           <span>Pedir</span>
         </button>
       </div>

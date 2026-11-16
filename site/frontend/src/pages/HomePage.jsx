@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import ScrollReveal from '../components/ScrollReveal';
+import EmberCanvas from '../components/EmberCanvas';
 import {
   Flame,
   Sparkles,
@@ -144,6 +145,9 @@ export default function HomePage() {
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
       >
+        {/* Subtle Floating Embers Effect across Hero */}
+        <EmberCanvas count={32} speed={0.8} className="absolute inset-0 pointer-events-none z-15" />
+
         {/* Slides Container with Smooth Crossfade */}
         {HERO_SLIDES.map((slide, idx) => {
           const isActive = idx === currentSlideIndex;
@@ -159,8 +163,8 @@ export default function HomePage() {
                 <img
                   src={slide.photoUrl}
                   alt={slide.photoAlt}
-                  className={`w-full h-full object-cover object-center brightness-[1.03] contrast-[1.02] transform transition-transform duration-7000 ease-out ${
-                    isActive ? 'scale-105' : 'scale-100'
+                  className={`w-full h-full object-cover object-center brightness-[1.03] contrast-[1.02] transform transition-transform duration-10000 ease-out ${
+                    isActive ? 'scale-108' : 'scale-100'
                   }`}
                   style={{
                     WebkitMaskImage: 'linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 46%, rgba(0,0,0,0.85) 60%, rgba(0,0,0,0.45) 75%, rgba(0,0,0,0.12) 88%, rgba(0,0,0,0) 96%)',
@@ -172,10 +176,10 @@ export default function HomePage() {
                 <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#0b0908] via-[#070504]/75 to-transparent pointer-events-none md:hidden" />
                 <div className="absolute inset-x-0 top-0 h-10 bg-gradient-to-b from-black/35 to-transparent pointer-events-none" />
 
-                {/* Floating Steakhouse Experience Tag */}
+                {/* Floating Steakhouse Experience Tag with Delicate Flame Flicker */}
                 <div className="absolute top-4 left-4 z-20">
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-zinc-950/90 text-stone-300 border border-zinc-800 text-[10px] sm:text-xs font-bold uppercase font-['Oswald',sans-serif] tracking-wider shadow-md">
-                    <Flame size={12} className="text-amber-500 fill-amber-500" />
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-zinc-950/90 text-stone-300 border border-zinc-800 text-[10px] sm:text-xs font-bold uppercase font-['Oswald',sans-serif] tracking-wider shadow-lg animate-subtle-float">
+                    <Flame size={12} className="text-amber-500 fill-amber-500 animate-flame-dance" />
                     Steakhouse Experience
                   </span>
                 </div>
@@ -185,7 +189,7 @@ export default function HomePage() {
               <div className="hidden md:block absolute inset-0 bg-gradient-to-r from-transparent 0% via-transparent 36% via-black/30 48% via-[#060504]/72 62% via-[#090706]/94 76% to-[#0b0908] 88% pointer-events-none z-10" />
 
               {/* Subtle Warm Hearth Atmosphere — Sóbrio e refinado */}
-              <div className="absolute top-1/2 right-[10%] -translate-y-1/2 w-[550px] h-[480px] bg-gradient-to-br from-amber-600/[0.03] to-transparent rounded-full blur-[140px] pointer-events-none z-10" />
+              <div className="absolute top-1/2 right-[10%] -translate-y-1/2 w-[550px] h-[480px] bg-gradient-to-br from-amber-600/[0.04] to-transparent rounded-full blur-[140px] pointer-events-none z-10" />
 
               {/* Linha divisória vertical orgânica discreta em pedra escura */}
               <svg
@@ -238,19 +242,19 @@ export default function HomePage() {
                       {slide.schedule}
                     </div>
 
-                    {/* Big Prominent Sóbrio Steakhouse Button */}
+                    {/* Big Prominent Sóbrio Steakhouse Button with Luxury Aura */}
                     <div className="pt-1 flex flex-col sm:flex-row items-center justify-center md:justify-start gap-2.5 sm:gap-3">
                       <button
                         onClick={handleNavigateToProducts}
-                        className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3 sm:py-3.5 rounded-xl bg-[#1c1714] hover:bg-[#261f1a] active:scale-95 text-amber-400 hover:text-amber-300 border border-[#3d3128] hover:border-[#524135] font-bold text-xs sm:text-sm uppercase tracking-wider font-['Oswald',sans-serif] shadow-sm transition-all cursor-pointer"
+                        className="btn-luxury w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3 sm:py-3.5 rounded-xl bg-[#1c1714] hover:bg-[#261f1a] active:scale-95 text-amber-400 hover:text-amber-300 border border-[#3d3128] hover:border-[#524135] font-bold text-xs sm:text-sm uppercase tracking-wider font-['Oswald',sans-serif] shadow-sm cursor-pointer group"
                       >
                         <span>{slide.ctaText}</span>
-                        <ArrowRight size={16} />
+                        <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
                       </button>
 
                       <button
                         onClick={scrollToProducts}
-                        className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 sm:py-3.5 rounded-xl bg-[#14100d] hover:bg-[#1a1511] border border-[#26201b] hover:border-[#382d25] text-stone-300 hover:text-white font-bold text-xs uppercase tracking-wider font-['Oswald',sans-serif] transition-colors cursor-pointer"
+                        className="btn-luxury w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 sm:py-3.5 rounded-xl bg-[#14100d] hover:bg-[#1a1511] border border-[#26201b] hover:border-[#382d25] text-stone-300 hover:text-white font-bold text-xs uppercase tracking-wider font-['Oswald',sans-serif] cursor-pointer"
                       >
                         <span>Explorar Produtos</span>
                       </button>
@@ -355,15 +359,15 @@ export default function HomePage() {
             >
               <div
                 onClick={() => navigate('/nossos-produtos')}
-                className="h-full group relative flex flex-col justify-between overflow-hidden rounded-2xl bg-[#14110f] border border-[#2b221c] shadow-xl hover:shadow-2xl hover:border-[#42342a] transition-all duration-300 hover:-translate-y-1.5 cursor-pointer"
+                className="h-full group relative flex flex-col justify-between overflow-hidden rounded-2xl bg-[#14110f] border border-[#2b221c] shadow-xl steakhouse-glow-hover card-glare cursor-pointer"
               >
                 <div>
-                  {/* Photo with Dark Overlay */}
+                  {/* Photo with Dark Overlay and Smooth Zoom */}
                   <div className="relative aspect-[16/11] w-full overflow-hidden bg-[#0c0a09]">
                     <img
                       src={dish.imageUrl}
                       alt={dish.title}
-                      className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-108"
+                      className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110 group-hover:rotate-0.5"
                       loading="lazy"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#14110f] via-transparent to-black/30 pointer-events-none" />
@@ -377,7 +381,7 @@ export default function HomePage() {
 
                     <div className="absolute top-3 right-3 z-10">
                       <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-black/85 backdrop-blur-xs text-stone-300 border border-[#2b221c] text-[10px] font-bold font-['Oswald',sans-serif] uppercase tracking-wider shadow-md">
-                        <Flame size={10} className="text-amber-500" />
+                        <Flame size={10} className="text-amber-500 fill-amber-500/70 animate-flame-dance" />
                         Na Brasa
                       </span>
                     </div>
@@ -426,9 +430,9 @@ export default function HomePage() {
                     </span>
                   </div>
 
-                  <div className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#1c1714] hover:bg-[#251f1a] text-amber-400 hover:text-amber-300 border border-[#3d3128] hover:border-[#524135] text-xs font-bold font-['Oswald',sans-serif] uppercase tracking-wider shadow-sm transition-all">
+                  <div className="btn-luxury inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#1c1714] hover:bg-[#251f1a] text-amber-400 hover:text-amber-300 border border-[#3d3128] hover:border-[#524135] text-xs font-bold font-['Oswald',sans-serif] uppercase tracking-wider shadow-sm transition-all group-hover:border-amber-500/50">
                     <span>Ver Detalhes</span>
-                    <ArrowRight size={13} />
+                    <ArrowRight size={13} className="transition-transform group-hover:translate-x-1" />
                   </div>
                 </div>
               </div>
@@ -438,10 +442,10 @@ export default function HomePage() {
 
         {/* Bottom CTA to Full Catalog Tab */}
         <ScrollReveal direction="zoom" duration={800} delay={100}>
-          <div className="mt-14 rounded-3xl bg-[#14100e] border border-[#2b221c] p-8 sm:p-10 shadow-xl flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
+          <div className="mt-14 rounded-3xl bg-[#14100e] border border-[#2b221c] p-8 sm:p-10 shadow-xl flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden steakhouse-glow-hover card-glare">
             {/* Subtle decorative curved fluid waves */}
             <svg
-              className="hidden sm:block absolute -right-8 -bottom-10 w-72 h-72 text-orange-500/15 pointer-events-none"
+              className="hidden sm:block absolute -right-8 -bottom-10 w-72 h-72 text-amber-500/10 pointer-events-none"
               viewBox="0 0 200 200"
               fill="none"
             >
@@ -453,15 +457,9 @@ export default function HomePage() {
               />
               <path
                 d="M30,195 C100,135 140,175 200,95"
-                stroke="url(#ctaCurveGradient)"
+                stroke="#332921"
                 strokeWidth="1.5"
               />
-              <defs>
-                <linearGradient id="ctaCurveGradient" x1="0%" y1="100%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#ea580c" />
-                  <stop offset="100%" stopColor="#f59e0b" />
-                </linearGradient>
-              </defs>
             </svg>
 
             <div className="space-y-2 text-center md:text-left relative z-10">
@@ -477,19 +475,19 @@ export default function HomePage() {
               </p>
             </div>
 
-            <div className="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
+            <div className="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto relative z-10">
               <button
                 onClick={() => navigate('/nossos-produtos')}
-                className="w-full sm:w-auto shrink-0 inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-2xl bg-[#1c1714] hover:bg-[#261f1a] active:scale-95 text-amber-400 hover:text-amber-300 border border-[#3d3128] hover:border-[#524135] font-bold text-sm uppercase tracking-wider font-['Oswald',sans-serif] shadow-md transition-all cursor-pointer"
+                className="btn-luxury w-full sm:w-auto shrink-0 inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-2xl bg-[#1c1714] hover:bg-[#261f1a] active:scale-95 text-amber-400 hover:text-amber-300 border border-[#3d3128] hover:border-[#524135] font-bold text-sm uppercase tracking-wider font-['Oswald',sans-serif] shadow-md cursor-pointer group"
               >
                 <UtensilsCrossed size={16} />
                 <span>Ver Nossos Produtos</span>
-                <ArrowRight size={16} />
+                <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
               </button>
 
               <button
                 onClick={() => navigate('/restaurante')}
-                className="w-full sm:w-auto shrink-0 inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-[#14100e] hover:bg-[#1f1915] border border-[#2e241e] hover:border-[#423329] text-stone-300 hover:text-white font-bold text-xs uppercase tracking-wider font-['Oswald',sans-serif] transition-colors cursor-pointer"
+                className="btn-luxury w-full sm:w-auto shrink-0 inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-[#14100e] hover:bg-[#1f1915] border border-[#2e241e] hover:border-[#423329] text-stone-300 hover:text-white font-bold text-xs uppercase tracking-wider font-['Oswald',sans-serif] cursor-pointer"
               >
                 <UtensilsCrossed size={16} className="text-stone-400" />
                 <span>Conhecer o Salão</span>
@@ -500,17 +498,17 @@ export default function HomePage() {
       </section>
 
       {/* 4. EXPERIENCE SECTION: SALÃO OU DELIVERY */}
-      <section id="experiencia-section" className="w-full bg-[#0e0c0a] border-y border-[#241d18] py-16 px-4 sm:px-6 lg:px-8">
+      <section id="experiencia-section" className="w-full bg-[#0e0c0a] border-y border-[#241d18] py-16 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Card 1: Delivery */}
             <ScrollReveal direction="left" duration={750} className="h-full">
-              <div className="h-full relative overflow-hidden rounded-3xl bg-[#14100e] border border-[#2b221c] p-8 sm:p-10 flex flex-col justify-between shadow-xl group">
+              <div className="h-full relative overflow-hidden rounded-3xl bg-[#14100e] border border-[#2b221c] p-8 sm:p-10 flex flex-col justify-between shadow-xl group steakhouse-glow-hover card-glare">
                 <div className="space-y-4 relative z-10">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#1c1714] border border-[#332921] text-amber-400">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#1c1714] border border-[#332921] text-amber-400 shadow-md transition-transform group-hover:scale-105">
                     <Bike size={26} />
                   </div>
-                  <h3 className="text-2xl sm:text-3xl font-black text-white font-['Oswald',sans-serif] uppercase tracking-wide">
+                  <h3 className="text-2xl sm:text-3xl font-black text-white font-['Oswald',sans-serif] uppercase tracking-wide group-hover:text-amber-400 transition-colors">
                     FoodExpress na Sua Casa
                   </h3>
                   <p className="text-sm text-stone-400 leading-relaxed max-w-md">
@@ -518,13 +516,13 @@ export default function HomePage() {
                   </p>
                 </div>
 
-                <div className="pt-8">
+                <div className="pt-8 relative z-10">
                   <button
                     onClick={handleNavigateToProducts}
-                    className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#1c1714] hover:bg-[#261f1a] text-amber-400 border border-[#3d3128] font-bold text-xs uppercase tracking-wider font-['Oswald',sans-serif] shadow-sm cursor-pointer transition-all active:scale-95"
+                    className="btn-luxury inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#1c1714] hover:bg-[#261f1a] text-amber-400 border border-[#3d3128] font-bold text-xs uppercase tracking-wider font-['Oswald',sans-serif] shadow-sm cursor-pointer active:scale-95 group"
                   >
                     <span>Fazer Pedido Agora</span>
-                    <ArrowRight size={15} />
+                    <ArrowRight size={15} className="transition-transform group-hover:translate-x-1" />
                   </button>
                 </div>
               </div>
@@ -532,12 +530,12 @@ export default function HomePage() {
 
             {/* Card 2: Experiência no Salão */}
             <ScrollReveal direction="right" duration={750} className="h-full">
-              <div className="h-full relative overflow-hidden rounded-3xl bg-[#14100e] border border-[#2b221c] p-8 sm:p-10 flex flex-col justify-between shadow-xl group">
+              <div className="h-full relative overflow-hidden rounded-3xl bg-[#14100e] border border-[#2b221c] p-8 sm:p-10 flex flex-col justify-between shadow-xl group steakhouse-glow-hover card-glare">
                 <div className="space-y-4 relative z-10">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#1c1714] border border-[#332921] text-amber-400">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#1c1714] border border-[#332921] text-amber-400 shadow-md transition-transform group-hover:scale-105">
                     <UtensilsCrossed size={26} />
                   </div>
-                  <h3 className="text-2xl sm:text-3xl font-black text-white font-['Oswald',sans-serif] uppercase tracking-wide">
+                  <h3 className="text-2xl sm:text-3xl font-black text-white font-['Oswald',sans-serif] uppercase tracking-wide group-hover:text-amber-400 transition-colors">
                     Experiência no Salão
                   </h3>
                   <p className="text-sm text-stone-400 leading-relaxed max-w-md">
@@ -545,13 +543,13 @@ export default function HomePage() {
                   </p>
                 </div>
 
-                <div className="pt-8">
+                <div className="pt-8 relative z-10">
                   <button
                     onClick={() => navigate('/restaurante')}
-                    className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#1c1714] hover:bg-[#261f1a] text-amber-400 border border-[#3d3128] font-bold text-xs uppercase tracking-wider font-['Oswald',sans-serif] shadow-sm cursor-pointer transition-all active:scale-95"
+                    className="btn-luxury inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#1c1714] hover:bg-[#261f1a] text-amber-400 border border-[#3d3128] font-bold text-xs uppercase tracking-wider font-['Oswald',sans-serif] shadow-sm cursor-pointer active:scale-95 group"
                   >
                     <span>Conhecer Restaurante &amp; Salão</span>
-                    <ArrowRight size={15} />
+                    <ArrowRight size={15} className="transition-transform group-hover:translate-x-1" />
                   </button>
                 </div>
               </div>
@@ -640,7 +638,7 @@ export default function HomePage() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10 text-left">
           <ScrollReveal direction="up" delay={0} duration={700} className="h-full">
-            <div className="h-full p-6 rounded-2xl bg-[#120f0d] border border-[#241d18] space-y-3">
+            <div className="h-full p-6 rounded-2xl bg-[#120f0d] border border-[#241d18] space-y-3 steakhouse-glow-hover card-glare transition-all">
               <div className="flex text-amber-400 gap-1">
                 {[...Array(5)].map((_, i) => (
                   <Star key={i} size={14} className="fill-amber-400" />
@@ -656,7 +654,7 @@ export default function HomePage() {
           </ScrollReveal>
 
           <ScrollReveal direction="up" delay={140} duration={700} className="h-full">
-            <div className="h-full p-6 rounded-2xl bg-[#120f0d] border border-[#241d18] space-y-3">
+            <div className="h-full p-6 rounded-2xl bg-[#120f0d] border border-[#241d18] space-y-3 steakhouse-glow-hover card-glare transition-all">
               <div className="flex text-amber-400 gap-1">
                 {[...Array(5)].map((_, i) => (
                   <Star key={i} size={14} className="fill-amber-400" />
@@ -672,7 +670,7 @@ export default function HomePage() {
           </ScrollReveal>
 
           <ScrollReveal direction="up" delay={280} duration={700} className="h-full">
-            <div className="h-full p-6 rounded-2xl bg-[#120f0d] border border-[#241d18] space-y-3">
+            <div className="h-full p-6 rounded-2xl bg-[#120f0d] border border-[#241d18] space-y-3 steakhouse-glow-hover card-glare transition-all">
               <div className="flex text-amber-400 gap-1">
                 {[...Array(5)].map((_, i) => (
                   <Star key={i} size={14} className="fill-amber-400" />

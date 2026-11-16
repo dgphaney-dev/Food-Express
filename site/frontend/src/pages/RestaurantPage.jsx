@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import ScrollReveal from '../components/ScrollReveal';
+import EmberCanvas from '../components/EmberCanvas';
 
 export default function RestaurantPage() {
   const navigate = useNavigate();
@@ -24,12 +25,15 @@ export default function RestaurantPage() {
 
       {/* 2. Page Hero with Atmospheric Steakhouse Interior */}
       <div className="relative w-full min-h-[420px] sm:min-h-[500px] overflow-hidden flex items-center border-b border-[#241d18]">
+        {/* Delicate floating grill embers effect */}
+        <EmberCanvas count={24} speed={0.7} />
+
         {/* Background photo */}
         <div className="absolute inset-0">
           <img
             src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1600&h=900&fit=crop"
             alt="Interior do restaurante FoodExpress Steakhouse"
-            className="w-full h-full object-cover scale-102"
+            className="w-full h-full object-cover scale-102 transition-transform duration-1000 ease-out"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-[#0b0908] via-[#0b0908]/85 to-transparent" />
           <div className="absolute inset-0 bg-gradient-to-t from-[#0b0908] via-transparent to-transparent" />
@@ -68,7 +72,7 @@ export default function RestaurantPage() {
           <ScrollReveal direction="up" duration={750}>
             <div className="max-w-2xl space-y-4">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/80 border border-orange-500/40 text-amber-400 text-xs font-black uppercase font-['Oswald',sans-serif] tracking-wider shadow-lg">
-                <Flame size={14} className="text-orange-500 fill-orange-500" />
+                <Flame size={14} className="text-orange-500 fill-orange-500 animate-flame-dance" />
                 EXPERIÊNCIA PRESENCIAL COMPLETA
               </div>
               <h1 className="text-4xl sm:text-6xl font-black text-white uppercase tracking-tight font-['Oswald',sans-serif] leading-tight">
@@ -80,11 +84,11 @@ export default function RestaurantPage() {
               <div className="pt-2 flex flex-wrap items-center gap-3">
                 <button
                   onClick={() => navigate('/cardapio')}
-                  className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-xl bg-[#1c1714] hover:bg-[#261f1a] active:scale-95 text-amber-400 hover:text-amber-300 border border-[#3d3128] hover:border-[#524135] font-bold text-xs sm:text-sm uppercase tracking-wider font-['Oswald',sans-serif] shadow-sm transition-all cursor-pointer"
+                  className="btn-luxury inline-flex items-center gap-2.5 px-6 py-3.5 rounded-xl bg-[#1c1714] hover:bg-[#261f1a] active:scale-95 text-amber-400 hover:text-amber-300 border border-[#3d3128] hover:border-[#524135] font-bold text-xs sm:text-sm uppercase tracking-wider font-['Oswald',sans-serif] shadow-sm transition-all cursor-pointer group"
                 >
                   <UtensilsCrossed size={16} />
                   <span>Pedir na Mesa do Salão</span>
-                  <ArrowRight size={15} />
+                  <ArrowRight size={15} className="transition-transform group-hover:translate-x-1" />
                 </button>
                 <button
                   onClick={() => navigate('/delivery')}
@@ -114,9 +118,9 @@ export default function RestaurantPage() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           <ScrollReveal direction="up" delay={0} duration={750} className="h-full">
-            <div className="h-full p-6 rounded-2xl bg-[#14100e] border border-[#2b221c] space-y-3 shadow-lg hover:border-orange-500/40 transition-colors">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-orange-500/10 border border-orange-500/30 text-orange-400">
-                <Flame size={24} />
+            <div className="card-glare steakhouse-glow-hover h-full p-6 rounded-2xl bg-[#14100e] border border-[#2b221c] space-y-3 shadow-lg hover:border-amber-500/40 transition-all duration-300">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-orange-500/10 border border-orange-500/30 text-orange-400 group-hover:scale-110 transition-transform">
+                <Flame size={24} className="animate-flame-dance" />
               </div>
               <h3 className="text-lg font-bold text-white font-['Oswald',sans-serif] uppercase tracking-wide">
                 Grelhados ao Vivo
@@ -128,7 +132,7 @@ export default function RestaurantPage() {
           </ScrollReveal>
 
           <ScrollReveal direction="up" delay={120} duration={750} className="h-full">
-            <div className="h-full p-6 rounded-2xl bg-[#14100e] border border-[#2b221c] space-y-3 shadow-lg hover:border-orange-500/40 transition-colors">
+            <div className="card-glare steakhouse-glow-hover h-full p-6 rounded-2xl bg-[#14100e] border border-[#2b221c] space-y-3 shadow-lg hover:border-amber-500/40 transition-all duration-300">
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-orange-500/10 border border-orange-500/30 text-orange-400">
                 <Beer size={24} />
               </div>
@@ -142,7 +146,7 @@ export default function RestaurantPage() {
           </ScrollReveal>
 
           <ScrollReveal direction="up" delay={240} duration={750} className="h-full">
-            <div className="h-full p-6 rounded-2xl bg-[#14100e] border border-[#2b221c] space-y-3 shadow-lg hover:border-orange-500/40 transition-colors">
+            <div className="card-glare steakhouse-glow-hover h-full p-6 rounded-2xl bg-[#14100e] border border-[#2b221c] space-y-3 shadow-lg hover:border-amber-500/40 transition-all duration-300">
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-orange-500/10 border border-orange-500/30 text-orange-400">
                 <Wind size={24} />
               </div>
@@ -156,7 +160,7 @@ export default function RestaurantPage() {
           </ScrollReveal>
 
           <ScrollReveal direction="up" delay={360} duration={750} className="h-full">
-            <div className="h-full p-6 rounded-2xl bg-[#14100e] border border-[#2b221c] space-y-3 shadow-lg hover:border-orange-500/40 transition-colors">
+            <div className="card-glare steakhouse-glow-hover h-full p-6 rounded-2xl bg-[#14100e] border border-[#2b221c] space-y-3 shadow-lg hover:border-amber-500/40 transition-all duration-300">
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-orange-500/10 border border-orange-500/30 text-orange-400">
                 <UtensilsCrossed size={24} />
               </div>

@@ -210,3 +210,117 @@ html.lenis body {
 .animate-menu-backdrop-out {
   animation: menu-delicate-backdrop-out 0.35s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
+
+/* ==========================================================================
+   EFEITOS VISUAIS PREMIUM STEAKHOUSE (Animações, Glare e Brasa)
+   ========================================================================== */
+
+/* 1. Dança Orgânica da Chama / Fogo Na Brasa */
+@keyframes flame-dance {
+  0%, 100% {
+    transform: scale(1) rotate(0deg);
+    filter: drop-shadow(0 0 2px rgba(245, 158, 11, 0.4));
+  }
+  25% {
+    transform: scale(1.08) rotate(-3deg);
+    filter: drop-shadow(0 0 5px rgba(245, 158, 11, 0.8));
+  }
+  50% {
+    transform: scale(0.95) rotate(2deg);
+    filter: drop-shadow(0 0 3px rgba(217, 119, 6, 0.5));
+  }
+  75% {
+    transform: scale(1.05) rotate(-1.5deg);
+    filter: drop-shadow(0 0 6px rgba(245, 158, 11, 0.9));
+  }
+}
+
+.animate-flame-dance {
+  animation: flame-dance 3.2s ease-in-out infinite;
+  transform-origin: center bottom;
+}
+
+/* 2. Shimmer Glare nos Cards ao passar o mouse */
+.card-glare {
+  position: relative;
+  overflow: hidden;
+}
+
+.card-glare::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    60deg,
+    transparent 35%,
+    rgba(255, 255, 255, 0.04) 45%,
+    rgba(245, 158, 11, 0.08) 50%,
+    rgba(255, 255, 255, 0.04) 55%,
+    transparent 65%
+  );
+  transform: translateX(-100%) rotate(25deg);
+  pointer-events: none;
+  transition: transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 15;
+}
+
+.card-glare:hover::after {
+  transform: translateX(100%) rotate(25deg);
+}
+
+/* 3. Brilho Ambiente Acolhedor de Brasa (Steakhouse Glow Hover) */
+.steakhouse-glow-hover {
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.steakhouse-glow-hover:hover {
+  transform: translateY(-4px);
+  border-color: rgba(217, 119, 6, 0.45) !important;
+  box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.85),
+              0 0 24px -2px rgba(217, 119, 6, 0.16);
+}
+
+/* 4. Botão com Aura Refinada de Ouro / Âmbar */
+.btn-luxury {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-luxury::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(245, 158, 11, 0.15) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.btn-luxury:hover::before {
+  opacity: 1;
+}
+
+.btn-luxury:hover {
+  box-shadow: 0 6px 20px -4px rgba(0, 0, 0, 0.6),
+              0 0 20px -2px rgba(245, 158, 11, 0.22);
+}
+
+/* 5. Flutuação suave para badges e elementos decorativos */
+@keyframes subtle-float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+.animate-subtle-float {
+  animation: subtle-float 4s ease-in-out infinite;
+}
