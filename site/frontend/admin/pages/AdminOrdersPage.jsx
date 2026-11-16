@@ -352,16 +352,16 @@ export default function AdminOrdersPage() {
         }}
       />
 
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-24">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-24 overflow-x-hidden">
         {/* Top Header com Status em Tempo Real & Ações */}
         <ScrollReveal direction="up" duration={600}>
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-7">
+          <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4 mb-7">
             <div className="flex items-center gap-3.5">
               <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#121214] border border-zinc-800 text-orange-500 shadow-xl shrink-0">
                 <ClipboardList className="w-6 h-6 text-orange-500" />
               </div>
               <div>
-                <div className="flex items-center gap-2.5">
+                <div className="flex flex-wrap items-center gap-2.5">
                   <h1 className="text-2xl sm:text-3xl font-black text-white uppercase font-['Oswald',sans-serif] tracking-tight leading-none">
                     Fila de Pedidos &amp; KDS
                   </h1>
@@ -377,14 +377,14 @@ export default function AdminOrdersPage() {
             </div>
 
             {/* Ações de Teste & Atualização */}
-            <div className="flex flex-wrap items-center gap-2.5 shrink-0">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-2.5">
               <button
                 onClick={() => handleSimulateNewOrder(false)}
                 className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold uppercase font-['Oswald',sans-serif] tracking-wider bg-orange-600/15 hover:bg-orange-600 hover:text-white border border-orange-500/30 text-orange-400 rounded-xl shadow-lg transition-all active:scale-95 cursor-pointer"
                 title="Criar novo pedido de mesa para teste da cozinha"
               >
                 <Plus className="w-4 h-4" />
-                <span>+ Mesa Teste</span>
+                <span>Mesa Teste</span>
               </button>
 
               <button
@@ -393,7 +393,7 @@ export default function AdminOrdersPage() {
                 title="Criar novo pedido de delivery para teste"
               >
                 <Plus className="w-4 h-4" />
-                <span>+ Delivery Teste</span>
+                <span>Delivery Teste</span>
               </button>
 
               <button

@@ -235,7 +235,7 @@ export default function Navbar({
               {/* Admin nav links */}
               <Link
                 to="/admin/pedidos"
-                className={`flex items-center gap-1.5 sm:gap-2 rounded-xl px-3 sm:px-4 py-2 text-xs font-bold uppercase tracking-wider font-['Oswald',sans-serif] transition-colors whitespace-nowrap shrink-0 ${
+                className={`flex items-center gap-1.5 sm:gap-2 rounded-xl px-2.5 sm:px-3.5 py-1.5 sm:py-2 text-[11px] sm:text-xs font-bold uppercase tracking-wider font-['Oswald',sans-serif] transition-colors whitespace-nowrap shrink-0 ${
                   isActive('/admin/pedidos') || isActive('/admin/orders')
                     ? 'bg-orange-600 text-white shadow-md'
                     : 'text-zinc-400 hover:bg-zinc-800 hover:text-white'
@@ -248,7 +248,7 @@ export default function Navbar({
 
               <Link
                 to="/admin/cardapio"
-                className={`flex items-center gap-1.5 sm:gap-2 rounded-xl px-3 sm:px-4 py-2 text-xs font-bold uppercase tracking-wider font-['Oswald',sans-serif] transition-colors whitespace-nowrap shrink-0 ${
+                className={`flex items-center gap-1.5 sm:gap-2 rounded-xl px-2.5 sm:px-3.5 py-1.5 sm:py-2 text-[11px] sm:text-xs font-bold uppercase tracking-wider font-['Oswald',sans-serif] transition-colors whitespace-nowrap shrink-0 ${
                   isActive('/admin/cardapio') || isActive('/admin/menu')
                     ? 'bg-orange-600 text-white shadow-md'
                     : 'text-zinc-400 hover:bg-zinc-800 hover:text-white'
@@ -261,7 +261,7 @@ export default function Navbar({
 
               <Link
                 to="/entregador"
-                className={`hidden sm:flex items-center gap-1.5 sm:gap-2 rounded-xl px-3 sm:px-4 py-2 text-xs font-bold uppercase tracking-wider font-['Oswald',sans-serif] transition-colors whitespace-nowrap shrink-0 ${
+                className={`hidden md:flex items-center gap-1.5 sm:gap-2 rounded-xl px-2.5 sm:px-3.5 py-1.5 sm:py-2 text-[11px] sm:text-xs font-bold uppercase tracking-wider font-['Oswald',sans-serif] transition-colors whitespace-nowrap shrink-0 ${
                   isActive('/entregador') || isActive('/motorista')
                     ? 'bg-orange-600 text-white shadow-md'
                     : 'text-zinc-400 hover:bg-zinc-800 hover:text-white'
@@ -275,7 +275,7 @@ export default function Navbar({
               {/* Logout button */}
               <button
                 onClick={onLogout}
-                className="ml-1 flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-bold uppercase tracking-wider font-['Oswald',sans-serif] text-zinc-400 hover:bg-red-950/40 hover:text-red-400 border border-transparent hover:border-red-900/40 transition-colors cursor-pointer shrink-0"
+                className="ml-1 flex items-center gap-1.5 rounded-xl px-2.5 sm:px-3 py-1.5 sm:py-2 text-[11px] sm:text-xs font-bold uppercase tracking-wider font-['Oswald',sans-serif] text-zinc-400 hover:bg-red-950/40 hover:text-red-400 border border-transparent hover:border-red-900/40 transition-colors cursor-pointer shrink-0"
                 title="Sair do painel"
               >
                 <LogOut size={15} />
