@@ -1459,6 +1459,25 @@ pm run build bem-sucedido.
      - Identificado que o uso de `overflow-x: hidden` forçava o navegador a recomputar `overflow-y` para `auto` no `#root > div`, gerando uma segunda barra de 15px ao lado da barra da janela (consumindo 30px no total).
      - Substituído `overflow-x: hidden` por `overflow-x: clip` em `AdminLayout.jsx` e `index.css`. O valor `clip` impede estouro horizontal sem criar contexto de rolagem, garantindo margem de exatamente 15px para a janela única. Commit `061f949` enviado para a `main`.
 
+---
+
+### [2026-11-16 01:00] — Criação da Aba Dedicada de Métricas & Limpeza do KDS
+- **Papel Ativo:** Engenheiro Frontend Especialista em UI/UX e Responsividade
+- **Etapa SDD:** `Fase 3 — Refinamento de Interface & Separação de Responsabilidades`
+- **Ações Executadas:**
+  1. **Limpeza da Fila de Pedidos KDS (`AdminOrdersPage.jsx`):**
+     - Removidos os 4 grandes blocos coloridos de KPIs que sobrecarregavam a esteira de pedidos, permitindo que a tela inicie diretamente na barra de pesquisa, filtros de canal e comandas.
+  2. **Criação da Aba Dedicada de Métricas (`AdminMetricsPage.jsx`):**
+     - Criada a página [`AdminMetricsPage.jsx`](./site/frontend/admin/pages/AdminMetricsPage.jsx) em `/admin/metricas`.
+     - Identidade visual sóbria, elegante e executiva: tema escuro monocromático com refinados detalhes em pedra e âmbar, sem poluição de cores.
+     - Indicadores organizados: Faturamento Entregue, Ticket Médio, Volume Total, Pedidos em Produção, Ranking dos Mais Vendidos, Canais de Atendimento e Resumo da Fila Linear.
+     - Filtros de período (*Hoje*, *7 dias*, *Este Mês*).
+  3. **Integração no Layout e Rotas:**
+     - Atualizada a Sidebar em [`AdminLayout.jsx`](./site/frontend/admin/components/AdminLayout.jsx) para incluir a aba "Métricas & Relatórios".
+     - Rotas `/admin/metricas` e `/admin/pedidos` mapeadas e ativas em [`App.jsx`](./site/frontend/src/App.jsx).
+  4. **Validação:** Subagente no navegador validou visualmente ambas as telas com capturas de tela e zero erros de build.
+
+
 
 
 

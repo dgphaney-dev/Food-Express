@@ -311,75 +311,8 @@ export default function AdminOrdersPage() {
       pollOptions={INTERVAL_OPTIONS}
     >
       <div className="w-full">
-        {/* Resumo de Indicadores Operacionais (KPIs) */}
-        <ScrollReveal direction="up" duration={700}>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-7">
-            <div className="bg-[#121214] p-4 sm:p-5 rounded-2xl border border-zinc-800 shadow-xl flex items-center justify-between">
-              <div>
-                <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider font-['Oswald',sans-serif] block">
-                  Novos Pedidos
-                </span>
-                <span className="text-3xl font-black text-blue-400 mt-0.5 block font-['Oswald',sans-serif]">
-                  {adminOrders.filter((o) => o.status === 'RECEIVED').length}
-                </span>
-                <span className="text-[10px] text-zinc-500">Aguardando início</span>
-              </div>
-              <div className="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
-                <Flame className="w-5 h-5" />
-              </div>
-            </div>
-
-            <div className="bg-[#121214] p-4 sm:p-5 rounded-2xl border border-zinc-800 shadow-xl flex items-center justify-between">
-              <div>
-                <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider font-['Oswald',sans-serif] block">
-                  Em Preparo
-                </span>
-                <span className="text-3xl font-black text-amber-400 mt-0.5 block font-['Oswald',sans-serif]">
-                  {adminOrders.filter((o) => o.status === 'PREPARING').length}
-                </span>
-                <span className="text-[10px] text-zinc-500">Na grelha / montagem</span>
-              </div>
-              <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
-                <ChefHat className="w-5 h-5" />
-              </div>
-            </div>
-
-            <div className="bg-[#121214] p-4 sm:p-5 rounded-2xl border border-zinc-800 shadow-xl flex items-center justify-between">
-              <div>
-                <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider font-['Oswald',sans-serif] block">
-                  Prontos p/ Entrega
-                </span>
-                <span className="text-3xl font-black text-emerald-400 mt-0.5 block font-['Oswald',sans-serif]">
-                  {adminOrders.filter((o) => o.status === 'READY').length}
-                </span>
-                <span className="text-[10px] text-zinc-500">Aguardando garçom/motoboy</span>
-              </div>
-              <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
-                <CheckCircle2 className="w-5 h-5" />
-              </div>
-            </div>
-
-            <div className="bg-[#121214] p-4 sm:p-5 rounded-2xl border border-zinc-800 shadow-xl flex items-center justify-between">
-              <div>
-                <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider font-['Oswald',sans-serif] block">
-                  Faturamento Entregue
-                </span>
-                <span className="text-2xl sm:text-3xl font-black text-amber-400 mt-0.5 block font-['Oswald',sans-serif]">
-                  {formatPrice(totalDeliveredRevenue)}
-                </span>
-                <span className="text-[10px] text-zinc-500">
-                  {countDelivered} pedidos finalizados
-                </span>
-              </div>
-              <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
-                <TrendingUp className="w-5 h-5" />
-              </div>
-            </div>
-          </div>
-        </ScrollReveal>
-
         {/* Barra de Filtros & Busca em Tempo Real */}
-        <ScrollReveal direction="up" delay={50} duration={600}>
+        <ScrollReveal direction="up" duration={600}>
           <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3 mb-6 bg-[#121214] border border-zinc-800 p-3 sm:p-4 rounded-2xl shadow-xl">
             {/* Search Input */}
             <div className="relative flex-1">

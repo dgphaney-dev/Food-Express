@@ -85,14 +85,6 @@ export default function AdminLayout({
 
   const navItems = [
     {
-      to: '/admin/dashboard',
-      altPaths: ['/admin'],
-      label: 'Dashboard & Métricas',
-      shortLabel: 'Dashboard',
-      icon: LayoutDashboard,
-      badge: null,
-    },
-    {
       to: '/admin/pedidos',
       altPaths: ['/admin/orders'],
       label: 'Fila de Pedidos & KDS',
@@ -100,6 +92,14 @@ export default function AdminLayout({
       icon: ClipboardList,
       badge: activeOrdersCount > 0 ? activeOrdersCount : null,
       badgeColor: 'bg-orange-500 text-black',
+    },
+    {
+      to: '/admin/metricas',
+      altPaths: ['/admin/dashboard', '/admin'],
+      label: 'Métricas & Relatórios',
+      shortLabel: 'Métricas',
+      icon: LayoutDashboard,
+      badge: null,
     },
     {
       to: '/admin/cardapio',

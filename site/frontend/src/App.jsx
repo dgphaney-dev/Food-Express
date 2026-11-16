@@ -7,7 +7,7 @@ import RestaurantPage from './pages/RestaurantPage'
 import CustomerMenuPage from './pages/CustomerMenuPage'
 import OrderTrackingPage from './pages/OrderTrackingPage'
 import AdminLoginPage from '../admin/pages/AdminLoginPage'
-import AdminDashboardPage from '../admin/pages/AdminDashboardPage'
+import AdminMetricsPage from '../admin/pages/AdminMetricsPage'
 import AdminOrdersPage from '../admin/pages/AdminOrdersPage'
 import AdminMenuPage from '../admin/pages/AdminMenuPage'
 import DriverDeliveryPage from './pages/DriverDeliveryPage'
@@ -56,11 +56,12 @@ function App() {
           <Route path="/pedido/:orderId" element={<OrderTrackingPage />} />
 
           {/* Admin Routes */}
-          <Route path="/admin" element={<AdminDashboardPage />} />
-          <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
-          <Route path="/admin/login" element={<AdminLoginPage />} />
+          <Route path="/admin" element={<Navigate to="/admin/pedidos" replace />} />
           <Route path="/admin/pedidos" element={<AdminOrdersPage />} />
+          <Route path="/admin/metricas" element={<AdminMetricsPage />} />
+          <Route path="/admin/dashboard" element={<Navigate to="/admin/metricas" replace />} />
           <Route path="/admin/cardapio" element={<AdminMenuPage />} />
+          <Route path="/admin/login" element={<AdminLoginPage />} />
 
           {/* Aliases for English paths */}
           <Route path="/admin/orders" element={<Navigate to="/admin/pedidos" replace />} />

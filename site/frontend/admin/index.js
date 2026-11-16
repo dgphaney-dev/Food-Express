@@ -1,5 +1,6 @@
 export { default as AdminLoginPage } from './pages/AdminLoginPage';
-export { default as AdminDashboardPage } from './pages/AdminDashboardPage';
+export { default as AdminMetricsPage } from './pages/AdminMetricsPage';
+export { default as AdminDashboardPage } from './pages/AdminMetricsPage';
 export { default as AdminMenuPage } from './pages/AdminMenuPage';
 export { default as AdminOrdersPage } from './pages/AdminOrdersPage';
 export { default as AdminLayout } from './components/AdminLayout';
