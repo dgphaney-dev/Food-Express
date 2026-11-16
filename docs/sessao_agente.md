@@ -1566,3 +1566,27 @@ pm run build bem-sucedido.
      - `npm run lint:frontend`: **0 erros**.
      - `npm run build:frontend`: compilado com sucesso gerando os bundles de `index.html` (App Cliente) e `admin.html` (App Admin).
      - Atualizado status de todos os requisitos em [`docs/brd.md`](./brd.md) e [`docs/trd.md`](./trd.md) para `Concluído`.
+
+
+---
+
+### [2026-11-16 16:15] — Harmonização Visual Sóbria (Eliminação de Cores Neon/Arco-Íris no Portal e Admin) e Persistência SQLite Integral
+- **Papel Ativo:** Engenheiro Frontend Sênior & Especialista em Design System Steakhouse
+- **Etapa SDD:** `Fase 3 — Refinamento de Interface, Coerência Visual e Banco de Dados`
+- **Ações Executadas:**
+  1. **Eliminação de Cores Estridentes e Botões Coloridos:**
+     - **Painel Administrativo & Fila KDS (`AdminLayout.jsx`, `AdminOrdersPage.jsx`, `AdminDashboardPage.jsx`, `AdminMenuPage.jsx`):**
+       - Substituídos os botões de simulação coloridos (`+ + MESA TESTE` em laranja e `+ + DELIVERY TESTE` em azul) por botões de teste executivos em pedra escura com acento âmbar sutil (`bg-[#161310] hover:bg-[#221c17] border border-[#332921] text-stone-200 hover:text-amber-400`).
+       - Removido o gradiente arco-íris da aba ativa na Sidebar (`from-orange-600 to-amber-600`) substituindo-o por acabamento sóbrio dark luxury (`bg-[#1a1613] text-amber-400 border border-[#3a2f26]`).
+       - Substituídos os crachás verdes neon (`bg-emerald-500/10 border-emerald-500/30 text-emerald-400`) por crachás sóbrios dark stone (`bg-[#14110e] border border-[#2d2520] text-stone-300`) com ponto de pulso discreto.
+       - Substituídos os botões de ação laranja (`bg-orange-600`) em filtros, cards de pedidos, modais e botões operacionais por estilo executivo steakhouse (`bg-[#1c1714] text-amber-400 border border-[#3d3128]`).
+     - **Portal Público (`HomePage.jsx`, `ProductCard.jsx`, `FloatingCartBar.jsx`, `ProductModal.jsx`, `PromoCarousel.jsx`, `CustomerMenuPage.jsx`, `ProductsPage.jsx`, `RestaurantPage.jsx`):**
+       - Removidos todos os botões e fundos em laranja-tijolo fosforescente (`#c2410c`, `#d9531e`), substituindo-os pelo design system sóbrio steakhouse (`bg-[#1c1714] text-amber-400 border border-[#3d3128]`).
+       - Removidos os gradientes arco-íris de logos, títulos e SVGs decorativos.
+       - Ocultado botão de acesso administrativo do rodapé público para evitar entrada acidental de clientes na área restrita.
+  2. **Persistência Integral no SQLite:**
+     - Todos os dados de pedidos, itens, cardápio, categorias e usuários permanecem centralizados em `data/foodexpress.sqlite`.
+  3. **Validação:**
+     - Vitest: 10/10 testes passando com 100% de sucesso.
+     - Build de produção Vite concluído em 970ms sem erros.
+     - Subagente browser inspecionou e fotografou `http://localhost:5173/` e `http://localhost:5173/#/admin/pedidos` confirmando visual sóbrio, limpo, sem cores chamativas e com rolagem única contida.
