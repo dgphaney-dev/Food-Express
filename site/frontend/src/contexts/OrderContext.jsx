@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { MOCK_ORDERS } from '../data/mockData';
-import { adminApi, publicApi } from '../services/api';
+import { adminApi, getStoredAdminToken, publicApi } from '../services/api';
 
 const OrderContext = createContext(null);
 
@@ -19,20 +19,26 @@ function loadInitialOrders() {
 export function OrderProvider({ children }) {
   const [adminOrders, setAdminOrders] = useState(loadInitialOrders);
   const [currentOrder, setCurrentOrder] = useState(null);
+  const [lastOrderId, setLastOrderId] = useState(() =>
+    localStorage.getItem(LAST_ORDER_KEY)
+  );
 
-  // Carrega pedidos reais do backend SQLite ao inicializar
+  // Carrega pedidos reais do backend SQLite apenas se o atendente já tiver sessão autenticada
   useEffect(() => {
     let isMounted = true;
-    adminApi
-      .fetchOrders()
-      .then((data) => {
-        if (isMounted && data?.orders && data.orders.length > 0) {
-          setAdminOrders(data.orders);
-        }
-      })
-      .catch(() => {
-        // Modo offline / mock fallback
-      });
+    const token = getStoredAdminToken();
+    if (token && token.split('.').length === 3) {
+      adminApi
+        .fetchOrders()
+        .then((data) => {
+          if (isMounted && data?.orders && data.orders.length > 0) {
+            setAdminOrders(data.orders);
+          }
+        })
+        .catch(() => {
+          // Modo offline / mock fallback
+        });
+    }
 
     return () => {
       isMounted = false;
@@ -48,6 +54,22 @@ export function OrderProvider({ children }) {
     }
   }, [adminOrders]);
 
+  const upsertOrderInState = useCallback((orderObj) => {
+    if (!orderObj || !orderObj.id) return;
+    setCurrentOrder((prev) =>
+      !prev || Number(prev.id) === Number(orderObj.id) ? orderObj : prev
+    );
+    setAdminOrders((prev) => {
+      const exists = prev.some((o) => Number(o.id) === Number(orderObj.id));
+      if (exists) {
+        return prev.map((o) =>
+          Number(o.id) === Number(orderObj.id) ? orderObj : o
+        );
+      }
+      return [orderObj, ...prev];
+    });
+  }, []);
+
   const createOrder = useCallback(async (orderData) => {
     const tempId = Date.now() % 100000;
     const optimisticOrder = {
@@ -58,16 +80,14 @@ export function OrderProvider({ children }) {
       updatedAt: new Date().toISOString(),
     };
 
-    // Atualização otimista imediata para feedback instantâneo na UI
-    setCurrentOrder(optimisticOrder);
-    setAdminOrders((prev) => [optimisticOrder, ...prev]);
-    localStorage.setItem(LAST_ORDER_KEY, String(optimisticOrder.id));
-
-    // Persistência no Backend SQLite
+    // Persistência prioritária no Backend SQLite
     try {
       const response = await publicApi.createOrder({
-        orderType: orderData.orderType || (orderData.tableNumber ? 'DINE_IN' : 'DELIVERY'),
-        customerName: orderData.customerName || (orderData.deliveryAddress ? 'Cliente FoodExpress' : null),
+        orderType:
+          orderData.orderType || (orderData.tableNumber ? 'DINE_IN' : 'DELIVERY'),
+        customerName:
+          orderData.customerName ||
+          (orderData.deliveryAddress ? 'Cliente FoodExpress' : null),
         customerPhone: orderData.customerPhone || null,
         deliveryAddress: orderData.deliveryAddress || null,
         tableNumber: orderData.tableNumber || null,
@@ -81,94 +101,156 @@ export function OrderProvider({ children }) {
       if (response?.order) {
         const persistedOrder = response.order;
         setCurrentOrder(persistedOrder);
-        setAdminOrders((prev) =>
-          prev.map((o) => (o.id === tempId ? persistedOrder : o))
-        );
-        localStorage.setItem(LAST_ORDER_KEY, String(persistedOrder.id));
+        setAdminOrders((prev) => [
+          persistedOrder,
+          ...prev.filter((o) => Number(o.id) !== Number(persistedOrder.id)),
+        ]);
+        const idStr = String(persistedOrder.id);
+        localStorage.setItem(LAST_ORDER_KEY, idStr);
+        setLastOrderId(idStr);
         return persistedOrder;
       }
     } catch (err) {
+      if (err.status === 422 || err.status === 400) {
+        throw err;
+      }
       console.warn('Backend indisponível ao salvar pedido, mantendo local:', err);
     }
 
+    // Fallback offline caso o servidor não esteja rodando
+    setCurrentOrder(optimisticOrder);
+    setAdminOrders((prev) => [optimisticOrder, ...prev]);
+    const idStr = String(optimisticOrder.id);
+    localStorage.setItem(LAST_ORDER_KEY, idStr);
+    setLastOrderId(idStr);
     return optimisticOrder;
   }, []);
 
-  const getOrder = useCallback((orderId) => {
-    const numericId = Number(orderId);
-    const local = adminOrders.find((o) => o.id === numericId);
+  const getOrder = useCallback(
+    (orderId) => {
+      const numericId = Number(orderId);
+      if (!numericId) return null;
+      return adminOrders.find((o) => Number(o.id) === numericId) || null;
+    },
+    [adminOrders]
+  );
 
-    // Consulta em background ao backend para atualizar status
-    if (numericId) {
-      publicApi
-        .getOrder(numericId)
-        .then((data) => {
-          if (data?.order) {
-            setAdminOrders((prev) =>
-              prev.map((o) => (o.id === numericId ? data.order : o))
-            );
-          }
-        })
-        .catch(() => {});
-    }
+  const fetchOrderById = useCallback(
+    async (orderId) => {
+      const numericId = Number(orderId);
+      if (!numericId) return null;
+      try {
+        const data = await publicApi.getOrder(numericId);
+        if (data?.order) {
+          upsertOrderInState(data.order);
+          return data.order;
+        }
+      } catch {
+        // Fallback para estado em memória
+      }
+      return adminOrders.find((o) => Number(o.id) === numericId) || null;
+    },
+    [adminOrders, upsertOrderInState]
+  );
 
-    return local || null;
-  }, [adminOrders]);
+  const advanceOrderStatus = useCallback(
+    async (orderId, targetStatus) => {
+      try {
+        const res = await adminApi.advanceOrder(orderId, targetStatus);
+        if (res?.order) {
+          upsertOrderInState(res.order);
+          return res.order;
+        }
+      } catch {
+        // Fallback local
+      }
 
-  const advanceOrderStatus = useCallback((orderId, targetStatus) => {
-    setAdminOrders((prev) =>
-      prev.map((order) =>
-        order.id === orderId
-          ? { ...order, status: targetStatus, updatedAt: new Date().toISOString() }
-          : order
-      )
-    );
-    setCurrentOrder((prev) =>
-      prev && prev.id === orderId
-        ? { ...prev, status: targetStatus, updatedAt: new Date().toISOString() }
-        : prev
-    );
+      setAdminOrders((prev) =>
+        prev.map((order) =>
+          Number(order.id) === Number(orderId)
+            ? { ...order, status: targetStatus, updatedAt: new Date().toISOString() }
+            : order
+        )
+      );
+      setCurrentOrder((prev) =>
+        prev && Number(prev.id) === Number(orderId)
+          ? { ...prev, status: targetStatus, updatedAt: new Date().toISOString() }
+          : prev
+      );
+    },
+    [upsertOrderInState]
+  );
 
-    adminApi.advanceOrder(orderId, targetStatus).catch(() => {});
-  }, []);
+  const cancelOrder = useCallback(
+    async (orderId, byAdmin = false) => {
+      try {
+        const res = byAdmin
+          ? await adminApi.cancelOrder(orderId)
+          : await publicApi.cancelOrder(orderId);
+        if (res?.order) {
+          upsertOrderInState(res.order);
+          return res.order;
+        }
+      } catch (err) {
+        if (err.status === 422) {
+          throw err;
+        }
+        // Fallback local apenas se rede indisponível
+      }
 
-  const cancelOrder = useCallback((orderId) => {
-    setAdminOrders((prev) =>
-      prev.map((order) =>
-        order.id === orderId
-          ? { ...order, status: 'CANCELLED', updatedAt: new Date().toISOString() }
-          : order
-      )
-    );
-    setCurrentOrder((prev) =>
-      prev && prev.id === orderId
-        ? { ...prev, status: 'CANCELLED', updatedAt: new Date().toISOString() }
-        : prev
-    );
+      setAdminOrders((prev) =>
+        prev.map((order) =>
+          Number(order.id) === Number(orderId)
+            ? { ...order, status: 'CANCELLED', updatedAt: new Date().toISOString() }
+            : order
+        )
+      );
+      setCurrentOrder((prev) =>
+        prev && Number(prev.id) === Number(orderId)
+          ? { ...prev, status: 'CANCELLED', updatedAt: new Date().toISOString() }
+          : prev
+      );
+    },
+    [upsertOrderInState]
+  );
 
-    publicApi.cancelOrder(orderId).catch(() => {
-      adminApi.cancelOrder(orderId).catch(() => {});
-    });
-  }, []);
+  const markOrderAsPaid = useCallback(
+    async (orderId, paymentMethod = 'PIX') => {
+      try {
+        const res = await publicApi.markOrderAsPaid(orderId, paymentMethod);
+        if (res?.order) {
+          upsertOrderInState(res.order);
+          return res.order;
+        }
+      } catch {
+        // Fallback local
+      }
 
-  const markOrderAsPaid = useCallback((orderId, paymentMethod = 'PIX') => {
-    setAdminOrders((prev) =>
-      prev.map((order) =>
-        order.id === orderId
-          ? { ...order, isPaid: true, paymentMethod, paidAt: new Date().toISOString() }
-          : order
-      )
-    );
-    setCurrentOrder((prev) =>
-      prev && prev.id === orderId
-        ? { ...prev, isPaid: true, paymentMethod, paidAt: new Date().toISOString() }
-        : prev
-    );
-
-    publicApi.markOrderAsPaid(orderId, paymentMethod).catch(() => {});
-  }, []);
-
-  const lastOrderId = localStorage.getItem(LAST_ORDER_KEY);
+      setAdminOrders((prev) =>
+        prev.map((order) =>
+          Number(order.id) === Number(orderId)
+            ? {
+                ...order,
+                isPaid: true,
+                paymentMethod,
+                paidAt: new Date().toISOString(),
+              }
+            : order
+        )
+      );
+      setCurrentOrder((prev) =>
+        prev && Number(prev.id) === Number(orderId)
+          ? {
+              ...prev,
+              isPaid: true,
+              paymentMethod,
+              paidAt: new Date().toISOString(),
+            }
+          : prev
+      );
+    },
+    [upsertOrderInState]
+  );
 
   return (
     <OrderContext.Provider
@@ -179,6 +261,7 @@ export function OrderProvider({ children }) {
         setAdminOrders,
         createOrder,
         getOrder,
+        fetchOrderById,
         advanceOrderStatus,
         cancelOrder,
         markOrderAsPaid,

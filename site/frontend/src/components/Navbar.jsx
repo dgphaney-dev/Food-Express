@@ -12,11 +12,11 @@ import {
   Menu,
   Home,
   Utensils,
-  ShieldCheck,
   ChevronRight,
   TrendingUp,
 } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
+import { useOrders } from '../contexts/OrderContext';
 import { formatPrice } from '../utils/helpers';
 
 export default function Navbar({
@@ -31,6 +31,7 @@ export default function Navbar({
   const count = cartCount ?? cartItemCount;
   const location = useLocation();
   const { totalPrice } = useCart();
+  const { lastOrderId } = useOrders();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const closeTimeoutRef = useRef(null);
@@ -96,18 +97,16 @@ export default function Navbar({
       altPaths: ['/salao'],
       icon: UtensilsCrossed,
     },
-    {
-      label: 'TELA DO MOTORISTA',
-      path: '/entregador',
-      altPaths: ['/motorista', '/driver'],
-      icon: Bike,
-    },
-    {
-      label: 'ACESSO DO ATENDENTE',
-      path: '/admin/login',
-      altPaths: [],
-      icon: ShieldCheck,
-    },
+    ...(lastOrderId
+      ? [
+          {
+            label: 'MEU PEDIDO',
+            path: `/pedido/${lastOrderId}`,
+            altPaths: [],
+            icon: ClipboardList,
+          },
+        ]
+      : []),
   ];
 
   const isTabActive = (tab) => {

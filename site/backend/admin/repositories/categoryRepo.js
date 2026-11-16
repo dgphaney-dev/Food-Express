@@ -1,6 +1,11 @@
 import { asc, eq } from 'drizzle-orm';
-import { getDb } from '../../db/connection.js';
-import { categories } from '../../db/schema.js';
+import { getDb, getSqlite } from '../../db/connection.js';
+import {
+  categories,
+  productAddons,
+  products,
+  productVariations,
+} from '../../db/schema.js';
 
 export const categoryRepo = {
   findAll({ onlyActive = false } = {}) {
@@ -59,5 +64,43 @@ export const categoryRepo = {
       .where(eq(categories.id, Number(id)))
       .returning()
       .get();
+  },
+
+  toggleActive(id, explicitActive = undefined) {
+    const current = this.findById(id);
+    if (!current) return null;
+    const nextActive =
+      explicitActive !== undefined ? Boolean(explicitActive) : !current.active;
+    return this.update(id, { active: nextActive });
+  },
+
+  delete(id) {
+    const db = getDb();
+    const sqlite = getSqlite();
+    const current = this.findById(id);
+    if (!current) return false;
+
+    const tx = sqlite.transaction(() => {
+      const catProducts = db
+        .select()
+        .from(products)
+        .where(eq(products.categoryId, Number(id)))
+        .all();
+
+      for (const prod of catProducts) {
+        db.delete(productVariations)
+          .where(eq(productVariations.productId, prod.id))
+          .run();
+        db.delete(productAddons)
+          .where(eq(productAddons.productId, prod.id))
+          .run();
+      }
+
+      db.delete(products).where(eq(products.categoryId, Number(id))).run();
+      db.delete(categories).where(eq(categories.id, Number(id))).run();
+    });
+
+    tx();
+    return true;
   },
 };

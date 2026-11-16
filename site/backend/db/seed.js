@@ -477,6 +477,22 @@ export function seedDatabase({ forceResetOrders = false } = {}) {
 
     productRepo.create({
       categoryId: catBurgers.id,
+      name: 'Frango Crispy',
+      description:
+        'Pão com gergelim, filé de frango empanado crocante, alface americana e maionese temperada.',
+      basePrice: 25.9,
+      imageUrl:
+        'https://images.unsplash.com/photo-1606755962773-d324e0a13086?w=400&h=300&fit=crop',
+      active: true,
+      variations: [],
+      addons: [
+        { name: 'Cheddar', price: 4.0, active: true },
+        { name: 'Bacon', price: 5.0, active: true },
+      ],
+    });
+
+    productRepo.create({
+      categoryId: catBurgers.id,
       name: 'Sanduíche Sazonal Trufado (Inativo)',
       description:
         'Edição limitada indisponível no momento para demonstrar ocultação no cardápio público (RN-001).',
@@ -509,6 +525,32 @@ export function seedDatabase({ forceResetOrders = false } = {}) {
     });
 
     productRepo.create({
+      categoryId: catSides.id,
+      name: 'Nuggets (10 un)',
+      description:
+        '10 unidades de nuggets crocantes de frango com molho barbecue.',
+      basePrice: 19.9,
+      imageUrl:
+        'https://images.unsplash.com/photo-1562967914-608f82629710?w=400&h=300&fit=crop',
+      active: true,
+      variations: [],
+      addons: [{ name: 'Molho Extra', price: 2.0, active: true }],
+    });
+
+    productRepo.create({
+      categoryId: catSides.id,
+      name: 'Onion Rings',
+      description:
+        'Anéis de cebola empanados e crocantes com molho ranch especial.',
+      basePrice: 16.9,
+      imageUrl:
+        'https://images.unsplash.com/photo-1639024471283-03518883512d?w=400&h=300&fit=crop',
+      active: true,
+      variations: [],
+      addons: [],
+    });
+
+    productRepo.create({
       categoryId: catDrinks.id,
       name: 'Refrigerante Lata',
       description:
@@ -526,6 +568,50 @@ export function seedDatabase({ forceResetOrders = false } = {}) {
     });
 
     productRepo.create({
+      categoryId: catDrinks.id,
+      name: 'Chopp Artesanal Caneca Congelada',
+      description:
+        'Chopp pilsen puro malte artesanal tirado no padrão perfeito e servido na caneca ultracongelada com colarinho cremoso.',
+      basePrice: 11.9,
+      imageUrl:
+        'https://images.unsplash.com/photo-1608270586620-248524c67de9?w=600&h=450&fit=crop',
+      active: true,
+      variations: [
+        { name: 'Caneca 340ml', price: 11.9, active: true },
+        { name: 'Canecão 500ml', price: 16.9, active: true },
+      ],
+      addons: [],
+    });
+
+    productRepo.create({
+      categoryId: catDrinks.id,
+      name: 'Suco Natural',
+      description:
+        'Laranja, limão, maracujá ou abacaxi. Feito na hora com frutas frescas.',
+      basePrice: 10.9,
+      imageUrl:
+        'https://images.unsplash.com/photo-1613478223719-2ab802602423?w=600&h=450&fit=crop',
+      active: true,
+      variations: [
+        { name: '300ml', price: 10.9, active: true },
+        { name: '500ml', price: 14.9, active: true },
+      ],
+      addons: [],
+    });
+
+    productRepo.create({
+      categoryId: catDrinks.id,
+      name: 'Água Mineral',
+      description: 'Água mineral sem gás ou com gás 500ml.',
+      basePrice: 4.9,
+      imageUrl:
+        'https://images.unsplash.com/photo-1548839140-29a749e1cf4d?w=600&h=450&fit=crop',
+      active: true,
+      variations: [],
+      addons: [],
+    });
+
+    productRepo.create({
       categoryId: catDesserts.id,
       name: 'Thunder Brownie com Sorvete',
       description:
@@ -538,6 +624,38 @@ export function seedDatabase({ forceResetOrders = false } = {}) {
       addons: [
         { name: 'Bola Extra de Sorvete', price: 5.0, active: true },
         { name: 'Calda Extra de Chocolate', price: 3.0, active: true },
+      ],
+    });
+
+    productRepo.create({
+      categoryId: catDesserts.id,
+      name: 'Pudim Artesanal de Leite',
+      description:
+        'Pudim tradicional de leite condensado super cremoso e lisinho com calda de caramelo brilhante.',
+      basePrice: 12.9,
+      imageUrl:
+        'https://images.unsplash.com/photo-1532556660262-1c45d5fae825?w=600&h=450&fit=crop',
+      active: true,
+      variations: [],
+      addons: [],
+    });
+
+    productRepo.create({
+      categoryId: catDesserts.id,
+      name: 'Milkshake',
+      description:
+        'Milkshake cremoso. Sabores: Chocolate Belga, Morango Silvestre ou Ovomaltine Crocante.',
+      basePrice: 16.9,
+      imageUrl:
+        'https://images.unsplash.com/photo-1572490122747-3968b75cc699?w=600&h=450&fit=crop',
+      active: true,
+      variations: [
+        { name: '300ml', price: 16.9, active: true },
+        { name: '500ml', price: 22.9, active: true },
+      ],
+      addons: [
+        { name: 'Chantilly', price: 3.0, active: true },
+        { name: 'Calda Extra', price: 2.5, active: true },
       ],
     });
   }

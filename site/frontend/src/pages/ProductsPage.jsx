@@ -11,7 +11,6 @@ import {
   SlidersHorizontal,
   X,
   ArrowRight,
-  ShieldCheck,
   CheckCircle2,
 } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
@@ -135,7 +134,7 @@ export default function ProductsPage() {
   );
 
   const handleCheckout = useCallback(
-    (checkoutData) => {
+    async (checkoutData) => {
       const orderType = checkoutData?.orderType || 'DELIVERY';
       const tableNumber = checkoutData?.tableNumber || null;
       const customerName = checkoutData?.customerName || null;
@@ -143,6 +142,9 @@ export default function ProductsPage() {
 
       const orderItems = cart.items.map((item, idx) => ({
         id: idx + 1,
+        productId: item.productId || null,
+        variationId: item.variationId || null,
+        addonIds: item.addonIds || [],
         productNameSnapshot: item.productName,
         quantity: item.quantity,
         variationNameSnapshot: item.variationName,
@@ -161,13 +163,17 @@ export default function ProductsPage() {
         items: orderItems,
       };
 
-      const newOrder = orders.createOrder(orderData);
+      const newOrder = await orders.createOrder(orderData);
       cart.clearCart();
       setIsCartOpen(false);
 
       if (orderType === 'DELIVERY') {
-        const message = generateWhatsAppMessage(newOrder);
-        const whatsAppUrl = generateWhatsAppUrl(RESTAURANT_CONFIG?.whatsappNumber || '5511999999999', message);
+        const whatsAppUrl =
+          newOrder.whatsappUrl ||
+          generateWhatsAppUrl(
+            RESTAURANT_CONFIG?.whatsappNumber || '5511999999999',
+            generateWhatsAppMessage(newOrder)
+          );
         window.open(whatsAppUrl, '_blank');
       }
 
@@ -453,7 +459,7 @@ export default function ProductsPage() {
               <div className="flex items-center gap-2">
                 <div className="h-4 w-1 rounded-full bg-orange-500"></div>
                 <h4 className="text-xs font-black uppercase tracking-wider text-white font-['Oswald',sans-serif]">
-                  Pagamento &amp; Acesso
+                  Formas de Pagamento
                 </h4>
               </div>
 
@@ -470,16 +476,6 @@ export default function ProductsPage() {
                   <span className="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
                   <span>Dinheiro (troco sob solicitação)</span>
                 </div>
-              </div>
-
-              <div className="pt-2">
-                <button
-                  onClick={() => navigate('/admin/login')}
-                  className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#171310] hover:bg-[#201a15] border border-[#382c23] hover:border-orange-500/70 text-stone-200 hover:text-white text-xs font-bold uppercase tracking-wider font-['Oswald',sans-serif] transition-all shadow-md cursor-pointer"
-                >
-                  <ShieldCheck size={15} className="text-orange-500" />
-                  <span>Acesso do Atendente</span>
-                </button>
               </div>
             </div>
           </div>

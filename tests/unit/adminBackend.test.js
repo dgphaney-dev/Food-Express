@@ -9,8 +9,12 @@ import {
   NEXT_STATUS_MAP,
   ORDER_STATUS,
 } from '../../site/backend/admin/services/orderService.js';
+import {
+  buildWhatsAppUrl,
+  formatWhatsAppMessage,
+} from '../../site/backend/admin/services/whatsappService.js';
 
-describe('Unit — Segurança (scrypt + JWT) e Máquina de Estados Admin', () => {
+describe('Unit — Segurança (scrypt + JWT), Máquina de Estados e Resumo WhatsApp', () => {
   it('RNF-002 / TR-006: deve gerar hash scrypt irreversível com salt aleatório e validar senha corretamente', () => {
     const plain = 'admin123';
     const hash1 = hashPassword(plain);
@@ -42,5 +46,41 @@ describe('Unit — Segurança (scrypt + JWT) e Máquina de Estados Admin', () =>
     expect(NEXT_STATUS_MAP[ORDER_STATUS.READY]).toBe(ORDER_STATUS.DELIVERED);
     expect(NEXT_STATUS_MAP[ORDER_STATUS.DELIVERED]).toBeNull();
     expect(NEXT_STATUS_MAP[ORDER_STATUS.CANCELLED]).toBeNull();
+  });
+
+  it('RN-005 / TR-007: deve formatar resumo padronizado de Entrega para WhatsApp com itens, variações, adicionais, observações e total', () => {
+    const sampleOrder = {
+      id: 101,
+      orderType: 'DELIVERY',
+      customerName: 'João Silva',
+      deliveryAddress: 'Rua das Flores, 123 - Apto 4',
+      totalAmount: 72.0,
+      items: [
+        {
+          quantity: 2,
+          productNameSnapshot: 'X-Burger Artesanal',
+          variationNameSnapshot: 'Duplo',
+          addonsSnapshot: [
+            { name: 'Bacon Extra', price: 5.0 },
+            { name: 'Cheddar', price: 4.0 },
+          ],
+          notes: 'Sem cebola, maionese à parte',
+          unitPrice: 36.0,
+          subtotal: 72.0,
+        },
+      ],
+    };
+
+    const msg = formatWhatsAppMessage(sampleOrder);
+    expect(msg).toContain('NOVO PEDIDO #101');
+    expect(msg).toContain('João Silva');
+    expect(msg).toContain('Rua das Flores, 123 - Apto 4');
+    expect(msg).toContain('2x X-Burger Artesanal (Variação: Duplo)');
+    expect(msg).toContain('Bacon Extra, Cheddar');
+    expect(msg).toContain('Sem cebola, maionese à parte');
+    expect(msg).toContain('R$ 72,00');
+
+    const url = buildWhatsAppUrl(sampleOrder, '5511999999999');
+    expect(url).toContain('https://wa.me/5511999999999?text=');
   });
 });

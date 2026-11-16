@@ -1507,3 +1507,28 @@ pm run build bem-sucedido.
 
 
 
+
+---
+
+### [2026-11-16 13:06] — Conclusão Integral da Lógica de Backend (BRD/TRD) e Separação das Aplicações Cliente vs. Painel Administrativo via URL (`/passo3`)
+- **Papel Ativo:** Engenheiro de Software Sênior Full-Stack & Especialista DevOps (Skill `/passo3`)
+- **Etapa SDD:** `Fase 3 — Implementação Integral do Backend e Isolamento de Aplicações Frontend`
+- **Ações Executadas:**
+  1. **Backend Completo 100% Aderente ao BRD e TRD (`site/backend/`):**
+     - **Serviço de Formatação WhatsApp (`site/backend/admin/services/whatsappService.js` — `RN-005` / `TR-007`):** Geração determinística da mensagem padronizada com código `#ID`, modalidade, nome/mesa, endereço, lista de itens detalhados (quantidades, variações, adicionais, observações e subtotais em `R$`) e link `https://wa.me/...` anexado automaticamente às respostas de `POST /api/public/orders` e `GET /api/public/orders/:id`.
+     - **Regras de Negócio em `orderService.js` (`TR-003`, `TR-004`, `TR-005`, `TR-009`, `TR-010`, `TR-011`):**
+       - Validação server-side estrita de modalidade (`DINE_IN` exigindo `tableNumber` obrigatório e `DELIVERY` exigindo `customerName` obrigatório — `RN-003`).
+       - Validação server-side do limite máximo de **140 caracteres** nas observações por item (`RN-002` / `TR-004`), rejeitando excessos com HTTP `422`.
+       - Verificação de disponibilidade (`active = true`) de produtos e categorias no momento de criação do pedido (`RN-001`) e cálculo oficial de preços com variações e adicionais (`unitPrice = (variation.price ?? product.basePrice) + sum(addons.price)` — `RN-011`).
+       - Enriquecimento dinâmico de pedidos com `canCustomerCancel` e `remainingCancelSeconds` para controle da janela de **5 minutos** (`300s`) no cancelamento pelo cliente (`RN-007`), além do cancelamento irrestrito pelo atendente (`RN-008`) e máquina de estados linear estrita (`RECEIVED` → `PREPARING` → `READY` → `DELIVERED` — `RN-006`).
+     - **CRUD Completo de Categorias e Produtos (`categoryRepo.js`, `menuService.js`, `menuController.js`, `adminRoutes.js`):** Inclusão de `PATCH /api/admin/categories/:id/toggle`, `DELETE /api/admin/categories/:id` e `GET /api/auth/me`, além de expansão do `seed.js` com os 13 produtos completos do catálogo Steakhouse.
+  2. **Separação das Aplicações Frontend (Cliente vs. Painel Administrativo via URL) e Ocultação Total para o Cliente:**
+     - Criadas duas aplicações independentes: [`CustomerApp.jsx`](./site/frontend/src/CustomerApp.jsx) (exclusiva para o cliente final) e [`AdminApp.jsx`](./site/frontend/admin/AdminApp.jsx) (exclusiva para operação administrativa, com entrypoint dedicado em [`admin.html`](./site/frontend/admin.html) e [`admin/main.jsx`](./site/frontend/admin/main.jsx), além de roteamento direto por URL `/admin` ou `/#/admin`).
+     - Removidos todos os botões, abas e links de `"Acesso do Atendente"` e `"Tela do Motorista"` da barra de navegação pública ([`Navbar.jsx`](./site/frontend/src/components/Navbar.jsx)) e dos rodapés das páginas públicas ([`HomePage.jsx`](./site/frontend/src/pages/HomePage.jsx), [`CustomerMenuPage.jsx`](./site/frontend/src/pages/CustomerMenuPage.jsx), [`RestaurantPage.jsx`](./site/frontend/src/pages/RestaurantPage.jsx) e [`ProductsPage.jsx`](./site/frontend/src/pages/ProductsPage.jsx)), garantindo que o painel administrativo jamais fique visível na interface do cliente.
+     - Removida a `<Navbar />` de cliente de dentro da [`AdminLoginPage.jsx`](./site/frontend/admin/pages/AdminLoginPage.jsx), substituindo-a por um cabeçalho exclusivo do Portal Administrativo.
+     - Isolamento no [`OrderContext.jsx`](./site/frontend/src/contexts/OrderContext.jsx) para não realizar login ou polling administrativo quando acessado pela aplicação do cliente.
+  3. **Validação Automatizada e Build:**
+     - `npm test` (Vitest + Supertest): **11/11 testes passando (100% verde)** cobrindo todas as regras `RN-001` a `RN-012` e endpoints `API-001` a `API-013`.
+     - `npm run lint:frontend`: **0 erros**.
+     - `npm run build:frontend`: compilado com sucesso gerando os bundles de `index.html` (App Cliente) e `admin.html` (App Admin).
+     - Atualizado status de todos os requisitos em [`docs/brd.md`](./brd.md) e [`docs/trd.md`](./trd.md) para `Concluído`.

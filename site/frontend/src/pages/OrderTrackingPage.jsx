@@ -43,24 +43,27 @@ const DRIVER_INFO = {
 export default function OrderTrackingPage() {
   const { orderId } = useParams();
   const navigate = useNavigate();
-  const { getOrder, currentOrder, cancelOrder, markOrderAsPaid } = useOrders();
+  const { getOrder, fetchOrderById, currentOrder, cancelOrder, markOrderAsPaid } = useOrders();
 
-  // Refresh ticker
-  const [tick, setTick] = useState(0);
-
-  // Auto-refresh order status every 10 seconds
+  // Sincroniza o pedido com o backend SQLite ao abrir a página e a cada 10s
   useEffect(() => {
+    if (!orderId) return;
+    fetchOrderById(orderId);
     const interval = setInterval(() => {
-      setTick((t) => t + 1);
+      fetchOrderById(orderId);
     }, 10000);
     return () => clearInterval(interval);
-  }, []);
+  }, [orderId, fetchOrderById]);
 
   // Look up order
   const order = useMemo(() => {
-    void tick;
-    return getOrder(orderId) || currentOrder;
-  }, [getOrder, orderId, currentOrder, tick]);
+    return (
+      getOrder(orderId) ||
+      (currentOrder && String(currentOrder.id) === String(orderId)
+        ? currentOrder
+        : null)
+    );
+  }, [getOrder, orderId, currentOrder]);
 
   // Cancel timer countdown
   const [cancelRemaining, setCancelRemaining] = useState(0);
@@ -98,18 +101,29 @@ export default function OrderTrackingPage() {
   }, [order]);
 
   // Handlers
-  const handleCancel = useCallback(() => {
+  const handleCancel = useCallback(async () => {
     if (!order) return;
     const confirmed = window.confirm(
       'Tem certeza que deseja cancelar este pedido? Esta ação não pode ser desfeita.'
     );
     if (confirmed) {
-      cancelOrder(order.id);
+      try {
+        await cancelOrder(order.id, false);
+      } catch (err) {
+        alert(
+          err.message ||
+            'Não foi possível cancelar o pedido (prazo de 5 minutos expirado ou preparo já iniciado).'
+        );
+      }
     }
   }, [order, cancelOrder]);
 
   const handleWhatsApp = useCallback(() => {
     if (!order) return;
+    if (order.whatsappUrl) {
+      window.open(order.whatsappUrl, '_blank');
+      return;
+    }
     const message = generateWhatsAppMessage(order);
     const url = generateWhatsAppUrl(RESTAURANT_CONFIG.whatsappNumber, message);
     window.open(url, '_blank');

@@ -1,5 +1,8 @@
 import { AppError } from '../middlewares/errorHandler.js';
+import { categoryRepo } from '../repositories/categoryRepo.js';
 import { orderRepo } from '../repositories/orderRepo.js';
+import { productRepo } from '../repositories/productRepo.js';
+import { buildWhatsAppUrl, formatWhatsAppMessage } from './whatsappService.js';
 
 export const ORDER_STATUS = {
   RECEIVED: 'RECEIVED',
@@ -21,14 +24,49 @@ export const NEXT_STATUS_MAP = {
   [ORDER_STATUS.CANCELLED]: null,
 };
 
-const CUSTOMER_CANCEL_WINDOW_MS = 5 * 60 * 1000; // 5 minutos (300.000 ms) - RN-007
+export const CUSTOMER_CANCEL_WINDOW_MS = 5 * 60 * 1000; // 5 minutos (300.000 ms) - RN-007
+
+function roundMoney(value) {
+  return Math.round(Number(value || 0) * 100) / 100;
+}
+
+/**
+ * Enriquecimento do objeto de pedido com metadados dinâmicos exigidos por API-003 e API-004:
+ * - canCustomerCancel (RN-007)
+ * - remainingCancelSeconds (RN-007)
+ * - whatsappMessage & whatsappUrl (RN-005 / TR-007)
+ */
+export function enrichOrderWithMetadata(order) {
+  if (!order) return null;
+
+  const createdTime = new Date(order.createdAt).getTime();
+  const elapsedMs = Math.max(0, Date.now() - (Number.isFinite(createdTime) ? createdTime : Date.now()));
+  const canCustomerCancel =
+    order.status === ORDER_STATUS.RECEIVED &&
+    elapsedMs <= CUSTOMER_CANCEL_WINDOW_MS;
+  const remainingCancelSeconds =
+    order.status === ORDER_STATUS.RECEIVED
+      ? Math.max(0, Math.floor((CUSTOMER_CANCEL_WINDOW_MS - elapsedMs) / 1000))
+      : 0;
+
+  const whatsappMessage = formatWhatsAppMessage(order);
+  const whatsappUrl = buildWhatsAppUrl(order);
+
+  return {
+    ...order,
+    canCustomerCancel,
+    remainingCancelSeconds,
+    whatsappMessage,
+    whatsappUrl,
+  };
+}
 
 export const orderService = {
   /**
    * API-009 / TR-008 / RN-004 / RN-009: Lista pedidos para o Painel do Atendente
    */
   listAdminOrders({ status = null } = {}) {
-    const orders = orderRepo.findAll({ status });
+    const orders = orderRepo.findAll({ status }).map(enrichOrderWithMetadata);
     return {
       orders,
       serverTime: new Date().toISOString(),
@@ -68,7 +106,7 @@ export const orderService = {
       expectedNext,
       new Date().toISOString()
     );
-    return { order: updated };
+    return { order: enrichOrderWithMetadata(updated) };
   },
 
   /**
@@ -100,7 +138,7 @@ export const orderService = {
       ORDER_STATUS.CANCELLED,
       new Date().toISOString()
     );
-    return { order: updated };
+    return { order: enrichOrderWithMetadata(updated) };
   },
 
   /**
@@ -135,7 +173,7 @@ export const orderService = {
       ORDER_STATUS.CANCELLED,
       new Date().toISOString()
     );
-    return { order: updated };
+    return { order: enrichOrderWithMetadata(updated) };
   },
 
   /**
@@ -184,7 +222,7 @@ export const orderService = {
           },
         ]
       );
-      return { order: created };
+      return { order: enrichOrderWithMetadata(created) };
     }
 
     const created = orderRepo.createWithItems(
@@ -211,32 +249,264 @@ export const orderService = {
         },
       ]
     );
-    return { order: created };
+    return { order: enrichOrderWithMetadata(created) };
   },
 
   /**
-   * Criação pública de pedido pelo cliente (Delivery ou Salão)
+   * API-003 / TR-003 a TR-005 / TR-007 / RN-001 a RN-005 / RN-011:
+   * Criação pública de pedido pelo cliente (Consumo no local ou Entrega)
    */
   createCustomerOrder(payload = {}) {
     if (!payload.items || !Array.isArray(payload.items) || payload.items.length === 0) {
-      throw new AppError('O pedido deve conter pelo menos 1 item.', 400, 'EMPTY_ORDER_ITEMS');
+      throw new AppError(
+        'A sacola não pode estar vazia. Adicione pelo menos 1 item ao pedido (RN-011).',
+        422,
+        'EMPTY_ORDER_ITEMS'
+      );
     }
 
-    const orderType = payload.orderType === 'DINE_IN' ? 'DINE_IN' : 'DELIVERY';
-    const totalAmount = Number(payload.totalAmount || payload.totalPrice || 0);
+    const rawOrderType = payload.orderType
+      ? String(payload.orderType).toUpperCase().trim()
+      : payload.tableNumber
+      ? 'DINE_IN'
+      : 'DELIVERY';
+
+    if (rawOrderType !== 'DINE_IN' && rawOrderType !== 'DELIVERY') {
+      throw new AppError(
+        'Modalidade de pedido inválida. Escolha entre Consumo no local (DINE_IN) ou Entrega (DELIVERY) (RN-003).',
+        422,
+        'INVALID_ORDER_TYPE'
+      );
+    }
+
+    const orderType = rawOrderType;
+    const tableNumber =
+      payload.tableNumber !== undefined && payload.tableNumber !== null
+        ? String(payload.tableNumber).trim()
+        : '';
+    const customerName =
+      payload.customerName !== undefined && payload.customerName !== null
+        ? String(payload.customerName).trim()
+        : '';
+
+    // RN-003 / TR-005: Identificação obrigatória condicional por modalidade
+    if (orderType === 'DINE_IN' && !tableNumber) {
+      throw new AppError(
+        'O número da mesa é obrigatório para pedidos de Consumo no local (RN-003).',
+        422,
+        'TABLE_NUMBER_REQUIRED'
+      );
+    }
+
+    if (orderType === 'DELIVERY' && !customerName) {
+      throw new AppError(
+        'O nome do cliente é obrigatório para pedidos na modalidade Entrega (RN-003).',
+        422,
+        'CUSTOMER_NAME_REQUIRED'
+      );
+    }
+
+    const itemsList = payload.items.map((item) => {
+      const quantity = Number(item.quantity ?? 1);
+      if (!Number.isInteger(quantity) || quantity <= 0) {
+        throw new AppError(
+          'A quantidade de cada item deve ser um número inteiro maior que zero (RF-003).',
+          422,
+          'INVALID_ITEM_QUANTITY'
+        );
+      }
+
+      // RN-002 / TR-004: Limite estrito de 140 caracteres na observação
+      const rawNotes = String(item.notes ?? item.observation ?? '');
+      if (rawNotes.length > 140) {
+        throw new AppError(
+          'A observação do item não pode ultrapassar o limite máximo de 140 caracteres (RN-002).',
+          422,
+          'NOTES_LIMIT_EXCEEDED'
+        );
+      }
+
+      // RN-001 / RN-011 / TR-003: Validação de produto ativo e cálculo de variações e adicionais
+      const explicitProductId =
+        item.productId !== undefined && item.productId !== null
+          ? Number(item.productId)
+          : null;
+      const dbProduct = explicitProductId
+        ? productRepo.findById(explicitProductId)
+        : null;
+
+      if (explicitProductId && !dbProduct) {
+        throw new AppError(
+          `O produto #${explicitProductId} não foi encontrado no cardápio (RN-001).`,
+          422,
+          'PRODUCT_NOT_FOUND'
+        );
+      }
+
+      if (dbProduct) {
+        const dbCategory = categoryRepo.findById(dbProduct.categoryId);
+        if (!dbProduct.active || (dbCategory && !dbCategory.active)) {
+          throw new AppError(
+            `O produto "${dbProduct.name}" encontra-se inativo e não está disponível para pedido (RN-001).`,
+            422,
+            'PRODUCT_INACTIVE'
+          );
+        }
+      }
+
+      // Resolução de Variação
+      let variationNameSnapshot =
+        item.variationNameSnapshot || item.variation || null;
+      let resolvedVariationPrice = null;
+
+      if (dbProduct && item.variationId !== undefined && item.variationId !== null) {
+        const foundVar = (dbProduct.variations || []).find(
+          (v) => v.id === Number(item.variationId) && v.active
+        );
+        if (!foundVar) {
+          throw new AppError(
+            `Variação inválida ou inativa para o produto "${dbProduct.name}" (RN-011).`,
+            422,
+            'INVALID_VARIATION'
+          );
+        }
+        variationNameSnapshot = foundVar.name;
+        resolvedVariationPrice = Number(foundVar.price);
+      } else if (
+        dbProduct &&
+        variationNameSnapshot &&
+        resolvedVariationPrice === null
+      ) {
+        const foundVarByName = (dbProduct.variations || []).find(
+          (v) =>
+            v.name.toLowerCase() === String(variationNameSnapshot).toLowerCase() &&
+            v.active
+        );
+        if (foundVarByName) {
+          resolvedVariationPrice = Number(foundVarByName.price);
+        }
+      }
+
+      // Resolução de Adicionais
+      let addonsSnapshot = [];
+      if (dbProduct && Array.isArray(item.addonIds) && item.addonIds.length > 0) {
+        addonsSnapshot = item.addonIds.map((addonId) => {
+          const foundAddon = (dbProduct.addons || []).find(
+            (a) => a.id === Number(addonId) && a.active
+          );
+          if (!foundAddon) {
+            throw new AppError(
+              `Adicional inválido ou inativo para o produto "${dbProduct.name}" (RN-011).`,
+              422,
+              'INVALID_ADDON'
+            );
+          }
+          return { name: foundAddon.name, price: Number(foundAddon.price) };
+        });
+      } else if (Array.isArray(item.addonsSnapshot)) {
+        addonsSnapshot = item.addonsSnapshot.map((a) =>
+          typeof a === 'string'
+            ? { name: a, price: 0 }
+            : { name: a.name, price: Number(a.price || 0) }
+        );
+      } else if (Array.isArray(item.addons)) {
+        addonsSnapshot = item.addons.map((a) =>
+          typeof a === 'string'
+            ? { name: a, price: 0 }
+            : { name: a.name, price: Number(a.price || 0) }
+        );
+      } else if (typeof item.addonsJsonSnapshot === 'string') {
+        try {
+          const parsed = JSON.parse(item.addonsJsonSnapshot);
+          if (Array.isArray(parsed)) {
+            addonsSnapshot = parsed.map((a) =>
+              typeof a === 'string'
+                ? { name: a, price: 0 }
+                : { name: a.name, price: Number(a.price || 0) }
+            );
+          }
+        } catch {
+          addonsSnapshot = [];
+        }
+      }
+
+      // Cálculo do preço unitário: (Preço da Variação ?? Preço Base) + Soma(Adicionais) (RN-011)
+      let unitPrice = 0;
+      if (
+        dbProduct &&
+        (item.variationId !== undefined ||
+          Array.isArray(item.addonIds) ||
+          (item.unitPrice === undefined && item.price === undefined))
+      ) {
+        const base =
+          resolvedVariationPrice !== null
+            ? resolvedVariationPrice
+            : Number(dbProduct.basePrice);
+        const addonsSum = addonsSnapshot.reduce(
+          (sum, a) => sum + Number(a.price || 0),
+          0
+        );
+        unitPrice = roundMoney(base + addonsSum);
+      } else {
+        unitPrice = roundMoney(
+          item.unitPrice ?? item.price ?? (dbProduct ? dbProduct.basePrice : 0)
+        );
+      }
+
+      if (!Number.isFinite(unitPrice) || unitPrice <= 0) {
+        throw new AppError(
+          'O preço unitário de cada item deve ser maior que zero (RN-011).',
+          422,
+          'INVALID_ITEM_PRICE'
+        );
+      }
+
+      const subtotal = roundMoney(unitPrice * quantity);
+
+      return {
+        productId: dbProduct ? dbProduct.id : null,
+        productNameSnapshot:
+          dbProduct?.name ||
+          item.productNameSnapshot ||
+          item.title ||
+          item.name ||
+          'Item Artesanal',
+        quantity,
+        variationNameSnapshot,
+        addonsSnapshot,
+        notes: rawNotes.trim(),
+        unitPrice,
+        subtotal,
+      };
+    });
+
+    const calculatedTotal = roundMoney(
+      itemsList.reduce((sum, it) => sum + it.subtotal, 0)
+    );
+    const totalAmount =
+      calculatedTotal > 0
+        ? calculatedTotal
+        : roundMoney(payload.totalAmount || payload.totalPrice || 0);
 
     if (totalAmount <= 0) {
-      throw new AppError('O valor total do pedido deve ser maior que zero.', 400, 'INVALID_TOTAL_AMOUNT');
+      throw new AppError(
+        'O valor total do pedido deve ser maior que zero (RN-011).',
+        422,
+        'INVALID_TOTAL_AMOUNT'
+      );
     }
 
     const now = new Date().toISOString();
     const orderData = {
       orderType,
       status: ORDER_STATUS.RECEIVED,
-      tableNumber: payload.tableNumber ? String(payload.tableNumber) : null,
-      customerName: payload.customerName || (orderType === 'DELIVERY' ? 'Cliente FoodExpress' : null),
+      tableNumber: orderType === 'DINE_IN' ? tableNumber : null,
+      customerName: orderType === 'DELIVERY' ? customerName : null,
       customerPhone: payload.customerPhone || null,
-      deliveryAddress: payload.deliveryAddress || null,
+      deliveryAddress:
+        orderType === 'DELIVERY' && payload.deliveryAddress
+          ? String(payload.deliveryAddress).trim()
+          : null,
       paymentMethod: payload.paymentMethod || 'PIX',
       isPaid: Boolean(payload.isPaid),
       deliveryPin: payload.deliveryPin || '8492',
@@ -245,35 +515,19 @@ export const orderService = {
       updatedAt: now,
     };
 
-    const itemsList = payload.items.map((item) => {
-      const quantity = Math.max(1, Number(item.quantity || 1));
-      const unitPrice = Number(item.price || item.unitPrice || 0);
-      const subtotal = Number(item.subtotal || unitPrice * quantity);
-      return {
-        productId: item.id || item.productId || null,
-        productNameSnapshot: item.title || item.name || item.productNameSnapshot || 'Item Artesanal',
-        quantity,
-        variationNameSnapshot: item.variation || item.variationNameSnapshot || null,
-        addonsSnapshot: item.addons || item.addonsSnapshot || [],
-        notes: String(item.notes || item.observation || '').slice(0, 140),
-        unitPrice,
-        subtotal,
-      };
-    });
-
     const created = orderRepo.createWithItems(orderData, itemsList);
-    return { order: created };
+    return { order: enrichOrderWithMetadata(created) };
   },
 
   /**
-   * Busca dados de um pedido pelo ID para rastreamento
+   * API-004 / TR-011 / RN-006 / RN-007: Busca dados de um pedido pelo ID para rastreamento
    */
   getOrderById(orderId) {
     const order = orderRepo.findById(orderId);
     if (!order) {
       throw new AppError('Pedido não encontrado.', 404, 'ORDER_NOT_FOUND');
     }
-    return { order };
+    return { order: enrichOrderWithMetadata(order) };
   },
 
   /**
@@ -285,7 +539,7 @@ export const orderService = {
       throw new AppError('Pedido não encontrado.', 404, 'ORDER_NOT_FOUND');
     }
     const updated = orderRepo.markAsPaid(order.id, paymentMethod);
-    return { order: updated };
+    return { order: enrichOrderWithMetadata(updated) };
   },
 
   /**
@@ -293,7 +547,9 @@ export const orderService = {
    */
   listDriverOrders() {
     const all = orderRepo.findAll();
-    const deliveryOrders = all.filter((o) => o.orderType === 'DELIVERY');
+    const deliveryOrders = all
+      .filter((o) => o.orderType === 'DELIVERY')
+      .map(enrichOrderWithMetadata);
     return { orders: deliveryOrders, serverTime: new Date().toISOString() };
   },
 
@@ -314,7 +570,7 @@ export const orderService = {
       ORDER_STATUS.DELIVERED,
       new Date().toISOString()
     );
-    return { order: updated, success: true };
+    return { order: enrichOrderWithMetadata(updated), success: true };
   },
 
   /**

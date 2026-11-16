@@ -6,7 +6,6 @@ import {
   Clock,
   MapPin,
   Phone,
-  ShieldCheck,
   Beer,
   Wind,
   ArrowRight,
@@ -324,7 +323,7 @@ export default function RestaurantPage() {
                 <div className="flex items-center gap-2">
                   <div className="h-4 w-1 rounded-full bg-orange-500"></div>
                   <h4 className="text-xs font-black uppercase tracking-wider text-white font-['Oswald',sans-serif]">
-                    Pagamento &amp; Acesso
+                    Formas de Pagamento
                   </h4>
                 </div>
 
@@ -341,16 +340,6 @@ export default function RestaurantPage() {
                     <span className="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
                     <span>Dinheiro (troco sob solicitação)</span>
                   </div>
-                </div>
-
-                <div className="pt-2">
-                  <button
-                    onClick={() => navigate('/admin/login')}
-                    className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#171310] hover:bg-[#201a15] border border-[#382c23] hover:border-orange-500/70 text-stone-200 hover:text-white text-xs font-bold uppercase tracking-wider font-['Oswald',sans-serif] transition-all shadow-md cursor-pointer"
-                  >
-                    <ShieldCheck size={15} className="text-orange-500" />
-                    <span>Acesso do Atendente</span>
-                  </button>
                 </div>
               </div>
             </div>

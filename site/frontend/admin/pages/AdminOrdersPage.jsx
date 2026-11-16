@@ -179,8 +179,19 @@ export default function AdminOrdersPage() {
     cancelOrder(order.id);
   };
 
-  // Simulate new order for demo/testing
-  const handleSimulateNewOrder = (isDelivery = false) => {
+  // Simulate new order for demo/testing (persisted in SQLite backend)
+  const handleSimulateNewOrder = async (isDelivery = false) => {
+    try {
+      const data = await adminApi.simulateIncomingOrder(isDelivery);
+      if (data && data.order && setAdminOrders) {
+        setAdminOrders((prev) => [data.order, ...prev]);
+        setBackendConnected(true);
+        return;
+      }
+    } catch {
+      // Fallback local se offline
+    }
+
     const newId = Math.floor(100 + Math.random() * 900);
     const mockOrder = {
       id: newId,

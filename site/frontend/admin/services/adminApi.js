@@ -158,6 +158,23 @@ export const adminApi = {
     );
   },
 
+  async toggleCategoryActive(id, active = undefined) {
+    return this.withAutoAuth(() =>
+      requestJson(`/admin/categories/${id}/toggle`, {
+        method: 'PATCH',
+        body: JSON.stringify(active !== undefined ? { active } : {}),
+      })
+    );
+  },
+
+  async deleteCategory(id) {
+    return this.withAutoAuth(() =>
+      requestJson(`/admin/categories/${id}`, {
+        method: 'DELETE',
+      })
+    );
+  },
+
   async createProduct(payload) {
     return this.withAutoAuth(() =>
       requestJson('/admin/products', {

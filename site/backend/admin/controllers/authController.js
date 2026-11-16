@@ -40,4 +40,17 @@ export const authController = {
       next(err);
     }
   },
+
+  /**
+   * GET /api/auth/me — Retorna dados do operador autenticado
+   */
+  me(req, res) {
+    res.status(200).json({
+      user: {
+        id: req.user.sub,
+        username: req.user.username,
+        role: req.user.role,
+      },
+    });
+  },
 };

@@ -1,3 +1,4 @@
+export { default as AdminApp } from './AdminApp';
 export { default as AdminLoginPage } from './pages/AdminLoginPage';
 export { default as AdminMetricsPage } from './pages/AdminMetricsPage';
 export { default as AdminDashboardPage } from './pages/AdminMetricsPage';
