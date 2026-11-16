@@ -1,1 +1,0 @@
-import{D as e,E as t,I as n,J as r,N as i,P as a,at as o,it as s,rt as c,t as l}from"./src-BEloE-4J.js";var u=o(s(),1),d=c(),f=n();(0,d.createRoot)(document.getElementById(`admin-root`)).render((0,f.jsx)(u.StrictMode,{children:(0,f.jsx)(r,{children:(0,f.jsx)(i,{children:(0,f.jsx)(e,{children:(0,f.jsx)(a,{children:(0,f.jsx)(t,{children:(0,f.jsx)(l,{})})})})})})}));
