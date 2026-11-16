@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Flame,
@@ -13,10 +14,26 @@ import {
 } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import ScrollReveal from '../components/ScrollReveal';
-import EmberCanvas from '../components/EmberCanvas';
 
 export default function RestaurantPage() {
   const navigate = useNavigate();
+  const [scrollY, setScrollY] = useState(0);
+
+  useEffect(() => {
+    let ticking = false;
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          setScrollY(window.scrollY || document.documentElement.scrollTop);
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
     <div className="min-h-screen bg-[#0b0908] text-stone-100 font-['Plus_Jakarta_Sans',sans-serif] antialiased selection:bg-orange-600 flex flex-col">
@@ -25,15 +42,18 @@ export default function RestaurantPage() {
 
       {/* 2. Page Hero with Atmospheric Steakhouse Interior */}
       <div className="relative w-full min-h-[420px] sm:min-h-[500px] overflow-hidden flex items-center border-b border-[#241d18]">
-        {/* Delicate floating grill embers effect */}
-        <EmberCanvas count={24} speed={0.7} />
-
-        {/* Background photo */}
-        <div className="absolute inset-0">
+        {/* Background photo with subtle parallax */}
+        <div
+          className="absolute inset-0 will-change-transform"
+          style={{
+            transform: `translate3d(0, ${Math.min(scrollY * 0.25, 100)}px, 0)`,
+            transition: 'transform 0.1s cubic-bezier(0.16, 1, 0.3, 1)',
+          }}
+        >
           <img
             src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1600&h=900&fit=crop"
             alt="Interior do restaurante FoodExpress Steakhouse"
-            className="w-full h-full object-cover scale-102 transition-transform duration-1000 ease-out"
+            className="w-full h-full object-cover scale-105"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-[#0b0908] via-[#0b0908]/85 to-transparent" />
           <div className="absolute inset-0 bg-gradient-to-t from-[#0b0908] via-transparent to-transparent" />

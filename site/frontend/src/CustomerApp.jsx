@@ -4,6 +4,7 @@ import RestaurantPage from './pages/RestaurantPage';
 import CustomerMenuPage from './pages/CustomerMenuPage';
 import OrderTrackingPage from './pages/OrderTrackingPage';
 import NotFoundPage from './pages/NotFoundPage';
+import ScrollEffects from './components/ScrollEffects';
 
 /**
  * Aplicação Exclusiva do Cliente (ACT-01)
@@ -11,7 +12,9 @@ import NotFoundPage from './pages/NotFoundPage';
  */
 export default function CustomerApp() {
   return (
-    <Routes>
+    <>
+      <ScrollEffects />
+      <Routes>
       {/* 1. ABA INÍCIO (Tela Demonstrativa Inicial Steakhouse) */}
       <Route path="/" element={<HomePage />} />
 
@@ -32,5 +35,6 @@ export default function CustomerApp() {
       {/* 404 */}
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
+    </>
   );
 }

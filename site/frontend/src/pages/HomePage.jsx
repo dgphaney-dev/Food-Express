@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import ScrollReveal from '../components/ScrollReveal';
-import EmberCanvas from '../components/EmberCanvas';
 import {
   Flame,
   Sparkles,
@@ -101,6 +100,24 @@ export default function HomePage() {
   const navigate = useNavigate();
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const [scrollY, setScrollY] = useState(0);
+
+  // Smooth scroll tracking for parallax depth effects
+  useEffect(() => {
+    let ticking = false;
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          setScrollY(window.scrollY || document.documentElement.scrollTop);
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // Auto-advance slides every 6 seconds
   useEffect(() => {
@@ -145,9 +162,6 @@ export default function HomePage() {
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
       >
-        {/* Subtle Floating Embers Effect across Hero */}
-        <EmberCanvas count={32} speed={0.8} className="absolute inset-0 pointer-events-none z-15" />
-
         {/* Slides Container with Smooth Crossfade */}
         {HERO_SLIDES.map((slide, idx) => {
           const isActive = idx === currentSlideIndex;
@@ -158,8 +172,14 @@ export default function HomePage() {
                 isActive ? 'opacity-100 z-10 pointer-events-auto' : 'opacity-0 z-0 pointer-events-none'
               }`}
             >
-              {/* Full-width Photo Layer with wide feathered mask fading softly into the degradê */}
-              <div className="absolute inset-y-0 left-0 w-full md:w-[68%] lg:w-[72%] h-[240px] sm:h-[280px] md:h-full overflow-hidden pointer-events-none">
+              {/* Full-width Photo Layer with Parallax Depth and feathered mask fading softly into the degradê */}
+              <div
+                className="absolute inset-y-0 left-0 w-full md:w-[68%] lg:w-[72%] h-[240px] sm:h-[280px] md:h-full overflow-hidden pointer-events-none will-change-transform"
+                style={{
+                  transform: `translate3d(0, ${Math.min(scrollY * 0.22, 120)}px, 0)`,
+                  transition: 'transform 0.1s cubic-bezier(0.16, 1, 0.3, 1)',
+                }}
+              >
                 <img
                   src={slide.photoUrl}
                   alt={slide.photoAlt}

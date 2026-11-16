@@ -22,7 +22,6 @@ import ProductCard from '../components/ProductCard';
 import ProductModal from '../components/ProductModal';
 import CartDrawer from '../components/CartDrawer';
 import FloatingCartBar from '../components/FloatingCartBar';
-import EmberCanvas from '../components/EmberCanvas';
 
 const CATEGORY_TILES = [
   {
@@ -196,9 +195,6 @@ export default function ProductsPage() {
 
       {/* 2. Page Hero Banner Header */}
       <div className="relative bg-[#100e0c] border-b border-[#241d18] py-10 sm:py-14 steakhouse-glow overflow-hidden">
-        {/* Delicate floating grill embers effect */}
-        <EmberCanvas count={20} speed={0.7} />
-
         {/* Subtle decorative curved fluid waves */}
         <svg
           className="hidden md:block absolute right-6 -bottom-6 w-80 h-36 text-orange-500/15 pointer-events-none z-10"

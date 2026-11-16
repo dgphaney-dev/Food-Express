@@ -35,7 +35,17 @@ export default function Navbar({
   const { lastOrderId } = useOrders();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const closeTimeoutRef = useRef(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleCloseMenu = useCallback(() => {
     if (isClosing) return;
@@ -118,10 +128,14 @@ export default function Navbar({
 
   return (
     <header
-      className={`sticky top-0 z-50 backdrop-blur-md shadow-2xl w-full ${
+      className={`sticky top-0 z-50 transition-all duration-300 w-full ${
         isAdmin
-          ? 'bg-black/95 border-b border-zinc-800'
-          : 'bg-[#0e0c0a]/95 border-b border-[#26201b]'
+          ? isScrolled
+            ? 'bg-black/98 backdrop-blur-xl border-b border-zinc-700 shadow-2xl'
+            : 'bg-black/90 backdrop-blur-md border-b border-zinc-800'
+          : isScrolled
+            ? 'bg-[#0a0807]/96 backdrop-blur-xl border-b border-[#2d241c] shadow-[0_10px_30px_-5px_rgba(0,0,0,0.85)]'
+            : 'bg-[#0e0c0a]/90 backdrop-blur-md border-b border-[#241d18]'
       }`}
     >
       <div className="max-w-7xl mx-auto w-full flex h-18 items-center justify-between px-3 sm:px-4 xl:px-6 gap-2 xl:gap-3">

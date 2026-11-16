@@ -10,12 +10,12 @@ export default function ScrollReveal({
   className = '',
   direction = 'up',
   delay = 0,
-  duration = 800,
-  distance = 36,
-  threshold = 0.08,
+  duration = 750,
+  distance = 32,
+  threshold = 0.05,
   withBlur = true,
   withScale = true,
-  once = false,
+  once = true,
 }) {
   const ref = useRef(null);
   const [isVisible, setIsVisible] = useState(false);
