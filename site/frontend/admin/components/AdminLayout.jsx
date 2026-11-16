@@ -126,7 +126,7 @@ export default function AdminLayout({
   };
 
   return (
-    <div className="min-h-screen bg-[#090807] text-zinc-100 flex overflow-x-hidden font-sans selection:bg-orange-500 selection:text-white">
+    <div className="min-h-screen bg-[#090807] text-zinc-100 flex overflow-x-clip font-sans selection:bg-orange-500 selection:text-white">
       {/* ================= MOBILE BACKDROP ================= */}
       {mobileMenuOpen && (
         <div
