@@ -16,11 +16,7 @@ export default function AdminLoginPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (isAuthenticated) {
-      navigate('/admin/pedidos', { replace: true });
-    }
-  }, [isAuthenticated, navigate]);
+  // Não redirecionamos automaticamente para permitir que a tela de login seja sempre visualizada e testada pelo usuário
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -101,6 +97,19 @@ export default function AdminLoginPage() {
                     Digite suas credenciais corporativas para acessar o painel de pedidos e cozinha.
                   </p>
                 </div>
+
+                {isAuthenticated && (
+                  <div className="mb-4 p-3 rounded-xl bg-orange-950/40 border border-orange-500/40 flex items-center justify-between gap-3 text-xs">
+                    <span className="text-amber-300 font-medium">Você já possui uma sessão ativa iniciada.</span>
+                    <button
+                      type="button"
+                      onClick={() => navigate('/admin/pedidos')}
+                      className="px-3 py-1 rounded-lg bg-orange-600 hover:bg-orange-500 text-white font-bold uppercase tracking-wider text-[11px] font-['Oswald',sans-serif] shrink-0 cursor-pointer"
+                    >
+                      Ir para Pedidos →
+                    </button>
+                  </div>
+                )}
 
                 {/* Test Credentials Box */}
                 <div className="mb-6 p-3 sm:p-3.5 rounded-xl bg-zinc-900/90 border border-zinc-800 flex items-center justify-between gap-3">
