@@ -1455,6 +1455,9 @@ pm run build bem-sucedido.
      - Configurada a Sidebar lateral `<aside>` como `lg:sticky lg:top-0 lg:h-screen`, permanecendo fixa à esquerda enquanto o corpo da página rola fluidamente.
      - Removido o cabeçalho secundário duplicado em `AdminOrdersPage.jsx` para limpar o topo da página e manter as ações centralizadas na Topbar do `AdminLayout`.
   3. **Validação:** Subagente no navegador comprovou a existência de **apenas UMA barra de rolagem vertical** em 1440x900 e 1024x768, com rolagem 100% suave e unificada.
+  4. **Correção de Especificação CSS (W3C Overflow Recomputation):**
+     - Identificado que o uso de `overflow-x: hidden` forçava o navegador a recomputar `overflow-y` para `auto` no `#root > div`, gerando uma segunda barra de 15px ao lado da barra da janela (consumindo 30px no total).
+     - Substituído `overflow-x: hidden` por `overflow-x: clip` em `AdminLayout.jsx` e `index.css`. O valor `clip` impede estouro horizontal sem criar contexto de rolagem, garantindo margem de exatamente 15px para a janela única. Commit `061f949` enviado para a `main`.
 
 
 
