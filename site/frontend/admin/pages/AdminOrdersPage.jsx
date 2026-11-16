@@ -243,7 +243,7 @@ export default function AdminOrdersPage() {
 
   // Filter + sort
   const filteredOrders = useMemo(() => {
-    let list = [...adminOrders];
+    let list = Array.isArray(adminOrders) ? [...adminOrders] : [];
 
     // Tab filter
     switch (activeTab) {
@@ -289,24 +289,26 @@ export default function AdminOrdersPage() {
     return list;
   }, [adminOrders, activeTab, typeFilter, searchQuery]);
 
+  const safeAdminOrders = Array.isArray(adminOrders) ? adminOrders : [];
+
   const countActive = useMemo(
-    () => adminOrders.filter((o) => ['RECEIVED', 'PREPARING', 'READY'].includes(o.status)).length,
-    [adminOrders]
+    () => safeAdminOrders.filter((o) => ['RECEIVED', 'PREPARING', 'READY'].includes(o.status)).length,
+    [safeAdminOrders]
   );
   const countDelivered = useMemo(
-    () => adminOrders.filter((o) => o.status === 'DELIVERED').length,
-    [adminOrders]
+    () => safeAdminOrders.filter((o) => o.status === 'DELIVERED').length,
+    [safeAdminOrders]
   );
   const countCancelled = useMemo(
-    () => adminOrders.filter((o) => o.status === 'CANCELLED').length,
-    [adminOrders]
+    () => safeAdminOrders.filter((o) => o.status === 'CANCELLED').length,
+    [safeAdminOrders]
   );
 
   const totalDeliveredRevenue = useMemo(() => {
-    return adminOrders
+    return safeAdminOrders
       .filter((o) => o.status === 'DELIVERED')
       .reduce((acc, curr) => acc + (curr.totalAmount || 0), 0);
-  }, [adminOrders]);
+  }, [safeAdminOrders]);
 
   if (!isAuthenticated) return null;
 

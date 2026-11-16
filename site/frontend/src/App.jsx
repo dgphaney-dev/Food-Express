@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import SmoothScroll from './components/SmoothScroll';
 import LoadingScreen from './components/LoadingScreen';
+import ErrorBoundary from './components/ErrorBoundary';
 import CustomerApp from './CustomerApp';
 import AdminApp from '../admin/AdminApp';
 
@@ -66,9 +67,11 @@ function App() {
         />
       )}
 
-      <SmoothScroll>
-        {isAdminOrDriverApp ? <AdminApp /> : <CustomerApp />}
-      </SmoothScroll>
+      <ErrorBoundary>
+        <SmoothScroll>
+          {isAdminOrDriverApp ? <AdminApp /> : <CustomerApp />}
+        </SmoothScroll>
+      </ErrorBoundary>
     </>
   );
 }

@@ -5,6 +5,7 @@ import { AuthProvider } from '../src/contexts/AuthContext';
 import { OrderProvider } from '../src/contexts/OrderContext';
 import { CartProvider } from '../src/contexts/CartContext';
 import SmoothScroll from '../src/components/SmoothScroll';
+import ErrorBoundary from '../src/components/ErrorBoundary';
 import AdminApp from './AdminApp';
 import '../src/index.css';
 
@@ -14,9 +15,11 @@ createRoot(document.getElementById('admin-root')).render(
       <AuthProvider>
         <OrderProvider>
           <CartProvider>
-            <SmoothScroll>
-              <AdminApp />
-            </SmoothScroll>
+            <ErrorBoundary>
+              <SmoothScroll>
+                <AdminApp />
+              </SmoothScroll>
+            </ErrorBoundary>
           </CartProvider>
         </OrderProvider>
       </AuthProvider>

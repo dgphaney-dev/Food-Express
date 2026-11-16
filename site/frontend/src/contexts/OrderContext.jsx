@@ -10,7 +10,8 @@ const LAST_ORDER_KEY = 'foodexpress_last_order_id';
 function loadInitialOrders() {
   try {
     const saved = localStorage.getItem(ORDERS_STORAGE_KEY);
-    return saved ? JSON.parse(saved) : MOCK_ORDERS;
+    const parsed = saved ? JSON.parse(saved) : null;
+    return Array.isArray(parsed) && parsed.length > 0 ? parsed : MOCK_ORDERS;
   } catch {
     return MOCK_ORDERS;
   }
