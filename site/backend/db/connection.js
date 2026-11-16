@@ -36,12 +36,16 @@ export function initDatabase(customDbPath = null) {
   sqliteInstance.pragma('foreign_keys = ON');
   sqliteInstance.exec(SCHEMA_DDL_SQL);
 
-  // Migrações seguras e idempotentes para colunas de entrega e pagamento
+  // Migrações seguras e idempotentes para colunas de entrega, pagamento e usuários
   const columnsToAdd = [
     'ALTER TABLE orders ADD COLUMN customer_phone TEXT',
     'ALTER TABLE orders ADD COLUMN payment_method TEXT',
     'ALTER TABLE orders ADD COLUMN is_paid INTEGER DEFAULT 0',
     'ALTER TABLE orders ADD COLUMN delivery_pin TEXT DEFAULT "8492"',
+    'ALTER TABLE users ADD COLUMN name TEXT DEFAULT ""',
+    'ALTER TABLE users ADD COLUMN phone TEXT',
+    'ALTER TABLE users ADD COLUMN active INTEGER DEFAULT 1',
+    'ALTER TABLE users ADD COLUMN updated_at TEXT',
   ];
   for (const alterSql of columnsToAdd) {
     try {

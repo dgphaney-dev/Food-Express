@@ -10,6 +10,7 @@ import AdminLoginPage from '../admin/pages/AdminLoginPage'
 import AdminMetricsPage from '../admin/pages/AdminMetricsPage'
 import AdminOrdersPage from '../admin/pages/AdminOrdersPage'
 import AdminMenuPage from '../admin/pages/AdminMenuPage'
+import AdminUsersPage from '../admin/pages/AdminUsersPage'
 import DriverDeliveryPage from './pages/DriverDeliveryPage'
 import NotFoundPage from './pages/NotFoundPage'
 
@@ -61,6 +62,10 @@ function App() {
           <Route path="/admin/metricas" element={<AdminMetricsPage />} />
           <Route path="/admin/dashboard" element={<Navigate to="/admin/metricas" replace />} />
           <Route path="/admin/cardapio" element={<AdminMenuPage />} />
+          <Route path="/admin/usuarios" element={<AdminUsersPage />} />
+          <Route path="/admin/users" element={<Navigate to="/admin/usuarios" replace />} />
+          <Route path="/admin/acessos" element={<Navigate to="/admin/usuarios" replace />} />
+          <Route path="/admin/equipe" element={<Navigate to="/admin/usuarios" replace />} />
           <Route path="/admin/login" element={<AdminLoginPage />} />
 
           {/* Aliases for English paths */}
