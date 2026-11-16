@@ -106,12 +106,15 @@ export default function HomePage() {
   const heroRafRef = useRef(null);
 
   const handleHeroMouseMove = useCallback((e) => {
+    const rect = e.currentTarget?.getBoundingClientRect();
+    if (!rect) return;
+    const clientX = e.clientX;
+    const clientY = e.clientY;
+
     if (heroRafRef.current) cancelAnimationFrame(heroRafRef.current);
     heroRafRef.current = requestAnimationFrame(() => {
-      const rect = e.currentTarget?.getBoundingClientRect();
-      if (!rect) return;
-      const x = Math.max(-1, Math.min(1, ((e.clientX - rect.left) / rect.width - 0.5) * 2));
-      const y = Math.max(-1, Math.min(1, ((e.clientY - rect.top) / rect.height - 0.5) * 2));
+      const x = Math.max(-1, Math.min(1, ((clientX - rect.left) / rect.width - 0.5) * 2));
+      const y = Math.max(-1, Math.min(1, ((clientY - rect.top) / rect.height - 0.5) * 2));
       setMouseOffset({ x, y });
     });
   }, []);

@@ -38,6 +38,8 @@ export default function TiltCard({
   const handleMouseMove = useCallback(
     (e) => {
       if (!hasMouse || !cardRef.current) return;
+      const clientX = e.clientX;
+      const clientY = e.clientY;
 
       if (rafId.current) {
         cancelAnimationFrame(rafId.current);
@@ -46,8 +48,8 @@ export default function TiltCard({
       rafId.current = requestAnimationFrame(() => {
         if (!cardRef.current) return;
         const rect = cardRef.current.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
+        const x = clientX - rect.left;
+        const y = clientY - rect.top;
 
         // Relative coordinates from -1 (left/top) to +1 (right/bottom)
         const normX = Math.max(-1, Math.min(1, ((x / rect.width) - 0.5) * 2));
