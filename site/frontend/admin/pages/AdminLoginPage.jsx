@@ -1,9 +1,8 @@
-import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Lock, User, Eye, EyeOff, ShieldCheck, ArrowRight, Sparkles, Flame, CheckCircle2 } from 'lucide-react';
 import { useAuth } from '../../src/contexts/AuthContext';
 import { adminApi } from '../services/adminApi';
-import Navbar from '../../src/components/Navbar';
 import ScrollReveal from '../../src/components/ScrollReveal';
 
 export default function AdminLoginPage() {
@@ -68,8 +67,29 @@ export default function AdminLoginPage() {
 
   return (
     <div className="min-h-screen bg-black text-zinc-100 font-['Plus_Jakarta_Sans',sans-serif] antialiased flex flex-col selection:bg-orange-600">
-      {/* 1. TOP NAVBAR */}
-      <Navbar isAdmin={false} />
+      {/* 1. DEDICATED ADMIN PORTAL HEADER */}
+      <header className="sticky top-0 z-50 bg-[#0b0908]/95 backdrop-blur-md border-b border-zinc-800/80 shadow-xl w-full">
+        <div className="max-w-7xl mx-auto w-full flex h-18 items-center justify-between px-4 sm:px-6">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-full bg-black border-2 border-orange-500/50 text-white overflow-hidden shadow-xl ring-2 ring-orange-500/20 shrink-0">
+              <img src="/logo.jpg" alt="FoodExpress" className="w-full h-full object-cover scale-105" />
+            </div>
+            <div className="flex flex-col">
+              <span className="text-xl sm:text-2xl font-black tracking-tight text-white leading-none font-['Oswald',sans-serif]">
+                Food<span className="bg-gradient-to-r from-orange-500 via-amber-400 to-red-500 bg-clip-text text-transparent">Express</span>
+              </span>
+              <span className="text-[10px] font-bold text-amber-500/90 tracking-widest uppercase mt-0.5 font-['Oswald',sans-serif]">
+                Portal Administrativo &amp; KDS
+              </span>
+            </div>
+          </div>
+
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-zinc-900 border border-zinc-800 text-[11px] font-bold text-orange-400 uppercase tracking-wider font-['Oswald',sans-serif]">
+            <ShieldCheck size={14} className="text-orange-500" />
+            <span>Acesso Exclusivo via URL</span>
+          </div>
+        </div>
+      </header>
 
       {/* 2. MAIN LOGIN AREA */}
       <main className="flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-8 relative overflow-hidden bg-black">
@@ -216,19 +236,16 @@ export default function AdminLoginPage() {
                 </form>
               </div>
 
-              {/* Bottom Security Note & Back Link */}
+              {/* Bottom Security Note */}
               <div className="mt-8 pt-5 border-t border-zinc-800/80 flex items-center justify-between gap-3 text-xs text-zinc-500">
                 <span className="flex items-center gap-1.5 text-zinc-400">
                   <ShieldCheck size={14} className="text-orange-500" />
-                  Sessão segura de atendimento
+                  Sessão segura de atendimento (Token JWT + Hash scrypt)
                 </span>
 
-                <Link
-                  to="/nossos-produtos"
-                  className="text-zinc-400 hover:text-zinc-200 font-semibold transition-colors"
-                >
-                  ← Voltar ao cardápio
-                </Link>
+                <span className="text-[11px] font-semibold text-zinc-500 uppercase font-['Oswald',sans-serif] tracking-wider">
+                  Uso Interno
+                </span>
               </div>
             </div>
 

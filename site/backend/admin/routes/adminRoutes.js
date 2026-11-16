@@ -7,6 +7,7 @@ import { authMiddleware } from '../middlewares/authMiddleware.js';
 
 export const authRouter = Router();
 authRouter.post('/login', authController.login);
+authRouter.get('/me', authMiddleware, authController.me);
 
 export const adminRouter = Router();
 adminRouter.use(authMiddleware);
@@ -15,6 +16,8 @@ adminRouter.use(authMiddleware);
 adminRouter.get('/menu', menuController.getAdminMenu);
 adminRouter.post('/categories', menuController.createCategory);
 adminRouter.put('/categories/:id', menuController.updateCategory);
+adminRouter.patch('/categories/:id/toggle', menuController.toggleCategoryActive);
+adminRouter.delete('/categories/:id', menuController.deleteCategory);
 adminRouter.post('/products', menuController.createProduct);
 adminRouter.put('/products/:id', menuController.updateProduct);
 adminRouter.patch('/products/:id/toggle', menuController.toggleProductActive);

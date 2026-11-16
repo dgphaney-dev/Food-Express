@@ -50,6 +50,35 @@ export const menuController = {
   },
 
   /**
+   * PATCH /api/admin/categories/:id/toggle
+   */
+  toggleCategoryActive(req, res, next) {
+    try {
+      const explicitActive =
+        req.body && req.body.active !== undefined ? req.body.active : undefined;
+      const category = menuService.toggleCategoryActive(
+        req.params.id,
+        explicitActive
+      );
+      res.status(200).json({ category });
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  /**
+   * DELETE /api/admin/categories/:id
+   */
+  deleteCategory(req, res, next) {
+    try {
+      const result = menuService.deleteCategory(req.params.id);
+      res.status(200).json(result);
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  /**
    * API-008: POST /api/admin/products
    */
   createProduct(req, res, next) {

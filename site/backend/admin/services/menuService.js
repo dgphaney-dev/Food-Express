@@ -155,6 +155,28 @@ export const menuService = {
   },
 
   /**
+   * API-007 / TR-001: Ativação/Inativação rápida de categoria
+   */
+  toggleCategoryActive(id, explicitActive = undefined) {
+    const updated = categoryRepo.toggleActive(id, explicitActive);
+    if (!updated) {
+      throw new AppError('Categoria não encontrada.', 404, 'NOT_FOUND');
+    }
+    return updated;
+  },
+
+  /**
+   * Exclusão administrativa de categoria e seus produtos vinculados
+   */
+  deleteCategory(id) {
+    const deleted = categoryRepo.delete(id);
+    if (!deleted) {
+      throw new AppError('Categoria não encontrada.', 404, 'NOT_FOUND');
+    }
+    return { deleted: true };
+  },
+
+  /**
    * API-008 / TR-001 / TR-012: Criação administrativa de produto com variações e adicionais
    */
   createProduct(payload) {

@@ -192,7 +192,7 @@ export default function AdminMenuPage() {
     }));
   };
 
-  const handleDeleteCategory = (catId) => {
+  const handleDeleteCategory = async (catId) => {
     const cat = menu.categories.find((c) => c.id === catId);
     if (!cat) return;
     if ((cat.products || []).length > 0) {
@@ -206,6 +206,15 @@ export default function AdminMenuPage() {
     } else {
       if (!confirm(`Deseja realmente excluir a categoria "${cat.name}"?`)) return;
     }
+
+    try {
+      await adminApi.deleteCategory(catId);
+      await syncMenuFromBackend();
+      return;
+    } catch {
+      // Fallback local
+    }
+
     setMenu((prev) => ({
       ...prev,
       categories: prev.categories.filter((c) => c.id !== catId),

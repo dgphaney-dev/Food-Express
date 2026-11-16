@@ -8,7 +8,6 @@ import {
   UtensilsCrossed,
   X,
   CheckCircle2,
-  ShieldCheck,
   Flame,
   Sparkles,
 } from 'lucide-react';
@@ -55,9 +54,11 @@ export default function CustomerMenuPage() {
               active: true,
               products: (c.products || []).map((p) => ({
                 id: p.id,
-                title: p.name || p.title,
+                name: p.name || p.title || 'Item',
+                title: p.name || p.title || 'Item',
                 description: p.description || '',
-                price: Number(p.basePrice || p.price || 0),
+                basePrice: Number(p.basePrice ?? p.price ?? 0),
+                price: Number(p.basePrice ?? p.price ?? 0),
                 imageUrl: p.imageUrl || '',
                 active: p.active !== false,
                 categoryId: c.id,
@@ -206,7 +207,7 @@ export default function CustomerMenuPage() {
   );
 
   const handleCheckout = useCallback(
-    (checkoutData) => {
+    async (checkoutData) => {
       const orderType = checkoutData?.orderType || 'DINE_IN';
       const tableNumber = checkoutData?.tableNumber || null;
       const customerName = checkoutData?.customerName || null;
@@ -214,6 +215,9 @@ export default function CustomerMenuPage() {
 
       const orderItems = cart.items.map((item, idx) => ({
         id: idx + 1,
+        productId: item.productId || null,
+        variationId: item.variationId || null,
+        addonIds: item.addonIds || [],
         productNameSnapshot: item.productName,
         quantity: item.quantity,
         variationNameSnapshot: item.variationName,
@@ -240,17 +244,25 @@ export default function CustomerMenuPage() {
         paidAt: isPaid ? new Date().toISOString() : null,
       };
 
-      const newOrder = orders.createOrder(orderData);
-      cart.clearCart();
-      setIsCartOpen(false);
+      try {
+        const newOrder = await orders.createOrder(orderData);
+        cart.clearCart();
+        setIsCartOpen(false);
 
-      if (orderType === 'DELIVERY') {
-        const message = generateWhatsAppMessage(newOrder);
-        const whatsAppUrl = generateWhatsAppUrl(RESTAURANT_CONFIG.whatsappNumber, message);
-        window.open(whatsAppUrl, '_blank');
+        if (orderType === 'DELIVERY') {
+          const whatsAppUrl =
+            newOrder.whatsappUrl ||
+            generateWhatsAppUrl(
+              RESTAURANT_CONFIG.whatsappNumber,
+              generateWhatsAppMessage(newOrder)
+            );
+          window.open(whatsAppUrl, '_blank');
+        }
+
+        navigate(`/pedido/${newOrder.id}`);
+      } catch (err) {
+        alert(err.message || 'Não foi possível registrar o pedido. Verifique os dados informados.');
       }
-
-      navigate(`/pedido/${newOrder.id}`);
     },
     [cart, orders, navigate]
   );
@@ -635,12 +647,12 @@ export default function CustomerMenuPage() {
               </div>
             </div>
 
-            {/* Col 3: Pagamento & Área de Gestão */}
+            {/* Col 3: Formas de Pagamento */}
             <div className="md:col-span-3 space-y-4">
               <div className="flex items-center gap-2">
                 <div className="h-4 w-1 rounded-full bg-orange-500"></div>
                 <h4 className="text-xs font-black uppercase tracking-wider text-white font-['Oswald',sans-serif]">
-                  Pagamento &amp; Acesso
+                  Formas de Pagamento
                 </h4>
               </div>
 
@@ -657,17 +669,6 @@ export default function CustomerMenuPage() {
                   <span className="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
                   <span>Dinheiro (troco sob solicitação)</span>
                 </div>
-              </div>
-
-              {/* Botão Bonito e Estilizado de Acesso do Atendente */}
-              <div className="pt-2">
-                <button
-                  onClick={() => navigate('/admin/login')}
-                  className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#171310] hover:bg-[#201a15] border border-[#382c23] hover:border-orange-500/70 text-stone-200 hover:text-white text-xs font-bold uppercase tracking-wider font-['Oswald',sans-serif] transition-all shadow-md cursor-pointer"
-                >
-                  <ShieldCheck size={15} className="text-orange-500" />
-                  <span>Acesso do Atendente</span>
-                </button>
               </div>
             </div>
           </div>
