@@ -7,7 +7,23 @@
 
 ## Histórico de Sessões e Decisões
 
-### [2026-11-11 14:03] — Inicialização da Arquitetura Agêntica e Estrutura SDD
+### [2026-11-16 17:16] — Resolução de Tela em Branco no Painel Administrativo & Proteção com ErrorBoundary
+- **Papel Ativo:** Engenheiro Frontend & Especialista em Confiabilidade React (Skill `/passo3`)
+- **Ações Executadas:**
+  1. Identificada causa potencial de tela em branco em `#/admin/pedidos`:
+     - Falta de salvaguarda defensiva contra iteração de `adminOrders` (`[...adminOrders]` e `adminOrders.filter(...)`) caso o estado de pedidos no localStorage ou na resposta inicial não fosse um array válido (`null` ou `undefined`).
+     - Ausência de componente `ErrorBoundary` global em React, fazendo com que qualquer exceção em renderização desmontasse a árvore inteira e deixasse a tela totalmente branca.
+  2. Implementado componente resiliente `site/frontend/src/components/ErrorBoundary.jsx` com UI escura personalizada, mensagens amigáveis e botão de recarga/recuperação instantânea.
+  3. Envolvido tanto `site/frontend/src/App.jsx` quanto `site/frontend/admin/main.jsx` com `<ErrorBoundary>`.
+  4. Sanitizado `loadInitialOrders()` em `OrderContext.jsx` para garantir que retorne array válido sempre.
+  5. Sanitizado `filteredOrders`, `countActive`, `countDelivered`, `countCancelled` e `totalDeliveredRevenue` em `AdminOrdersPage.jsx` com `safeAdminOrders`.
+  6. Confirmada a restauração da linha vertical ondulada com degradê de chamas laranja (`#ea580c` a `#f59e0b`) na Hero da Home Page.
+  7. Build e suite de testes 100% aprovados (12/12 testes unitários e de integração passando).
+  8. Commits enviados para o repositório remoto `main` (`commit 9d0ca21`).
+
+---
+
+
 - **Papel Ativo:** Engenheiro de Software Sênior & Especialista em Arquitetura Agêntica
 - **Etapa SDD:** `Setup Inicial (Fase 0)`
 - **Ações Executadas:**
