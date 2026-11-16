@@ -1443,5 +1443,19 @@ pm run build bem-sucedido.
      - Build de produção via Vite concluído em 1.20s com 0 erros.
      - Navegação e visual validados no navegador em tempo real com capturas de tela do Dashboard, Sidebar, KDS e Modal de Impressão.
 
+---
+
+### [2026-11-16 00:46] — Eliminação do Duplo Scrollbar no Painel Admin
+- **Papel Ativo:** Engenheiro Frontend Especialista em UI/UX e Responsividade
+- **Etapa SDD:** `Fase 3 — Refinamento de Interface & Eliminação de Duplo Scroll`
+- **Ações Executadas:**
+  1. **Causa Raiz Identificada:** O container `<main>` dentro de `AdminLayout.jsx` continha a classe `overflow-y-auto`. Como o documento raiz já possui rolagem vertical natural na janela (gerenciada pelo Lenis / window scroll), gerava-se uma segunda barra de rolagem interna adjacente à barra da janela.
+  2. **Correção:**
+     - Removido `overflow-y-auto` do `<main>` em `AdminLayout.jsx`, unificando a rolagem do layout em uma única barra natural do navegador.
+     - Configurada a Sidebar lateral `<aside>` como `lg:sticky lg:top-0 lg:h-screen`, permanecendo fixa à esquerda enquanto o corpo da página rola fluidamente.
+     - Removido o cabeçalho secundário duplicado em `AdminOrdersPage.jsx` para limpar o topo da página e manter as ações centralizadas na Topbar do `AdminLayout`.
+  3. **Validação:** Subagente no navegador comprovou a existência de **apenas UMA barra de rolagem vertical** em 1440x900 e 1024x768, com rolagem 100% suave e unificada.
+
+
 
 

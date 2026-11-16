@@ -137,7 +137,7 @@ export default function AdminLayout({
 
       {/* ================= SIDEBAR ================= */}
       <aside
-        className={`fixed top-0 bottom-0 left-0 z-50 flex flex-col bg-[#0e0c0a] border-r border-[#26201b] transition-all duration-300 ease-in-out lg:static ${
+        className={`fixed top-0 bottom-0 left-0 z-40 flex flex-col bg-[#0e0c0a] border-r border-[#26201b] transition-all duration-300 ease-in-out lg:sticky lg:top-0 lg:h-screen ${
           mobileMenuOpen ? 'translate-x-0 w-72' : '-translate-x-full lg:translate-x-0'
         } ${isCollapsed ? 'lg:w-20' : 'lg:w-68'}`}
       >
@@ -364,7 +364,7 @@ export default function AdminLayout({
         </header>
 
         {/* Content Body */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto max-w-7xl w-full mx-auto">
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto">
           {children}
         </main>
       </div>
