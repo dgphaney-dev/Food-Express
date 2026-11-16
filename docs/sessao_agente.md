@@ -1590,3 +1590,23 @@ pm run build bem-sucedido.
      - Vitest: 10/10 testes passando com 100% de sucesso.
      - Build de produção Vite concluído em 970ms sem erros.
      - Subagente browser inspecionou e fotografou `http://localhost:5173/` e `http://localhost:5173/#/admin/pedidos` confirmando visual sóbrio, limpo, sem cores chamativas e com rolagem única contida.
+
+
+---
+
+### [2026-11-16 17:00] — Efeitos de Rolagem de Tela (Scroll Effects), Parallax e Silenciamento
+- **Papel Ativo:** Especialista em Animações Front-End, UX e Física de Rolagem
+- **Etapa SDD:** `Fase 3 — Refinamento de Micro-interações e Efeitos de Rolagem de Tela`
+- **Ações Executadas:**
+  1. **Silenciamento Universal:** Desativação de chimes sonoros automáticos por padrão (`muted = true`).
+  2. **Remoção de Efeitos Distratores:** Fagulhas flutuantes (`EmberCanvas`) removidas imediatamente conforme solicitação do usuário.
+  3. **Implementação de Efeitos Reais de Rolagem de Tela (`ScrollEffects.jsx`):**
+     - Barra de progresso de rolagem no topo da tela em degradê âmbar/dourado sutil com sombra suave (`z-[9999]`), acompanhando dinamicamente o percentual de leitura da página.
+     - Profundidade Parallax no banner principal: o fundo move-se a velocidade mais lenta que o conteúdo em primeiro plano durante o scroll via `requestAnimationFrame`.
+     - Botão flutuante "Voltar ao Topo" dinâmico no canto inferior direito, exibindo anel circular SVG de progresso da página e subida suave através do motor Lenis.
+     - Estabilização do `ScrollReveal` (`once: true`) com transição cúbica suave para que os cards e seções deslizem para cima de forma limpa sem oscilar ao subir/descer a barra de rolagem.
+     - Transição adaptativa na Navbar (`isScrolled`), aumentando o desfoque de fundo e o contraste ao rolar.
+  4. **Validação:**
+     - 12/12 testes unitários e de integração aprovados.
+     - Build Vite concluído em 986ms com 0 erros.
+     - Sincronização e push no Git (commits `544829b` e `2890065`).
