@@ -19,7 +19,7 @@ import { useAuth } from '../../src/contexts/AuthContext';
 import { adminApi } from '../services/adminApi';
 import { MOCK_MENU } from '../../src/data/mockData';
 import { formatPrice } from '../../src/utils/helpers';
-import Navbar from '../../src/components/Navbar';
+import AdminLayout from '../components/AdminLayout';
 import ScrollReveal from '../../src/components/ScrollReveal';
 
 const MENU_STORAGE_KEY = 'foodexpress_admin_menu_data';
@@ -384,16 +384,11 @@ export default function AdminMenuPage() {
   const totalCategoriesCount = menu.categories.length;
 
   return (
-    <div className="min-h-screen bg-black text-zinc-100 font-['Plus_Jakarta_Sans',sans-serif] antialiased pb-20 selection:bg-orange-600">
-      <Navbar
-        isAdmin={true}
-        onLogout={() => {
-          logout();
-          navigate('/admin/login');
-        }}
-      />
-
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <AdminLayout
+      title="Gestão de Cardápio"
+      subtitle="Cadastre e edite produtos, variações, adicionais, fotos e categorias em tempo real"
+    >
+      <div className="w-full">
         {/* Top Header & Fast Actions */}
         <ScrollReveal direction="up" duration={600}>
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-7">
@@ -795,7 +790,7 @@ export default function AdminMenuPage() {
             )}
           </div>
         )}
-      </main>
+      </div>
 
       {/* ================= CATEGORY MODAL (DARK THEME) ================= */}
       {isCategoryModalOpen && (
@@ -1207,6 +1202,6 @@ export default function AdminMenuPage() {
           </div>
         </div>
       )}
-    </div>
+    </AdminLayout>
   );
 }

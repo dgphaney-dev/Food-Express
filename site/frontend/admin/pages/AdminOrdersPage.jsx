@@ -27,7 +27,9 @@ import { useOrders } from '../../src/contexts/OrderContext';
 import { adminApi } from '../services/adminApi';
 import { ORDER_STATUS_SEQUENCE } from '../../src/data/mockData';
 import { formatPrice, formatRelativeTime } from '../../src/utils/helpers';
-import Navbar from '../../src/components/Navbar';
+import AdminLayout from '../components/AdminLayout';
+import { playNewOrderChime } from '../utils/soundAlert';
+import { printThermalReceipt } from '../utils/printReceipt';
 import ScrollReveal from '../../src/components/ScrollReveal';
 
 const POLL_KEY = 'foodexpress_poll_ms';
@@ -123,6 +125,17 @@ export default function AdminOrdersPage() {
     return () => clearInterval(intervalRef.current);
   }, [pollMs, doRefresh]);
 
+  // Alerta sonoro automático para novos pedidos na cozinha
+  const prevCountRef = useRef(0);
+  useEffect(() => {
+    if (adminOrders && adminOrders.length > 0) {
+      if (prevCountRef.current > 0 && adminOrders.length > prevCountRef.current) {
+        playNewOrderChime();
+      }
+      prevCountRef.current = adminOrders.length;
+    }
+  }, [adminOrders]);
+
   const handlePollChange = (e) => {
     const val = Number(e.target.value);
     setPollMs(val);
@@ -208,63 +221,7 @@ export default function AdminOrdersPage() {
 
   // Print thermal kitchen receipt
   const handlePrintReceipt = (order) => {
-    const printWindow = window.open('', '_blank', 'width=420,height=600');
-    if (!printWindow) return;
-
-    const itemsHtml = order.items
-      .map(
-        (i) => `
-      <div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:13px;">
-        <span><strong>${i.quantity}x</strong> ${i.productNameSnapshot} ${
-          i.variationNameSnapshot ? `(${i.variationNameSnapshot})` : ''
-        }</span>
-        <span>R$ ${i.subtotal.toFixed(2)}</span>
-      </div>
-      ${i.notes ? `<div style="font-size:11px;color:#c2410c;margin-bottom:6px;font-style:italic;">Obs: ${i.notes}</div>` : ''}
-    `
-      )
-      .join('');
-
-    printWindow.document.write(`
-      <html>
-        <head>
-          <title>Comanda #${order.id} - FoodExpress</title>
-          <style>
-            body { font-family: 'Courier New', monospace; padding: 18px; max-width: 320px; margin: 0 auto; color: #000; }
-            h2 { text-align: center; margin: 0 0 4px; font-size: 16px; font-weight: bold; }
-            .meta { font-size: 11px; border-bottom: 1px dashed #000; padding-bottom: 8px; margin-bottom: 10px; line-height: 1.4; }
-            .total { border-top: 1px dashed #000; padding-top: 8px; font-size: 15px; font-weight: bold; display: flex; justify-content: space-between; margin-top: 10px; }
-            .footer { font-size: 10px; text-align: center; margin-top: 16px; border-top: 1px solid #eee; padding-top: 8px; }
-          </style>
-        </head>
-        <body>
-          <h2>FOODEXPRESS STEAKHOUSE</h2>
-          <div class="meta">
-            <div><strong>PEDIDO #${order.id}</strong></div>
-            <div>Atendimento: ${
-              order.orderType === 'DINE_IN'
-                ? `MESA ${order.tableNumber}`
-                : `ENTREGA (${order.customerName || 'Cliente'})`
-            }</div>
-            <div>Horário: ${new Date(order.createdAt).toLocaleTimeString('pt-BR')}</div>
-            ${order.deliveryAddress ? `<div>Endereço: ${order.deliveryAddress}</div>` : ''}
-          </div>
-          <div>${itemsHtml}</div>
-          <div class="total">
-            <span>TOTAL:</span>
-            <span>R$ ${order.totalAmount.toFixed(2)}</span>
-          </div>
-          <div class="footer">
-            *** COMANDA OPERACIONAL COZINHA ***<br>
-            Bom preparo, equipe!
-          </div>
-          <script>
-            window.onload = function() { window.print(); window.close(); }
-          </script>
-        </body>
-      </html>
-    `);
-    printWindow.document.close();
+    printThermalReceipt(order);
   };
 
   // WhatsApp helper for delivery orders
@@ -343,16 +300,17 @@ export default function AdminOrdersPage() {
   if (!isAuthenticated) return null;
 
   return (
-    <div className="min-h-screen bg-black text-zinc-100 font-['Plus_Jakarta_Sans',sans-serif] antialiased flex flex-col selection:bg-orange-600">
-      <Navbar
-        isAdmin={true}
-        onLogout={() => {
-          logout();
-          navigate('/admin/login');
-        }}
-      />
-
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-24 overflow-x-hidden">
+    <AdminLayout
+      title="Fila de Pedidos & KDS"
+      subtitle="Gerencie pedidos de salão e entrega com transição rápida de status e comandas"
+      onSimulateOrder={handleSimulateNewOrder}
+      onRefresh={doRefresh}
+      refreshing={refreshing}
+      pollMs={pollMs}
+      onPollChange={handlePollChange}
+      pollOptions={INTERVAL_OPTIONS}
+    >
+      <div className="w-full">
         {/* Top Header com Status em Tempo Real & Ações */}
         <ScrollReveal direction="up" duration={600}>
           <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4 mb-7">
@@ -622,7 +580,7 @@ export default function AdminOrdersPage() {
             ))}
           </div>
         )}
-      </main>
+      </div>
 
       {/* ================= ORDER DETAILS MODAL ================= */}
       {selectedOrderDetails && (
@@ -706,7 +664,7 @@ export default function AdminOrdersPage() {
           </div>
         </div>
       )}
-    </div>
+    </AdminLayout>
   );
 }
 

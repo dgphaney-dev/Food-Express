@@ -92,6 +92,12 @@ export const adminApi = {
     });
   },
 
+  async fetchMetrics() {
+    return this.withAutoAuth(() =>
+      requestJson('/admin/metrics', { method: 'GET' })
+    );
+  },
+
   async advanceOrder(orderId, targetStatus = null) {
     return this.withAutoAuth(() =>
       requestJson(`/admin/orders/${orderId}/advance`, {

@@ -7,6 +7,7 @@ import RestaurantPage from './pages/RestaurantPage'
 import CustomerMenuPage from './pages/CustomerMenuPage'
 import OrderTrackingPage from './pages/OrderTrackingPage'
 import AdminLoginPage from '../admin/pages/AdminLoginPage'
+import AdminDashboardPage from '../admin/pages/AdminDashboardPage'
 import AdminOrdersPage from '../admin/pages/AdminOrdersPage'
 import AdminMenuPage from '../admin/pages/AdminMenuPage'
 import DriverDeliveryPage from './pages/DriverDeliveryPage'
@@ -55,6 +56,8 @@ function App() {
           <Route path="/pedido/:orderId" element={<OrderTrackingPage />} />
 
           {/* Admin Routes */}
+          <Route path="/admin" element={<AdminDashboardPage />} />
+          <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
           <Route path="/admin/login" element={<AdminLoginPage />} />
           <Route path="/admin/pedidos" element={<AdminOrdersPage />} />
           <Route path="/admin/cardapio" element={<AdminMenuPage />} />

@@ -315,4 +315,16 @@ export const orderService = {
     );
     return { order: updated, success: true };
   },
+
+  /**
+   * Obtém métricas operacionais consolidadas para o Dashboard do Atendente/Gestor
+   */
+  getMetrics() {
+    const metrics = orderRepo.getMetrics();
+    return {
+      success: true,
+      metrics,
+      serverTime: new Date().toISOString(),
+    };
+  },
 };

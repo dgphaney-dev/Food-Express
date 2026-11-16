@@ -143,4 +143,16 @@ export const orderController = {
       next(err);
     }
   },
+
+  /**
+   * GET /api/admin/metrics
+   */
+  getMetrics(_req, res, next) {
+    try {
+      const result = orderService.getMetrics();
+      res.status(200).json(result);
+    } catch (err) {
+      next(err);
+    }
+  },
 };

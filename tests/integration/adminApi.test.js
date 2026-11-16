@@ -189,4 +189,22 @@ describe('Integration — Backend Admin API (Auth, Cardápio e Fila de Pedidos)'
     expect(rightPinRes.status).toBe(200);
     expect(rightPinRes.body.order.status).toBe('DELIVERED');
   });
+
+  it('API-013 / Dashboard: deve retornar métricas consolidadas em /api/admin/metrics com autenticação', async () => {
+    const unauthMetrics = await request(app).get('/api/admin/metrics');
+    expect(unauthMetrics.status).toBe(401);
+
+    const authMetrics = await request(app)
+      .get('/api/admin/metrics')
+      .set('Authorization', `Bearer ${adminToken}`);
+
+    expect(authMetrics.status).toBe(200);
+    expect(authMetrics.body.success).toBe(true);
+    expect(authMetrics.body.metrics).toBeDefined();
+    expect(authMetrics.body.metrics.totalOrders).toBeGreaterThanOrEqual(1);
+    expect(typeof authMetrics.body.metrics.totalRevenue).toBe('number');
+    expect(typeof authMetrics.body.metrics.averageTicket).toBe('number');
+    expect(authMetrics.body.metrics.statusCounts).toBeDefined();
+    expect(Array.isArray(authMetrics.body.metrics.topProducts)).toBe(true);
+  });
 });

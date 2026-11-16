@@ -158,4 +158,63 @@ export const orderRepo = {
       .run();
     return this.findById(id);
   },
+
+  getMetrics() {
+    const all = this.findAll();
+    const totalOrders = all.length;
+    const deliveredOrders = all.filter((o) => o.status === 'DELIVERED');
+    const activeOrders = all.filter((o) =>
+      ['RECEIVED', 'PREPARING', 'READY'].includes(o.status)
+    );
+    const cancelledOrders = all.filter((o) => o.status === 'CANCELLED');
+
+    const totalRevenue = deliveredOrders.reduce(
+      (sum, o) => sum + (Number(o.totalAmount) || 0),
+      0
+    );
+    const averageTicket =
+      deliveredOrders.length > 0 ? totalRevenue / deliveredOrders.length : 0;
+
+    const dineInOrders = all.filter((o) => o.orderType === 'DINE_IN').length;
+    const deliveryOrders = all.filter((o) => o.orderType === 'DELIVERY').length;
+
+    const statusCounts = {
+      RECEIVED: all.filter((o) => o.status === 'RECEIVED').length,
+      PREPARING: all.filter((o) => o.status === 'PREPARING').length,
+      READY: all.filter((o) => o.status === 'READY').length,
+      DELIVERED: deliveredOrders.length,
+      CANCELLED: cancelledOrders.length,
+    };
+
+    const productStats = {};
+    for (const ord of all) {
+      for (const item of ord.items || []) {
+        const name = item.productNameSnapshot || 'Item';
+        if (!productStats[name]) {
+          productStats[name] = { name, count: 0, revenue: 0 };
+        }
+        productStats[name].count += Number(item.quantity) || 1;
+        productStats[name].revenue += Number(item.subtotal) || 0;
+      }
+    }
+
+    const topProducts = Object.values(productStats)
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 5);
+
+    return {
+      totalOrders,
+      activeOrders: activeOrders.length,
+      deliveredOrders: deliveredOrders.length,
+      cancelledOrders: cancelledOrders.length,
+      totalRevenue,
+      averageTicket,
+      dineInOrders,
+      deliveryOrders,
+      statusCounts,
+      topProducts,
+      recentOrders: all.slice(0, 6),
+      updatedAt: new Date().toISOString(),
+    };
+  },
 };

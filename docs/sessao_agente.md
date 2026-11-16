@@ -1418,4 +1418,30 @@ pm run build bem-sucedido.
      - Testes de integração e unitários 100% aprovados (`8/8 passed`).
      - Commit `28e0060` enviado para a branch `main`.
 
+---
+
+### [2026-11-16 00:38] — Implementação do Painel Administrativo Executivo POS/Restaurante (Full-Stack)
+- **Papel Ativo:** Arquiteto de Software & Engenheiro Full-Stack Sênior
+- **Etapa SDD:** `Fase 3 — Refinamento de Interface & Sistema Administrativo Profissional`
+- **Ações Executadas:**
+  1. **Backend Admin (`site/backend/admin/`):**
+     - Endpoint `/api/admin/metrics` integrado via `orderRepo.getMetrics()`, `orderService.getMetrics()` e `orderController.getMetrics()`.
+     - Consolidação em tempo real: faturamento entregue, ticket médio por pedido, contagem de ativos/entregues/cancelados, divisão Salão vs Delivery e ranking dos produtos mais vendidos da brasa.
+     - Cobertura de testes de integração com Vitest expandida para 9/9 testes passando com 100% de sucesso.
+  2. **Frontend Admin (`site/frontend/admin/`):**
+     - Criação do layout executivo padrão POS/Restaurante [`AdminLayout.jsx`](./site/frontend/admin/components/AdminLayout.jsx) com Sidebar retrátil moderna (desktop collapse e gaveta mobile), Topbar com monitoramento em tempo real do SQLite e ações de teste com 1 clique.
+     - Implementação da página de [`AdminDashboardPage.jsx`](./site/frontend/admin/pages/AdminDashboardPage.jsx) em `/admin` e `/admin/dashboard`:
+       - 4 cards de KPIs de alto impacto (Faturamento, Ticket Médio, Ativos na Cozinha, Total Registrado).
+       - Pipeline de Produção da Cozinha (KDS com 4 fases sequenciais).
+       - Gráfico visual da divisão de pedidos (Salão vs Delivery).
+       - Ranking dos produtos mais vendidos e feed de pedidos recentes.
+     - Implementação do sintetizador de alertas sonoros [`soundAlert.js`](./site/frontend/admin/utils/soundAlert.js) via Web Audio API (sineta harmônica de 2 tons para novos pedidos, com toggle silenciar/ativar).
+     - Implementação do utilitário de impressão térmica [`printReceipt.js`](./site/frontend/admin/utils/printReceipt.js) formatado para rolo 80mm/58mm com cabeçalho, comanda numerada, itens, observações, total e PIN do entregador.
+     - Refatoração de [`AdminOrdersPage.jsx`](./site/frontend/admin/pages/AdminOrdersPage.jsx) e [`AdminMenuPage.jsx`](./site/frontend/admin/pages/AdminMenuPage.jsx) para adotar integralmente o novo `AdminLayout`.
+  3. **Validação Visual e Automatizada:**
+     - 9 testes unitários e de integração executados com 100% de aprovação.
+     - Build de produção via Vite concluído em 1.20s com 0 erros.
+     - Navegação e visual validados no navegador em tempo real com capturas de tela do Dashboard, Sidebar, KDS e Modal de Impressão.
+
+
 
