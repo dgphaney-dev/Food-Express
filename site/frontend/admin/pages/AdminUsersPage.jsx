@@ -30,28 +30,28 @@ const ROLES_INFO = {
   ADMIN: {
     label: 'Administrador',
     shortLabel: 'Admin',
-    badgeClass: 'bg-amber-500/15 text-amber-400 border-amber-500/30',
+    badgeClass: 'bg-[#1c1815] text-amber-400 border-[#3d322a]',
     icon: Shield,
     desc: 'Acesso total: métricas, cardápio, pedidos e equipe',
   },
   ATENDENTE: {
     label: 'Atendente / Salão',
     shortLabel: 'Atendente',
-    badgeClass: 'bg-blue-500/15 text-blue-400 border-blue-500/30',
+    badgeClass: 'bg-[#161311] text-stone-300 border-[#2b241f]',
     icon: UtensilsCrossed,
     desc: 'Operação de mesas, recebimento e comandas',
   },
   COZINHA: {
     label: 'Cozinha / KDS',
     shortLabel: 'Cozinha',
-    badgeClass: 'bg-orange-500/15 text-orange-400 border-orange-500/30',
+    badgeClass: 'bg-[#161311] text-stone-300 border-[#2b241f]',
     icon: ChefHat,
     desc: 'Esteira de preparo e finalização de pratos',
   },
   ENTREGADOR: {
     label: 'Motorista / Entregador',
     shortLabel: 'Entregador',
-    badgeClass: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30',
+    badgeClass: 'bg-[#161311] text-stone-300 border-[#2b241f]',
     icon: Bike,
     desc: 'Logística de delivery, rotas e confirmação de PIN',
   },
@@ -266,30 +266,30 @@ export default function AdminUsersPage() {
         {/* ================= ALERTA DE FEEDBACK ================= */}
         {feedbackMessage && (
           <div
-            className={`p-4 rounded-xl border flex items-center justify-between text-xs font-bold transition-all animate-fade-in ${
+            className={`p-3.5 rounded-xl border flex items-center justify-between text-xs font-bold transition-all animate-fade-in ${
               feedbackMessage.type === 'error'
-                ? 'bg-red-950/40 border-red-800 text-red-200'
-                : 'bg-emerald-950/40 border-emerald-800 text-emerald-200'
+                ? 'bg-[#181210] border-[#3d2420] text-stone-200'
+                : 'bg-[#141210] border-[#382f28] text-stone-200'
             }`}
           >
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2.5">
               {feedbackMessage.type === 'error' ? (
-                <AlertCircle size={18} className="text-red-400 shrink-0" />
+                <AlertCircle size={16} className="text-stone-400 shrink-0" />
               ) : (
-                <CheckCircle2 size={18} className="text-emerald-400 shrink-0" />
+                <CheckCircle2 size={16} className="text-amber-400 shrink-0" />
               )}
               <span>{feedbackMessage.text}</span>
             </div>
             <button
               onClick={() => setFeedbackMessage(null)}
-              className="p-1 hover:opacity-75 cursor-pointer"
+              className="p-1 text-stone-500 hover:text-stone-300 cursor-pointer"
             >
               <X size={14} />
             </button>
           </div>
         )}
 
-        {/* ================= CARDS DE RESUMO (SÓBRIOS STEAKHOUSE) ================= */}
+        {/* ================= CARDS DE RESUMO (SÓBRIOS MONOCROMÁTICOS) ================= */}
         <ScrollReveal direction="up" duration={500}>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             <div className="p-4 rounded-2xl bg-[#12100d] border border-[#26201b]">
@@ -297,7 +297,7 @@ export default function AdminUsersPage() {
                 <span className="text-[11px] font-bold uppercase tracking-wider font-['Oswald',sans-serif]">
                   Total na Equipe
                 </span>
-                <Users size={16} className="text-amber-500/80" />
+                <Users size={16} className="text-stone-500" />
               </div>
               <div className="text-2xl font-black text-stone-100 font-['Oswald',sans-serif] mt-1">
                 {totalUsers}
@@ -310,9 +310,9 @@ export default function AdminUsersPage() {
                 <span className="text-[11px] font-bold uppercase tracking-wider font-['Oswald',sans-serif]">
                   Acessos Ativos
                 </span>
-                <UserCheck size={16} className="text-emerald-500/80" />
+                <UserCheck size={16} className="text-stone-500" />
               </div>
-              <div className="text-2xl font-black text-emerald-400 font-['Oswald',sans-serif] mt-1">
+              <div className="text-2xl font-black text-stone-100 font-['Oswald',sans-serif] mt-1">
                 {activeCount}
               </div>
               <p className="text-[10px] text-stone-500 mt-0.5">Sessões liberadas</p>
@@ -336,7 +336,7 @@ export default function AdminUsersPage() {
                 <span className="text-[11px] font-bold uppercase tracking-wider font-['Oswald',sans-serif]">
                   Atendentes
                 </span>
-                <UtensilsCrossed size={16} className="text-blue-500/80" />
+                <UtensilsCrossed size={16} className="text-stone-500" />
               </div>
               <div className="text-2xl font-black text-stone-100 font-['Oswald',sans-serif] mt-1">
                 {attendantCount}
@@ -423,12 +423,12 @@ export default function AdminUsersPage() {
               </button>
             </div>
 
-            {/* Botão Novo Usuário */}
+            {/* Botão Novo Usuário Sóbrio Steakhouse */}
             <button
               onClick={handleOpenNewModal}
-              className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white font-bold text-xs uppercase font-['Oswald',sans-serif] tracking-wider shadow-lg shadow-orange-950/40 transition-all cursor-pointer active:scale-95 shrink-0"
+              className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#1f1915] hover:bg-[#2a221d] text-amber-400 hover:text-amber-300 border border-[#3d322a] hover:border-[#524338] font-bold text-xs uppercase font-['Oswald',sans-serif] tracking-wider transition-all cursor-pointer active:scale-95 shrink-0 shadow-sm"
             >
-              <UserPlus size={16} />
+              <UserPlus size={15} />
               <span>Novo Usuário</span>
             </button>
           </div>
@@ -525,20 +525,20 @@ export default function AdminUsersPage() {
                             )}
                           </td>
 
-                          {/* Coluna 4: Status */}
+                          {/* Coluna 4: Status Sóbrio */}
                           <td className="py-3.5 px-3">
                             <button
                               onClick={() => handleToggleActive(user)}
-                              className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase font-['Oswald',sans-serif] transition-colors cursor-pointer ${
+                              className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase font-['Oswald',sans-serif] transition-colors cursor-pointer border ${
                                 user.active
-                                  ? 'bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20'
-                                  : 'bg-stone-800 text-stone-500 hover:bg-stone-700'
+                                  ? 'bg-[#181411] text-stone-200 border-[#2e2621] hover:border-[#42362f]'
+                                  : 'bg-[#12100e] text-stone-500 border-[#201b17] hover:border-[#2f2722]'
                               }`}
                               title="Clique para alternar o status do usuário"
                             >
                               <span
                                 className={`w-1.5 h-1.5 rounded-full ${
-                                  user.active ? 'bg-emerald-400 animate-pulse' : 'bg-stone-500'
+                                  user.active ? 'bg-amber-400' : 'bg-stone-600'
                                 }`}
                               />
                               <span>{user.active ? 'Ativo' : 'Inativo'}</span>
@@ -604,7 +604,7 @@ export default function AdminUsersPage() {
 
               {/* Título do Modal */}
               <div className="flex items-center gap-3 mb-5 pb-3 border-b border-[#26201b]">
-                <div className="w-10 h-10 rounded-xl bg-orange-600/15 border border-orange-500/30 text-orange-400 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-xl bg-[#1c1714] border border-[#382f28] text-amber-400 flex items-center justify-center">
                   {editingUser ? <Edit2 size={18} /> : <UserPlus size={18} />}
                 </div>
                 <div>
@@ -621,8 +621,8 @@ export default function AdminUsersPage() {
 
               {/* Erro de Validação */}
               {formError && (
-                <div className="mb-4 p-3 rounded-xl bg-red-950/40 border border-red-800 text-red-200 text-xs flex items-center gap-2">
-                  <AlertCircle size={15} className="shrink-0 text-red-400" />
+                <div className="mb-4 p-3 rounded-xl bg-[#1a1311] border border-[#3d2722] text-stone-300 text-xs flex items-center gap-2">
+                  <AlertCircle size={15} className="shrink-0 text-amber-400" />
                   <span>{formError}</span>
                 </div>
               )}
@@ -753,7 +753,7 @@ export default function AdminUsersPage() {
                     type="checkbox"
                     checked={formData.active}
                     onChange={(e) => setFormData({ ...formData, active: e.target.checked })}
-                    className="w-4 h-4 rounded text-orange-600 focus:ring-orange-500 cursor-pointer"
+                    className="w-4 h-4 rounded accent-amber-500 cursor-pointer"
                   />
                 </div>
 
@@ -769,7 +769,7 @@ export default function AdminUsersPage() {
                   <button
                     type="submit"
                     disabled={formSubmitting}
-                    className="px-5 py-2 rounded-xl text-xs font-bold uppercase font-['Oswald',sans-serif] tracking-wider bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white shadow-lg shadow-orange-950/40 transition-all cursor-pointer disabled:opacity-50"
+                    className="px-5 py-2.5 rounded-xl text-xs font-bold uppercase font-['Oswald',sans-serif] tracking-wider bg-[#1f1915] hover:bg-[#2a221d] text-amber-400 hover:text-amber-300 border border-[#3d322a] hover:border-[#524338] shadow-sm transition-all cursor-pointer disabled:opacity-50"
                   >
                     {formSubmitting
                       ? 'Salvando...'
