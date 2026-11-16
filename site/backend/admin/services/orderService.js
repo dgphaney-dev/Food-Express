@@ -141,11 +141,12 @@ export const orderService = {
   /**
    * Simulador de chegada de novo pedido no banco SQLite para validação do protótipo (RN-004)
    */
-  simulateIncomingOrder() {
+  simulateIncomingOrder(forceDelivery = null) {
     const existing = orderRepo.findAll();
     const maxId = existing.reduce((acc, item) => Math.max(acc, item.id), 100);
     const nextId = maxId + 1;
-    const isDineIn = nextId % 2 === 0;
+    const isDineIn =
+      forceDelivery === true ? false : forceDelivery === false ? true : nextId % 2 === 0;
     const now = new Date().toISOString();
 
     if (isDineIn) {
@@ -319,8 +320,8 @@ export const orderService = {
   /**
    * Obtém métricas operacionais consolidadas para o Dashboard do Atendente/Gestor
    */
-  getMetrics() {
-    const metrics = orderRepo.getMetrics();
+  getMetrics({ period = 'today' } = {}) {
+    const metrics = orderRepo.getMetrics({ period });
     return {
       success: true,
       metrics,

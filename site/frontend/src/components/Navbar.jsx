@@ -14,6 +14,7 @@ import {
   Utensils,
   ShieldCheck,
   ChevronRight,
+  TrendingUp,
 } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
 import { formatPrice } from '../utils/helpers';
@@ -244,6 +245,19 @@ export default function Navbar({
               >
                 <ClipboardList size={15} />
                 <span>Pedidos</span>
+              </Link>
+
+              <Link
+                to="/admin/metricas"
+                className={`flex items-center gap-1.5 sm:gap-2 rounded-xl px-2.5 sm:px-3.5 py-1.5 sm:py-2 text-[11px] sm:text-xs font-bold uppercase tracking-wider font-['Oswald',sans-serif] transition-colors whitespace-nowrap shrink-0 ${
+                  isActive('/admin/metricas') || isActive('/admin/dashboard')
+                    ? 'bg-orange-600 text-white shadow-md'
+                    : 'text-zinc-400 hover:bg-zinc-800 hover:text-white'
+                }`}
+                title="Dashboard de Métricas e Relatórios"
+              >
+                <TrendingUp size={15} />
+                <span>Métricas</span>
               </Link>
 
               <Link

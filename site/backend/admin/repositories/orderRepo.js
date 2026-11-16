@@ -159,14 +159,36 @@ export const orderRepo = {
     return this.findById(id);
   },
 
-  getMetrics() {
+  getMetrics({ period = 'today' } = {}) {
     const all = this.findAll();
-    const totalOrders = all.length;
-    const deliveredOrders = all.filter((o) => o.status === 'DELIVERED');
-    const activeOrders = all.filter((o) =>
+
+    const now = new Date();
+    let startDate = null;
+
+    if (period === 'today') {
+      // Começo do dia de hoje (00:00:00 local)
+      const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
+      startDate = startOfToday.toISOString();
+    } else if (period === '7days') {
+      // 7 dias atrás
+      const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+      startDate = sevenDaysAgo.toISOString();
+    } else if (period === 'month') {
+      // Início do mês atual (ou últimos 30 dias)
+      const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1, 0, 0, 0);
+      startDate = startOfMonth.toISOString();
+    }
+
+    const filtered = startDate
+      ? all.filter((o) => (o.createdAt || '') >= startDate)
+      : all;
+
+    const totalOrders = filtered.length;
+    const deliveredOrders = filtered.filter((o) => o.status === 'DELIVERED');
+    const activeOrders = filtered.filter((o) =>
       ['RECEIVED', 'PREPARING', 'READY'].includes(o.status)
     );
-    const cancelledOrders = all.filter((o) => o.status === 'CANCELLED');
+    const cancelledOrders = filtered.filter((o) => o.status === 'CANCELLED');
 
     const totalRevenue = deliveredOrders.reduce(
       (sum, o) => sum + (Number(o.totalAmount) || 0),
@@ -175,19 +197,19 @@ export const orderRepo = {
     const averageTicket =
       deliveredOrders.length > 0 ? totalRevenue / deliveredOrders.length : 0;
 
-    const dineInOrders = all.filter((o) => o.orderType === 'DINE_IN').length;
-    const deliveryOrders = all.filter((o) => o.orderType === 'DELIVERY').length;
+    const dineInOrders = filtered.filter((o) => o.orderType === 'DINE_IN').length;
+    const deliveryOrders = filtered.filter((o) => o.orderType === 'DELIVERY').length;
 
     const statusCounts = {
-      RECEIVED: all.filter((o) => o.status === 'RECEIVED').length,
-      PREPARING: all.filter((o) => o.status === 'PREPARING').length,
-      READY: all.filter((o) => o.status === 'READY').length,
+      RECEIVED: filtered.filter((o) => o.status === 'RECEIVED').length,
+      PREPARING: filtered.filter((o) => o.status === 'PREPARING').length,
+      READY: filtered.filter((o) => o.status === 'READY').length,
       DELIVERED: deliveredOrders.length,
       CANCELLED: cancelledOrders.length,
     };
 
     const productStats = {};
-    for (const ord of all) {
+    for (const ord of filtered) {
       for (const item of ord.items || []) {
         const name = item.productNameSnapshot || 'Item';
         if (!productStats[name]) {
@@ -203,17 +225,19 @@ export const orderRepo = {
       .slice(0, 5);
 
     return {
+      period,
       totalOrders,
       activeOrders: activeOrders.length,
       deliveredOrders: deliveredOrders.length,
       cancelledOrders: cancelledOrders.length,
-      totalRevenue,
-      averageTicket,
+      totalRevenue: Number(totalRevenue.toFixed(2)),
+      averageTicket: Number(averageTicket.toFixed(2)),
       dineInOrders,
       deliveryOrders,
       statusCounts,
       topProducts,
-      recentOrders: all.slice(0, 6),
+      recentOrders: filtered.slice(0, 8),
+      allOrdersCount: all.length,
       updatedAt: new Date().toISOString(),
     };
   },

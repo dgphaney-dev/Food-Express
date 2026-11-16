@@ -92,10 +92,11 @@ export const adminApi = {
     });
   },
 
-  async fetchMetrics() {
-    return this.withAutoAuth(() =>
-      requestJson('/admin/metrics', { method: 'GET' })
-    );
+  async fetchMetrics(period = 'today') {
+    return this.withAutoAuth(() => {
+      const qs = period ? `?period=${encodeURIComponent(period)}` : '';
+      return requestJson(`/admin/metrics${qs}`, { method: 'GET' });
+    });
   },
 
   async advanceOrder(orderId, targetStatus = null) {
@@ -115,10 +116,11 @@ export const adminApi = {
     );
   },
 
-  async simulateIncomingOrder() {
+  async simulateIncomingOrder(isDelivery = false) {
     return this.withAutoAuth(() =>
       requestJson('/admin/orders/simulate', {
         method: 'POST',
+        body: JSON.stringify({ isDelivery }),
       })
     );
   },

@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import {
   TrendingUp,
   DollarSign,
@@ -26,9 +27,9 @@ export default function AdminMetricsPage() {
   const [refreshing, setRefreshing] = useState(false);
   const [timeFilter, setTimeFilter] = useState('today'); // 'today' | '7days' | 'month'
 
-  const loadMetrics = useCallback(async () => {
+  const loadMetrics = useCallback(async (period = timeFilter) => {
     try {
-      const data = await adminApi.fetchMetrics();
+      const data = await adminApi.fetchMetrics(period);
       if (data && data.metrics) {
         setMetrics(data.metrics);
       }
@@ -38,17 +39,34 @@ export default function AdminMetricsPage() {
       setLoading(false);
       setRefreshing(false);
     }
-  }, []);
+  }, [timeFilter]);
 
   useEffect(() => {
-    loadMetrics();
-    const interval = setInterval(loadMetrics, 20_000);
+    loadMetrics(timeFilter);
+    const interval = setInterval(() => {
+      loadMetrics(timeFilter);
+    }, 15_000);
     return () => clearInterval(interval);
-  }, [loadMetrics]);
+  }, [loadMetrics, timeFilter]);
 
   const handleRefresh = () => {
     setRefreshing(true);
-    loadMetrics();
+    loadMetrics(timeFilter);
+  };
+
+  const handleSelectTimeFilter = (next) => {
+    setTimeFilter(next);
+    setLoading(true);
+    loadMetrics(next);
+  };
+
+  const handleSimulateOrder = async (isDelivery = false) => {
+    try {
+      await adminApi.simulateIncomingOrder(isDelivery);
+      await loadMetrics(timeFilter);
+    } catch {
+      // ignore
+    }
   };
 
   const totalRevenue = metrics?.totalRevenue || 0;
@@ -80,6 +98,7 @@ export default function AdminMetricsPage() {
       subtitle="Relatório financeiro, volume de pedidos e taxa operacional do restaurante"
       onRefresh={handleRefresh}
       refreshing={refreshing}
+      onSimulateOrder={handleSimulateOrder}
     >
       <div className="w-full space-y-6">
         {/* ================= CONTROLE DE PERÍODO & CABEÇALHO LIMPO ================= */}
@@ -102,7 +121,7 @@ export default function AdminMetricsPage() {
             {/* Time Filter Pills - Cores sóbrias e elegantes */}
             <div className="flex items-center gap-1 bg-[#0b0908] p-1 rounded-xl border border-[#26201b] self-start sm:self-auto">
               <button
-                onClick={() => setTimeFilter('today')}
+                onClick={() => handleSelectTimeFilter('today')}
                 className={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase font-['Oswald',sans-serif] tracking-wider transition-colors cursor-pointer ${
                   timeFilter === 'today'
                     ? 'bg-[#221c17] text-amber-400 border border-[#3d322a]'
@@ -112,7 +131,7 @@ export default function AdminMetricsPage() {
                 Hoje (Tempo Real)
               </button>
               <button
-                onClick={() => setTimeFilter('7days')}
+                onClick={() => handleSelectTimeFilter('7days')}
                 className={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase font-['Oswald',sans-serif] tracking-wider transition-colors cursor-pointer ${
                   timeFilter === '7days'
                     ? 'bg-[#221c17] text-amber-400 border border-[#3d322a]'
@@ -122,7 +141,7 @@ export default function AdminMetricsPage() {
                 Últimos 7 dias
               </button>
               <button
-                onClick={() => setTimeFilter('month')}
+                onClick={() => handleSelectTimeFilter('month')}
                 className={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase font-['Oswald',sans-serif] tracking-wider transition-colors cursor-pointer ${
                   timeFilter === 'month'
                     ? 'bg-[#221c17] text-amber-400 border border-[#3d322a]'
@@ -456,6 +475,131 @@ export default function AdminMetricsPage() {
                 <span className="text-[10px] text-stone-600">Encerrados</span>
               </div>
             </div>
+          </div>
+        </ScrollReveal>
+
+        {/* ================= LISTA DE PEDIDOS DO PERÍODO (DADOS REAIS SQLITE) ================= */}
+        <ScrollReveal direction="up" delay={140} duration={600}>
+          <div className="p-6 rounded-2xl bg-[#12100d] border border-[#26201b]">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-[#26201b] mb-4">
+              <div className="flex items-center gap-2">
+                <FileText size={18} className="text-amber-400" />
+                <h2 className="text-base font-bold uppercase font-['Oswald',sans-serif] text-stone-100 tracking-wide">
+                  Últimos Pedidos do Período ({timeFilter === 'today' ? 'Hoje' : timeFilter === '7days' ? 'Últimos 7 dias' : 'Este Mês'})
+                </h2>
+              </div>
+              <Link
+                to="/admin/pedidos"
+                className="text-xs font-bold uppercase tracking-wider text-amber-400 hover:text-amber-300 flex items-center gap-1 font-['Oswald',sans-serif] transition-colors"
+              >
+                <span>Ver Fila Operacional Completa</span>
+                <ChevronRight size={14} />
+              </Link>
+            </div>
+
+            {metrics?.recentOrders && metrics.recentOrders.length > 0 ? (
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse text-xs">
+                  <thead>
+                    <tr className="border-b border-[#1f1a16] text-[10px] font-bold uppercase font-['Oswald',sans-serif] text-stone-500">
+                      <th className="py-2.5 px-3">Pedido</th>
+                      <th className="py-2.5 px-3">Origem</th>
+                      <th className="py-2.5 px-3">Itens</th>
+                      <th className="py-2.5 px-3">Valor Total</th>
+                      <th className="py-2.5 px-3">Status</th>
+                      <th className="py-2.5 px-3 text-right">Data/Hora</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[#181411]">
+                    {metrics.recentOrders.map((ord) => {
+                      const isDineIn = ord.orderType === 'DINE_IN';
+                      const itemCount = (ord.items || []).reduce((acc, i) => acc + (i.quantity || 1), 0);
+                      const itemsPreview = (ord.items || [])
+                        .map((i) => `${i.quantity}x ${i.productNameSnapshot}`)
+                        .join(', ');
+
+                      return (
+                        <tr
+                          key={ord.id}
+                          className="hover:bg-[#181411]/60 transition-colors"
+                        >
+                          <td className="py-3 px-3 font-black text-stone-100 font-['Oswald',sans-serif]">
+                            #{ord.id}
+                          </td>
+                          <td className="py-3 px-3">
+                            <span
+                              className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold uppercase font-['Oswald',sans-serif] ${
+                                isDineIn
+                                  ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
+                                  : 'bg-stone-700/20 text-stone-300 border border-stone-600/30'
+                              }`}
+                            >
+                              {isDineIn ? (
+                                <>
+                                  <Utensils size={11} />
+                                  <span>Mesa {ord.tableNumber || '--'}</span>
+                                </>
+                              ) : (
+                                <>
+                                  <Bike size={11} />
+                                  <span className="truncate max-w-[120px]">{ord.customerName || 'Delivery'}</span>
+                                </>
+                              )}
+                            </span>
+                          </td>
+                          <td className="py-3 px-3 text-stone-300 max-w-xs truncate" title={itemsPreview}>
+                            <span className="font-semibold">{itemCount} {itemCount === 1 ? 'item' : 'itens'}:</span>{' '}
+                            <span className="text-stone-400">{itemsPreview}</span>
+                          </td>
+                          <td className="py-3 px-3 font-bold text-amber-400 font-['Oswald',sans-serif]">
+                            {formatPrice(ord.totalAmount)}
+                          </td>
+                          <td className="py-3 px-3">
+                            <span
+                              className={`inline-block px-2 py-0.5 rounded text-[10px] font-bold uppercase font-['Oswald',sans-serif] ${
+                                ord.status === 'DELIVERED'
+                                  ? 'bg-emerald-950/40 text-emerald-400 border border-emerald-800/30'
+                                  : ord.status === 'PREPARING'
+                                  ? 'bg-amber-950/40 text-amber-400 border border-amber-800/30'
+                                  : ord.status === 'CANCELLED'
+                                  ? 'bg-red-950/40 text-red-400 border border-red-800/30'
+                                  : ord.status === 'READY'
+                                  ? 'bg-blue-950/40 text-blue-400 border border-blue-800/30'
+                                  : 'bg-stone-800 text-stone-300 border border-stone-700'
+                              }`}
+                            >
+                              {ord.status === 'DELIVERED'
+                                ? 'Entregue'
+                                : ord.status === 'PREPARING'
+                                ? 'No Fogo'
+                                : ord.status === 'READY'
+                                ? 'Pronto'
+                                : ord.status === 'CANCELLED'
+                                ? 'Cancelado'
+                                : 'Recebido'}
+                            </span>
+                          </td>
+                          <td className="py-3 px-3 text-right text-[11px] text-stone-500 font-mono">
+                            {new Date(ord.createdAt).toLocaleDateString('pt-BR', {
+                              day: '2-digit',
+                              month: '2-digit',
+                            })}{' '}
+                            {new Date(ord.createdAt).toLocaleTimeString('pt-BR', {
+                              hour: '2-digit',
+                              minute: '2-digit',
+                            })}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <div className="py-8 text-center text-xs text-stone-500">
+                Nenhum pedido localizado no período selecionado.
+              </div>
+            )}
           </div>
         </ScrollReveal>
       </div>

@@ -46,9 +46,17 @@ export const orderController = {
   /**
    * Rota auxiliar do protótipo: POST /api/admin/orders/simulate
    */
-  simulateIncomingOrder(_req, res, next) {
+  simulateIncomingOrder(req, res, next) {
     try {
-      const result = orderService.simulateIncomingOrder();
+      const forceDelivery =
+        req.body?.isDelivery !== undefined
+          ? Boolean(req.body.isDelivery)
+          : req.query?.type === 'delivery'
+          ? true
+          : req.query?.type === 'table'
+          ? false
+          : null;
+      const result = orderService.simulateIncomingOrder(forceDelivery);
       res.status(201).json(result);
     } catch (err) {
       next(err);
@@ -147,9 +155,10 @@ export const orderController = {
   /**
    * GET /api/admin/metrics
    */
-  getMetrics(_req, res, next) {
+  getMetrics(req, res, next) {
     try {
-      const result = orderService.getMetrics();
+      const period = req.query.period ? String(req.query.period) : 'today';
+      const result = orderService.getMetrics({ period });
       res.status(200).json(result);
     } catch (err) {
       next(err);

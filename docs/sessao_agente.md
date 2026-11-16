@@ -1477,6 +1477,32 @@ pm run build bem-sucedido.
      - Rotas `/admin/metricas` e `/admin/pedidos` mapeadas e ativas em [`App.jsx`](./site/frontend/src/App.jsx).
   4. **Validação:** Subagente no navegador validou visualmente ambas as telas com capturas de tela e zero erros de build.
 
+---
+
+### [2026-11-16 01:15] — Aba Dedicada de Métricas com Dados Reais do SQLite e Design Steakhouse
+- **Papel Ativo:** Desenvolvedor Full-Stack & UI/UX Designer
+- **Etapa SDD:** `Fase 3 — Refinamento de Painel de Gestão e Métricas Operacionais`
+- **Ações Executadas:**
+  1. **Separação de Abas no Painel Administrativo:**
+     - A fila KDS em `/admin/pedidos` foi desacoplada, mantendo foco total na esteira de preparo e comandos de cozinha.
+     - Criação e ativação da página dedicada de métricas em `/admin/metricas` (`AdminMetricsPage.jsx`).
+     - Integração na barra de navegação global (`Navbar.jsx`) e na Sidebar retrátil (`AdminLayout.jsx`).
+  2. **Dados Reais Dinâmicos com SQLite:**
+     - Atualização do repositório backend (`orderRepo.js`) com suporte a filtros de período (`today`, `7days`, `month`), calculando faturamento entregue, ticket médio, taxa de conclusão, divisão de canais (salão vs delivery), status operacionais e ranking de produtos mais vendidos diretamente da base SQLite (`data/foodexpress.sqlite`).
+     - Atualização do controller (`orderController.js`), service (`orderService.js`) e cliente de API (`adminApi.js`).
+     - Inclusão de dados históricos realistas no seed (`seed.js`) com datas distribuídas (hoje, 2 dias, 3 dias, 5 dias, 12 dias, 18 dias e 22 dias atrás).
+     - Validação dinâmica em tempo real: ao acionar `+ Mesa Teste` ou `+ Delivery Teste`, o pedido é persistido no SQLite e as métricas atualizam instantaneamente.
+  3. **Tabela de Pedidos do Período:**
+     - Adicionada lista detalhada de pedidos reais do período selecionado na base da página de métricas, exibindo ID, mesa/cliente, itens, valor em R$, status e data/hora.
+  4. **Estética Steakhouse Monocromática & Zero Duplo Scroll:**
+     - Paleta sóbria em carvão (`#0e0c0a`), bordas em pedra fosca (`#26201b`) e acentos elegantes em âmbar queimado (`text-amber-400`), sem poluição de cores.
+     - Rolagem única na janela sem scrollbar duplicada.
+  5. **Verificação & Testes:**
+     - 9/9 testes de integração e unitários passando no Vitest (100%).
+     - Build Vite de produção executado com sucesso (1.36s).
+     - Subagente de inspeção visual verificou com sucesso as transições de "Hoje", "Últimos 7 dias" e "Este Mês" e a renderização de dados reais.
+- **Status da Etapa:** Concluída com sucesso e aprovada.
+
 
 
 
