@@ -211,19 +211,37 @@ export default function HomePage() {
               {/* Subtle Warm Hearth Atmosphere — Sóbrio e refinado */}
               <div className="absolute top-1/2 right-[10%] -translate-y-1/2 w-[550px] h-[480px] bg-gradient-to-br from-amber-600/[0.04] to-transparent rounded-full blur-[140px] pointer-events-none z-10" />
 
-              {/* Linha divisória vertical orgânica discreta em pedra escura */}
+              {/* Curvas fluidas orgânicas originais em gradiente de fogo laranja */}
               <svg
                 className="hidden md:block absolute left-[51%] lg:left-[58%] -translate-x-1/2 top-0 bottom-0 h-full w-56 pointer-events-none z-20"
                 viewBox="0 0 160 800"
                 preserveAspectRatio="none"
                 fill="none"
               >
+                {/* Linha tracejada em âmbar próxima da linha principal */}
+                <path
+                  d="M52,0 C122,230 27,420 97,600 C127,700 62,800 47,800"
+                  stroke="#f59e0b"
+                  strokeWidth="1.75"
+                  strokeDasharray="6 8"
+                  className="opacity-80"
+                />
+                {/* Linha fluida principal em gradiente de fogo da brasa (Nítida, cor laranja) */}
                 <path
                   d="M70,0 C140,230 45,420 115,600 C145,700 80,800 65,800"
-                  stroke="#2e251e"
-                  strokeWidth="1.5"
-                  className="opacity-70"
+                  stroke="url(#warmGradientHero)"
+                  strokeWidth="2.25"
+                  className="opacity-90"
                 />
+                <defs>
+                  {/* Gradiente de fogo vibrante da brasa */}
+                  <linearGradient id="warmGradientHero" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stopColor="#ea580c" />
+                    <stop offset="40%" stopColor="#f59e0b" />
+                    <stop offset="75%" stopColor="#d97706" />
+                    <stop offset="100%" stopColor="#dc2626" />
+                  </linearGradient>
+                </defs>
               </svg>
 
               {/* Content Grid (Transparent columns allowing the rich degradê to shine through smoothly) */}
