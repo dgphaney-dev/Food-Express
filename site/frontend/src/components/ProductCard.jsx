@@ -1,5 +1,6 @@
 import { Plus, SlidersHorizontal, Flame } from 'lucide-react';
 import { formatPrice, sanitizeProductImageUrl, getFallbackFoodImage } from '../utils/helpers';
+import TiltCard from './TiltCard';
 
 export default function ProductCard({ product, onAdd }) {
   if (!product) return null;
@@ -15,9 +16,11 @@ export default function ProductCard({ product, onAdd }) {
   const safeImageUrl = sanitizeProductImageUrl(product.imageUrl, product.name);
 
   return (
-    <div
+    <TiltCard
       onClick={() => onAdd(product)}
-      className="group relative flex flex-col justify-between overflow-hidden rounded-2xl bg-[#14110f] border border-[#2a221c] shadow-[0_4px_20px_rgba(0,0,0,0.5)] steakhouse-glow-hover card-glare cursor-pointer text-stone-100"
+      className="h-full group relative flex flex-col justify-between overflow-hidden rounded-2xl bg-[#14110f] border border-[#2a221c] shadow-[0_4px_20px_rgba(0,0,0,0.5)] steakhouse-glow-hover cursor-pointer text-stone-100"
+      maxTilt={6}
+      scale={1.02}
     >
       <div>
         {/* Product Image */}
@@ -92,6 +95,6 @@ export default function ProductCard({ product, onAdd }) {
           <span>Pedir</span>
         </button>
       </div>
-    </div>
+    </TiltCard>
   );
 }

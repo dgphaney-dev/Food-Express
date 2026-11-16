@@ -5,6 +5,7 @@ import CustomerMenuPage from './pages/CustomerMenuPage';
 import OrderTrackingPage from './pages/OrderTrackingPage';
 import NotFoundPage from './pages/NotFoundPage';
 import ScrollEffects from './components/ScrollEffects';
+import MouseSpotlight from './components/MouseSpotlight';
 
 /**
  * Aplicação Exclusiva do Cliente (ACT-01)
@@ -14,6 +15,7 @@ export default function CustomerApp() {
   return (
     <>
       <ScrollEffects />
+      <MouseSpotlight />
       <Routes>
       {/* 1. ABA INÍCIO (Tela Demonstrativa Inicial Steakhouse) */}
       <Route path="/" element={<HomePage />} />

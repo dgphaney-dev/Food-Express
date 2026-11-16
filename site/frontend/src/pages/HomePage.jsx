@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import ScrollReveal from '../components/ScrollReveal';
+import TiltCard from '../components/TiltCard';
 import {
   Flame,
   Sparkles,
@@ -101,6 +102,25 @@ export default function HomePage() {
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [scrollY, setScrollY] = useState(0);
+  const [mouseOffset, setMouseOffset] = useState({ x: 0, y: 0 });
+  const heroRafRef = useRef(null);
+
+  const handleHeroMouseMove = useCallback((e) => {
+    if (heroRafRef.current) cancelAnimationFrame(heroRafRef.current);
+    heroRafRef.current = requestAnimationFrame(() => {
+      const rect = e.currentTarget?.getBoundingClientRect();
+      if (!rect) return;
+      const x = Math.max(-1, Math.min(1, ((e.clientX - rect.left) / rect.width - 0.5) * 2));
+      const y = Math.max(-1, Math.min(1, ((e.clientY - rect.top) / rect.height - 0.5) * 2));
+      setMouseOffset({ x, y });
+    });
+  }, []);
+
+  const handleHeroMouseLeave = useCallback(() => {
+    if (heroRafRef.current) cancelAnimationFrame(heroRafRef.current);
+    setIsPaused(false);
+    setMouseOffset({ x: 0, y: 0 });
+  }, []);
 
   // Smooth scroll tracking for parallax depth effects
   useEffect(() => {
@@ -159,8 +179,9 @@ export default function HomePage() {
       {/* 2. HUGE SPLIT HERO BANNER (Luxury Dark Steakhouse Seamless Cinematic Carousel) */}
       <section
         className="relative w-full min-h-[620px] md:min-h-0 md:h-[580px] lg:h-[640px] bg-black overflow-hidden"
+        onMouseMove={handleHeroMouseMove}
         onMouseEnter={() => setIsPaused(true)}
-        onMouseLeave={() => setIsPaused(false)}
+        onMouseLeave={handleHeroMouseLeave}
       >
         {/* Slides Container with Smooth Crossfade */}
         {HERO_SLIDES.map((slide, idx) => {
@@ -176,8 +197,8 @@ export default function HomePage() {
               <div
                 className="absolute inset-y-0 left-0 w-full md:w-[68%] lg:w-[72%] h-[240px] sm:h-[280px] md:h-full overflow-hidden pointer-events-none will-change-transform"
                 style={{
-                  transform: `translate3d(0, ${Math.min(scrollY * 0.22, 120)}px, 0)`,
-                  transition: 'transform 0.1s cubic-bezier(0.16, 1, 0.3, 1)',
+                  transform: `translate3d(${mouseOffset.x * -16}px, ${Math.min(scrollY * 0.22, 120) + mouseOffset.y * -10}px, 0)`,
+                  transition: 'transform 0.16s cubic-bezier(0.16, 1, 0.3, 1)',
                 }}
               >
                 <img
@@ -213,7 +234,11 @@ export default function HomePage() {
 
               {/* Curvas fluidas orgânicas originais em gradiente de fogo laranja */}
               <svg
-                className="hidden md:block absolute left-[51%] lg:left-[58%] -translate-x-1/2 top-0 bottom-0 h-full w-56 pointer-events-none z-20"
+                className="hidden md:block absolute left-[51%] lg:left-[58%] -translate-x-1/2 top-0 bottom-0 h-full w-56 pointer-events-none z-20 will-change-transform"
+                style={{
+                  transform: `translate3d(calc(-50% + ${mouseOffset.x * 12}px), ${mouseOffset.y * 6}px, 0)`,
+                  transition: 'transform 0.22s cubic-bezier(0.16, 1, 0.3, 1)',
+                }}
                 viewBox="0 0 160 800"
                 preserveAspectRatio="none"
                 fill="none"
@@ -250,7 +275,13 @@ export default function HomePage() {
                 <div className="hidden md:block md:col-span-6 lg:col-span-7 h-full pointer-events-none" />
 
                 {/* Right Side: Content Container */}
-                <div className="md:col-span-6 lg:col-span-5 relative h-full flex flex-col justify-center px-5 py-6 sm:px-8 sm:py-8 md:p-8 lg:p-12 xl:p-14 text-center md:text-left pt-64 sm:pt-72 md:pt-8 pointer-events-auto">
+                <div
+                  className="md:col-span-6 lg:col-span-5 relative h-full flex flex-col justify-center px-5 py-6 sm:px-8 sm:py-8 md:p-8 lg:p-12 xl:p-14 text-center md:text-left pt-64 sm:pt-72 md:pt-8 pointer-events-auto will-change-transform"
+                  style={{
+                    transform: `translate3d(${mouseOffset.x * 8}px, ${mouseOffset.y * 5}px, 0)`,
+                    transition: 'transform 0.18s cubic-bezier(0.16, 1, 0.3, 1)',
+                  }}
+                >
                   {/* Content Container with soft stagger animation */}
                   <div className={`relative z-10 space-y-3 sm:space-y-4 md:space-y-4 lg:space-y-5 transition-all duration-700 ease-out transform ${
                     isActive ? 'translate-y-0 opacity-100' : 'translate-y-3 opacity-0'
@@ -395,9 +426,11 @@ export default function HomePage() {
               duration={750}
               className="h-full"
             >
-              <div
+              <TiltCard
                 onClick={() => navigate('/nossos-produtos')}
-                className="h-full group relative flex flex-col justify-between overflow-hidden rounded-2xl bg-[#14110f] border border-[#2b221c] shadow-xl steakhouse-glow-hover card-glare cursor-pointer"
+                className="h-full group relative flex flex-col justify-between overflow-hidden rounded-2xl bg-[#14110f] border border-[#2b221c] shadow-xl steakhouse-glow-hover cursor-pointer"
+                maxTilt={7}
+                scale={1.02}
               >
                 <div>
                   {/* Photo with Dark Overlay and Smooth Zoom */}
@@ -473,7 +506,7 @@ export default function HomePage() {
                     <ArrowRight size={13} className="transition-transform group-hover:translate-x-1" />
                   </div>
                 </div>
-              </div>
+              </TiltCard>
             </ScrollReveal>
           ))}
         </div>

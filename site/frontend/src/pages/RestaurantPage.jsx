@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import ScrollReveal from '../components/ScrollReveal';
+import TiltCard from '../components/TiltCard';
 
 export default function RestaurantPage() {
   const navigate = useNavigate();
@@ -138,59 +139,67 @@ export default function RestaurantPage() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           <ScrollReveal direction="up" delay={0} duration={750} className="h-full">
-            <div className="card-glare steakhouse-glow-hover h-full p-6 rounded-2xl bg-[#14100e] border border-[#2b221c] space-y-3 shadow-lg hover:border-amber-500/40 transition-all duration-300">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-orange-500/10 border border-orange-500/30 text-orange-400 group-hover:scale-110 transition-transform">
-                <Flame size={24} className="animate-flame-dance" />
+            <TiltCard maxTilt={8} scale={1.03} className="h-full rounded-2xl bg-[#14100e] border border-[#2b221c] shadow-lg hover:border-amber-500/40 steakhouse-glow-hover">
+              <div className="h-full p-6 space-y-3">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-orange-500/10 border border-orange-500/30 text-orange-400 group-hover:scale-110 transition-transform">
+                  <Flame size={24} className="animate-flame-dance" />
+                </div>
+                <h3 className="text-lg font-bold text-white font-['Oswald',sans-serif] uppercase tracking-wide">
+                  Grelhados ao Vivo
+                </h3>
+                <p className="text-xs text-stone-400 leading-relaxed">
+                  Cozinha aberta com brasa viva. Você acompanha os cortes nobres de 180g sendo selados no ponto exato com aromas inconfundíveis.
+                </p>
               </div>
-              <h3 className="text-lg font-bold text-white font-['Oswald',sans-serif] uppercase tracking-wide">
-                Grelhados ao Vivo
-              </h3>
-              <p className="text-xs text-stone-400 leading-relaxed">
-                Cozinha aberta com brasa viva. Você acompanha os cortes nobres de 180g sendo selados no ponto exato com aromas inconfundíveis.
-              </p>
-            </div>
+            </TiltCard>
           </ScrollReveal>
 
           <ScrollReveal direction="up" delay={120} duration={750} className="h-full">
-            <div className="card-glare steakhouse-glow-hover h-full p-6 rounded-2xl bg-[#14100e] border border-[#2b221c] space-y-3 shadow-lg hover:border-amber-500/40 transition-all duration-300">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-orange-500/10 border border-orange-500/30 text-orange-400">
-                <Beer size={24} />
+            <TiltCard maxTilt={8} scale={1.03} className="h-full rounded-2xl bg-[#14100e] border border-[#2b221c] shadow-lg hover:border-amber-500/40 steakhouse-glow-hover">
+              <div className="h-full p-6 space-y-3">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-orange-500/10 border border-orange-500/30 text-orange-400">
+                  <Beer size={24} />
+                </div>
+                <h3 className="text-lg font-bold text-white font-['Oswald',sans-serif] uppercase tracking-wide">
+                  Caneca Ultracongelada
+                </h3>
+                <p className="text-xs text-stone-400 leading-relaxed">
+                  Chopps artesanais puro malte servidos em canecas com camada espessa de gelo a -2°C, mantendo a bebida gelada até o último gole.
+                </p>
               </div>
-              <h3 className="text-lg font-bold text-white font-['Oswald',sans-serif] uppercase tracking-wide">
-                Caneca Ultracongelada
-              </h3>
-              <p className="text-xs text-stone-400 leading-relaxed">
-                Chopps artesanais puro malte servidos em canecas com camada espessa de gelo a -2°C, mantendo a bebida gelada até o último gole.
-              </p>
-            </div>
+            </TiltCard>
           </ScrollReveal>
 
           <ScrollReveal direction="up" delay={240} duration={750} className="h-full">
-            <div className="card-glare steakhouse-glow-hover h-full p-6 rounded-2xl bg-[#14100e] border border-[#2b221c] space-y-3 shadow-lg hover:border-amber-500/40 transition-all duration-300">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-orange-500/10 border border-orange-500/30 text-orange-400">
-                <Wind size={24} />
+            <TiltCard maxTilt={8} scale={1.03} className="h-full rounded-2xl bg-[#14100e] border border-[#2b221c] shadow-lg hover:border-amber-500/40 steakhouse-glow-hover">
+              <div className="h-full p-6 space-y-3">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-orange-500/10 border border-orange-500/30 text-orange-400">
+                  <Wind size={24} />
+                </div>
+                <h3 className="text-lg font-bold text-white font-['Oswald',sans-serif] uppercase tracking-wide">
+                  Salão 100% Climatizado
+                </h3>
+                <p className="text-xs text-stone-400 leading-relaxed">
+                  Ambiente moderno, aconchegante e refrigerado, com sofás acolchoados e mesas para casais, famílias ou grupos grandes de comemoração.
+                </p>
               </div>
-              <h3 className="text-lg font-bold text-white font-['Oswald',sans-serif] uppercase tracking-wide">
-                Salão 100% Climatizado
-              </h3>
-              <p className="text-xs text-stone-400 leading-relaxed">
-                Ambiente moderno, aconchegante e refrigerado, com sofás acolchoados e mesas para casais, famílias ou grupos grandes de comemoração.
-              </p>
-            </div>
+            </TiltCard>
           </ScrollReveal>
 
           <ScrollReveal direction="up" delay={360} duration={750} className="h-full">
-            <div className="card-glare steakhouse-glow-hover h-full p-6 rounded-2xl bg-[#14100e] border border-[#2b221c] space-y-3 shadow-lg hover:border-amber-500/40 transition-all duration-300">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-orange-500/10 border border-orange-500/30 text-orange-400">
-                <UtensilsCrossed size={24} />
+            <TiltCard maxTilt={8} scale={1.03} className="h-full rounded-2xl bg-[#14100e] border border-[#2b221c] shadow-lg hover:border-amber-500/40 steakhouse-glow-hover">
+              <div className="h-full p-6 space-y-3">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-orange-500/10 border border-orange-500/30 text-orange-400">
+                  <UtensilsCrossed size={24} />
+                </div>
+                <h3 className="text-lg font-bold text-white font-['Oswald',sans-serif] uppercase tracking-wide">
+                  Pedido Digital na Mesa
+                </h3>
+                <p className="text-xs text-stone-400 leading-relaxed">
+                  Sem precisar esperar garçom. Você escolhe na tela, envia o pedido para a cozinha e acompanha o preparo e a entrega em tempo real.
+                </p>
               </div>
-              <h3 className="text-lg font-bold text-white font-['Oswald',sans-serif] uppercase tracking-wide">
-                Pedido Digital na Mesa
-              </h3>
-              <p className="text-xs text-stone-400 leading-relaxed">
-                Sem precisar esperar garçom. Você escolhe na tela, envia o pedido para a cozinha e acompanha o preparo e a entrega em tempo real.
-              </p>
-            </div>
+            </TiltCard>
           </ScrollReveal>
         </div>
       </section>
