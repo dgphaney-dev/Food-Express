@@ -209,4 +209,45 @@ export const adminApi = {
       })
     );
   },
+
+  // Gestão de Usuários e Acessos ao Sistema (SQLite)
+  async fetchUsers() {
+    return this.withAutoAuth(() =>
+      requestJson('/admin/users', { method: 'GET' })
+    );
+  },
+
+  async createUser(payload) {
+    return this.withAutoAuth(() =>
+      requestJson('/admin/users', {
+        method: 'POST',
+        body: JSON.stringify(payload),
+      })
+    );
+  },
+
+  async updateUser(id, payload) {
+    return this.withAutoAuth(() =>
+      requestJson(`/admin/users/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify(payload),
+      })
+    );
+  },
+
+  async toggleUserActive(id) {
+    return this.withAutoAuth(() =>
+      requestJson(`/admin/users/${id}/toggle`, {
+        method: 'PATCH',
+      })
+    );
+  },
+
+  async deleteUser(id) {
+    return this.withAutoAuth(() =>
+      requestJson(`/admin/users/${id}`, {
+        method: 'DELETE',
+      })
+    );
+  },
 };

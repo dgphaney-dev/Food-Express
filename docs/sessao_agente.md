@@ -1503,6 +1503,40 @@ pm run build bem-sucedido.
      - Subagente de inspeção visual verificou com sucesso as transições de "Hoje", "Últimos 7 dias" e "Este Mês" e a renderização de dados reais.
 - **Status da Etapa:** Concluída com sucesso e aprovada.
 
+---
+
+### [2026-11-16 15:20] — Implementação da Aba de Equipe & Cadastro de Pessoas com SQLite
+- **Papel Ativo:** Engenheiro Full-Stack & Arquiteto de Software
+- **Etapa SDD:** `Fase 3 — Módulo de Gestão de Usuários, Acessos e Permissões (SQLite)`
+- **Ações Executadas:**
+  1. **Persistência Completa em Banco de Dados SQLite:**
+     - Tabela `users` em `site/backend/db/schema.js` estendida com colunas `name`, `username`, `password_hash`, `role`, `phone`, `active`, `created_at` e `updated_at`.
+     - Migrações seguras e idempotentes adicionadas em `site/backend/db/connection.js`.
+     - Repositório `userRepo.js` com CRUD completo (`findAll`, `findById`, `findByUsername`, `create`, `update`, `delete`, `count`).
+  2. **Serviço e Controlador de Usuários no Backend:**
+     - `site/backend/admin/services/userService.js`: validação de username único, hash de senha criptografado irreversível (`scrypt` nativo com salt), proteção contra remoção/desativação do último administrador ativo.
+     - `site/backend/admin/controllers/userController.js`: endpoints RESTful autenticados:
+       - `GET /api/admin/users`: lista segura de usuários sem expor hashes de senha.
+       - `POST /api/admin/users`: cadastro de novos operadores com validação.
+       - `PUT /api/admin/users/:id`: atualização de dados, cargo e redefinição de senha.
+       - `PATCH /api/admin/users/:id/toggle`: alternância de status ativo/inativo.
+       - `DELETE /api/admin/users/:id`: exclusão segura.
+     - Rotas registradas no `adminRouter` em `site/backend/admin/routes/adminRoutes.js`.
+  3. **Página Frontend de Equipe & Acessos (`AdminUsersPage.jsx`):**
+     - Criada a tela em `/admin/usuarios` com visual Steakhouse Dark e design sóbrio.
+     - Contadores no topo: Total na Equipe, Acessos Ativos, Administradores, Atendentes.
+     - Modal interativo "+ Novo Usuário" com seleção de 4 perfis de permissão (Administrador, Atendente / Salão, Cozinha / KDS, Motorista / Entregador).
+     - Filtros em tempo real por perfil e busca textual por nome, `@username` ou telefone.
+     - Ações por linha: editar dados/senha, ativar/inativar com badge dinâmico e excluir.
+  4. **Navegação & Roteamento:**
+     - Integrado à Sidebar retrátil em `AdminLayout.jsx` ("Equipe & Acessos") e na barra superior `Navbar.jsx`.
+     - Rotas `/admin/usuarios`, `/admin/users`, `/admin/acessos` e `/admin/equipe` registradas em `App.jsx`.
+  5. **Validação & Testes:**
+     - 10/10 testes passando no Vitest (`tests/integration/adminApi.test.js`), incluindo teste completo do fluxo de cadastro e login com as novas credenciais.
+     - Build de produção do Vite compilado em 1.63s sem erros.
+     - Subagente de navegador visual executou com sucesso o cadastro do operador `Roberto Atendente` e verificou a inserção imediata no SQLite.
+- **Status da Etapa:** Concluída com sucesso e aprovada.
+
 
 
 

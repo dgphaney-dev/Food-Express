@@ -18,6 +18,7 @@ import {
   Timer,
   ShieldCheck,
   Flame,
+  Users,
 } from 'lucide-react';
 import { useAuth } from '../../src/contexts/AuthContext';
 import { useOrders } from '../../src/contexts/OrderContext';
@@ -107,6 +108,14 @@ export default function AdminLayout({
       label: 'Gestão de Cardápio',
       shortLabel: 'Cardápio',
       icon: UtensilsCrossed,
+      badge: null,
+    },
+    {
+      to: '/admin/usuarios',
+      altPaths: ['/admin/users', '/admin/acessos', '/admin/equipe'],
+      label: 'Equipe & Acessos',
+      shortLabel: 'Usuários',
+      icon: Users,
       badge: null,
     },
     {

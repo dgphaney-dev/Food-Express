@@ -400,14 +400,59 @@ export const INITIAL_SEED_ORDERS = () => [
 ];
 
 export function seedDatabase({ forceResetOrders = false } = {}) {
-  // 1. Operador Padrão (RN-010 / RNF-002)
+  // 1. Operador Padrão e Equipe Inicial (RN-010 / RNF-002)
   const existingAdmin = userRepo.findByUsername(env.ADMIN_DEFAULT_USER);
   if (!existingAdmin) {
     userRepo.create({
+      name: 'Gabriel Souza (Gerente Geral)',
       username: env.ADMIN_DEFAULT_USER,
       passwordHash: hashPassword(env.ADMIN_DEFAULT_PASS),
       role: 'ADMIN',
+      phone: '(11) 98765-4321',
+      active: true,
     });
+  } else if (!existingAdmin.name) {
+    userRepo.update(existingAdmin.id, {
+      name: 'Gabriel Souza (Gerente Geral)',
+      phone: '(11) 98765-4321',
+    });
+  }
+
+  const teamSamples = [
+    {
+      name: 'Juliana Rocha',
+      username: 'juliana.atendente',
+      password: 'atendente123',
+      role: 'ATENDENTE',
+      phone: '(11) 97123-4567',
+    },
+    {
+      name: 'Chef Marcos Oliveira',
+      username: 'marcos.cozinha',
+      password: 'cozinha123',
+      role: 'COZINHA',
+      phone: '(11) 96234-5678',
+    },
+    {
+      name: 'Lucas Mendes (Delivery)',
+      username: 'lucas.motorista',
+      password: 'motorista123',
+      role: 'ENTREGADOR',
+      phone: '(11) 95345-6789',
+    },
+  ];
+
+  for (const member of teamSamples) {
+    if (!userRepo.findByUsername(member.username)) {
+      userRepo.create({
+        name: member.name,
+        username: member.username,
+        passwordHash: hashPassword(member.password),
+        role: member.role,
+        phone: member.phone,
+        active: true,
+      });
+    }
   }
 
   // 2. Categorias e Produtos Iniciais (RN-001 / RN-011)

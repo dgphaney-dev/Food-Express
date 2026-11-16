@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { authController } from '../controllers/authController.js';
 import { menuController } from '../controllers/menuController.js';
 import { orderController } from '../controllers/orderController.js';
+import { userController } from '../controllers/userController.js';
 import { authMiddleware } from '../middlewares/authMiddleware.js';
 
 export const authRouter = Router();
@@ -29,3 +30,11 @@ adminRouter.post('/orders/simulate', orderController.simulateIncomingOrder);
 adminRouter.post('/orders/reset', orderController.resetDemoOrders);
 adminRouter.patch('/orders/:id/advance', orderController.advanceOrderByAdmin);
 adminRouter.post('/orders/:id/cancel', orderController.cancelOrderByAdmin);
+
+// Gestão de Usuários e Acessos ao Sistema (SQLite)
+adminRouter.get('/users', userController.listUsers);
+adminRouter.get('/users/:id', userController.getUserById);
+adminRouter.post('/users', userController.createUser);
+adminRouter.put('/users/:id', userController.updateUser);
+adminRouter.patch('/users/:id/toggle', userController.toggleUserActive);
+adminRouter.delete('/users/:id', userController.deleteUser);

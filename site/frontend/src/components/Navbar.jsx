@@ -14,6 +14,7 @@ import {
   Utensils,
   ChevronRight,
   TrendingUp,
+  Users,
 } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
 import { useOrders } from '../contexts/OrderContext';
@@ -270,6 +271,19 @@ export default function Navbar({
               >
                 <UtensilsCrossed size={15} />
                 <span>Cardápio</span>
+              </Link>
+
+              <Link
+                to="/admin/usuarios"
+                className={`flex items-center gap-1.5 sm:gap-2 rounded-xl px-2.5 sm:px-3.5 py-1.5 sm:py-2 text-[11px] sm:text-xs font-bold uppercase tracking-wider font-['Oswald',sans-serif] transition-colors whitespace-nowrap shrink-0 ${
+                  isActive('/admin/usuarios') || isActive('/admin/users') || isActive('/admin/acessos')
+                    ? 'bg-orange-600 text-white shadow-md'
+                    : 'text-zinc-400 hover:bg-zinc-800 hover:text-white'
+                }`}
+                title="Gestão de Usuários e Acessos ao Sistema"
+              >
+                <Users size={15} />
+                <span>Equipe</span>
               </Link>
 
               <Link

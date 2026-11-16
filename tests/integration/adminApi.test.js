@@ -311,4 +311,76 @@ describe('Integration — Backend Completo (Auth, Cardápio, Pedidos, Regras RN-
     expect(authMetrics.body.metrics.statusCounts).toBeDefined();
     expect(Array.isArray(authMetrics.body.metrics.topProducts)).toBe(true);
   });
+
+  it('API-014 / Equipe & Acessos: deve gerenciar cadastro de usuários (CRUD) no SQLite com proteção e validação de senhas', async () => {
+    // 1. Listar usuários cadastrados (deve vir sem hash de senha)
+    const listRes = await request(app)
+      .get('/api/admin/users')
+      .set('Authorization', `Bearer ${adminToken}`);
+    expect(listRes.status).toBe(200);
+    expect(Array.isArray(listRes.body.users)).toBe(true);
+    expect(listRes.body.users.length).toBeGreaterThanOrEqual(1);
+    expect(listRes.body.users[0].passwordHash).toBeUndefined();
+
+    // 2. Criar novo usuário
+    const createRes = await request(app)
+      .post('/api/admin/users')
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({
+        name: 'Ana Carolina Teste',
+        username: 'ana.carolina',
+        password: 'senhaSegura123',
+        role: 'ATENDENTE',
+        phone: '(11) 98888-7777',
+        active: true,
+      });
+    expect(createRes.status).toBe(201);
+    expect(createRes.body.user.id).toBeDefined();
+    expect(createRes.body.user.username).toBe('ana.carolina');
+    expect(createRes.body.user.role).toBe('ATENDENTE');
+    const newUserId = createRes.body.user.id;
+
+    // 3. O novo usuário deve conseguir fazer login com a senha recém-criada
+    const newLoginRes = await request(app)
+      .post('/api/auth/login')
+      .send({ username: 'ana.carolina', password: 'senhaSegura123' });
+    expect(newLoginRes.status).toBe(200);
+    expect(newLoginRes.body.token).toBeDefined();
+
+    // 4. Tentativa de cadastrar usuário duplicado deve retornar 409
+    const dupRes = await request(app)
+      .post('/api/admin/users')
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({
+        name: 'Outra Ana',
+        username: 'ana.carolina',
+        password: 'senhaSegura123',
+      });
+    expect(dupRes.status).toBe(409);
+
+    // 5. Atualizar usuário
+    const updateRes = await request(app)
+      .put(`/api/admin/users/${newUserId}`)
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({
+        name: 'Ana Carolina Silva',
+        phone: '(11) 99999-0000',
+      });
+    expect(updateRes.status).toBe(200);
+    expect(updateRes.body.user.name).toBe('Ana Carolina Silva');
+
+    // 6. Toggle de status ativo/inativo
+    const toggleRes = await request(app)
+      .patch(`/api/admin/users/${newUserId}/toggle`)
+      .set('Authorization', `Bearer ${adminToken}`);
+    expect(toggleRes.status).toBe(200);
+    expect(toggleRes.body.user.active).toBe(false);
+
+    // 7. Excluir usuário de teste
+    const delRes = await request(app)
+      .delete(`/api/admin/users/${newUserId}`)
+      .set('Authorization', `Bearer ${adminToken}`);
+    expect(delRes.status).toBe(200);
+    expect(delRes.body.success).toBe(true);
+  });
 });

@@ -2,10 +2,14 @@ import { integer, real, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
 export const users = sqliteTable('users', {
   id: integer('id').primaryKey({ autoIncrement: true }),
+  name: text('name').default(''),
   username: text('username').notNull().unique(),
   passwordHash: text('password_hash').notNull(),
-  role: text('role').notNull().default('ADMIN'),
+  role: text('role').notNull().default('ADMIN'), // 'ADMIN' | 'ATENDENTE' | 'COZINHA' | 'ENTREGADOR'
+  phone: text('phone'),
+  active: integer('active', { mode: 'boolean' }).default(true),
   createdAt: text('created_at').notNull(),
+  updatedAt: text('updated_at'),
 });
 
 export const categories = sqliteTable('categories', {
@@ -81,10 +85,14 @@ export const orderItems = sqliteTable('order_items', {
 export const SCHEMA_DDL_SQL = `
 CREATE TABLE IF NOT EXISTS users (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT DEFAULT '',
   username TEXT NOT NULL UNIQUE,
   password_hash TEXT NOT NULL,
   role TEXT NOT NULL DEFAULT 'ADMIN',
-  created_at TEXT NOT NULL
+  phone TEXT,
+  active INTEGER NOT NULL DEFAULT 1,
+  created_at TEXT NOT NULL,
+  updated_at TEXT
 );
 
 CREATE TABLE IF NOT EXISTS categories (

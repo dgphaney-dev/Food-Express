@@ -1,9 +1,27 @@
+<<<<<<< HEAD
 import { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import SmoothScroll from './components/SmoothScroll';
 import LoadingScreen from './components/LoadingScreen';
 import CustomerApp from './CustomerApp';
 import AdminApp from '../admin/AdminApp';
+=======
+import { useState, useEffect, useRef } from 'react'
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
+import SmoothScroll from './components/SmoothScroll'
+import LoadingScreen from './components/LoadingScreen'
+import HomePage from './pages/HomePage'
+import RestaurantPage from './pages/RestaurantPage'
+import CustomerMenuPage from './pages/CustomerMenuPage'
+import OrderTrackingPage from './pages/OrderTrackingPage'
+import AdminLoginPage from '../admin/pages/AdminLoginPage'
+import AdminMetricsPage from '../admin/pages/AdminMetricsPage'
+import AdminOrdersPage from '../admin/pages/AdminOrdersPage'
+import AdminMenuPage from '../admin/pages/AdminMenuPage'
+import AdminUsersPage from '../admin/pages/AdminUsersPage'
+import DriverDeliveryPage from './pages/DriverDeliveryPage'
+import NotFoundPage from './pages/NotFoundPage'
+>>>>>>> origin/main
 
 /**
  * Orquestrador de Aplicações Isoladas (Cliente vs. Painel Administrativo via URL)
@@ -58,7 +76,50 @@ function App() {
         />
       )}
       <SmoothScroll>
+<<<<<<< HEAD
         {isAdminOrDriverApp ? <AdminApp /> : <CustomerApp />}
+=======
+        <Routes>
+          {/* 1. ABA INÍCIO (Tela Demonstrativa Inicial Outback) */}
+          <Route path="/" element={<HomePage />} />
+
+          {/* 2. ABA RESTAURANTE & SALÃO (Página Dedicada ao Espaço Presencial) */}
+          <Route path="/restaurante" element={<RestaurantPage />} />
+          <Route path="/salao" element={<Navigate to="/restaurante" replace />} />
+
+          {/* 3. ABA NOSSOS PRODUTOS (Cardápio Completo Interativo, Personalizações & Pedidos) */}
+          <Route path="/nossos-produtos" element={<CustomerMenuPage />} />
+          <Route path="/delivery" element={<CustomerMenuPage />} />
+          <Route path="/cardapio" element={<CustomerMenuPage />} />
+          <Route path="/produtos" element={<CustomerMenuPage />} />
+          <Route path="/menu" element={<Navigate to="/nossos-produtos" replace />} />
+          <Route path="/pedido/:orderId" element={<OrderTrackingPage />} />
+
+          {/* Admin Routes */}
+          <Route path="/admin" element={<Navigate to="/admin/pedidos" replace />} />
+          <Route path="/admin/pedidos" element={<AdminOrdersPage />} />
+          <Route path="/admin/metricas" element={<AdminMetricsPage />} />
+          <Route path="/admin/dashboard" element={<Navigate to="/admin/metricas" replace />} />
+          <Route path="/admin/cardapio" element={<AdminMenuPage />} />
+          <Route path="/admin/usuarios" element={<AdminUsersPage />} />
+          <Route path="/admin/users" element={<Navigate to="/admin/usuarios" replace />} />
+          <Route path="/admin/acessos" element={<Navigate to="/admin/usuarios" replace />} />
+          <Route path="/admin/equipe" element={<Navigate to="/admin/usuarios" replace />} />
+          <Route path="/admin/login" element={<AdminLoginPage />} />
+
+          {/* Aliases for English paths */}
+          <Route path="/admin/orders" element={<Navigate to="/admin/pedidos" replace />} />
+          <Route path="/admin/menu" element={<Navigate to="/admin/cardapio" replace />} />
+
+          {/* 4. TELA DO MOTORISTA / ENTREGADOR (ESTILO IFOOD / WAZE COM GPS & ROTA) */}
+          <Route path="/entregador" element={<DriverDeliveryPage />} />
+          <Route path="/motorista" element={<Navigate to="/entregador" replace />} />
+          <Route path="/driver" element={<Navigate to="/entregador" replace />} />
+
+          {/* 404 */}
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+>>>>>>> origin/main
       </SmoothScroll>
     </>
   );
