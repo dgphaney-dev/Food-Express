@@ -1400,3 +1400,22 @@ pm run build bem-sucedido.
      - `npm test`: **8/8 testes passando** (`tests/unit/adminBackend.test.js` e `tests/integration/adminApi.test.js`).
      - `npm run lint:frontend` e `npm run build:frontend` validados com 0 erros.
 
+---
+
+### [2026-11-16 00:19] — Correções no Painel Admin: Remoção de Sinais Duplicados (+ +) e Ajuste de Overflow Horizontal
+- **Papel Ativo:** Engenheiro Frontend Especialista em UI/UX e Responsividade
+- **Etapa SDD:** `Fase 3 — Refinamento de Interface & Qualidade Visual`
+- **Ações Executadas:**
+  1. **Remoção de Duplicidade nos Botões de Teste (`AdminOrdersPage.jsx`):**
+     - Corrigida a duplicação visual de sinais de soma (`+ + MESA TESTE` e `+ + DELIVERY TESTE`) nos botões de simulação da fila de pedidos, alinhando o ícone `<Plus />` com os rótulos limpos `Mesa Teste` e `Delivery Teste`.
+  2. **Correção de Overflow Horizontal e Ajuste Responsivo em Split-Screen:**
+     - Inclusão de `html, body { overflow-x: hidden; max-width: 100vw; width: 100%; }` no `index.css`.
+     - Inclusão de `overflow-x-hidden` no `<main>` de `AdminOrdersPage.jsx`.
+     - Ajuste responsivo dos botões da barra superior (`flex-wrap`, `gap-2 sm:gap-2.5`).
+     - Otimização do Navbar Admin em `Navbar.jsx`: paddings adaptativos (`px-2.5 sm:px-3.5 py-1.5 sm:py-2`), ocultando "Entregador" em viewports estreitos (`hidden md:flex`) para prevenir estouro de largura e clipping do logo à esquerda.
+  3. **Validação Automatizada e Navegador:**
+     - Verificado via subagent browser em viewport 800x700: largura do documento contida sem scrollbar horizontal, logo e card de ícone com visibilidade integral (sem corte à esquerda) e botões de teste renderizados perfeitamente como `+ MESA TESTE` e `+ DELIVERY TESTE`.
+     - Testes de integração e unitários 100% aprovados (`8/8 passed`).
+     - Commit `28e0060` enviado para a branch `main`.
+
+
