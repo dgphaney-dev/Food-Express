@@ -235,41 +235,45 @@ export default function HomePage() {
               {/* Subtle Warm Hearth Atmosphere — Sóbrio e refinado */}
               <div className="absolute top-1/2 right-[10%] -translate-y-1/2 w-[550px] h-[480px] bg-gradient-to-br from-amber-600/[0.04] to-transparent rounded-full blur-[140px] pointer-events-none z-10" />
 
-              {/* Curvas fluidas orgânicas originais em gradiente de fogo laranja */}
+              {/* Curvas fluidas orgânicas originais em gradiente de fogo laranja vibrante */}
               <svg
-                className="hidden md:block absolute left-[51%] lg:left-[58%] -translate-x-1/2 top-0 bottom-0 h-full w-56 pointer-events-none z-20 will-change-transform"
+                className="hidden md:block absolute left-[51%] lg:left-[56%] -translate-x-1/2 top-0 bottom-0 h-full w-56 pointer-events-none z-20 will-change-transform"
                 style={{
-                  transform: `translate3d(calc(-50% + ${mouseOffset.x * 12}px), ${mouseOffset.y * 6}px, 0)`,
-                  transition: 'transform 0.22s cubic-bezier(0.16, 1, 0.3, 1)',
+                  transform: `translate3d(calc(-50% + ${mouseOffset.x * 14}px), ${mouseOffset.y * 8}px, 0)`,
+                  transition: 'transform 0.18s cubic-bezier(0.16, 1, 0.3, 1)',
                 }}
                 viewBox="0 0 160 800"
                 preserveAspectRatio="none"
                 fill="none"
               >
+                <defs>
+                  {/* Gradiente de fogo vibrante da brasa (ID único por slide para não falhar em crossfade) */}
+                  <linearGradient id={`warmGradientHero-${slide.id}`} x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stopColor="#ff781f" />
+                    <stop offset="35%" stopColor="#f97316" />
+                    <stop offset="70%" stopColor="#ea580c" />
+                    <stop offset="100%" stopColor="#dc2626" />
+                  </linearGradient>
+                  <filter id={`heroFlameGlow-${slide.id}`} x="-20%" y="-20%" width="140%" height="140%">
+                    <feDropShadow dx="0" dy="0" stdDeviation="3.5" floodColor="#f97316" floodOpacity="0.65" />
+                  </filter>
+                </defs>
                 {/* Linha tracejada em âmbar próxima da linha principal */}
                 <path
                   d="M52,0 C122,230 27,420 97,600 C127,700 62,800 47,800"
                   stroke="#f59e0b"
-                  strokeWidth="1.75"
+                  strokeWidth="2"
                   strokeDasharray="6 8"
-                  className="opacity-80"
+                  className="opacity-95"
                 />
-                {/* Linha fluida principal em gradiente de fogo da brasa (Nítida, cor laranja) */}
+                {/* Linha fluida principal em gradiente de fogo da brasa (Nítida, cor laranja vibrante) */}
                 <path
                   d="M70,0 C140,230 45,420 115,600 C145,700 80,800 65,800"
-                  stroke="url(#warmGradientHero)"
-                  strokeWidth="2.25"
-                  className="opacity-90"
+                  stroke={`url(#warmGradientHero-${slide.id})`}
+                  strokeWidth="3"
+                  filter={`url(#heroFlameGlow-${slide.id})`}
+                  className="opacity-100"
                 />
-                <defs>
-                  {/* Gradiente de fogo vibrante da brasa */}
-                  <linearGradient id="warmGradientHero" x1="0%" y1="0%" x2="0%" y2="100%">
-                    <stop offset="0%" stopColor="#ea580c" />
-                    <stop offset="40%" stopColor="#f59e0b" />
-                    <stop offset="75%" stopColor="#d97706" />
-                    <stop offset="100%" stopColor="#dc2626" />
-                  </linearGradient>
-                </defs>
               </svg>
 
               {/* Content Grid (Transparent columns allowing the rich degradê to shine through smoothly) */}
@@ -577,56 +581,60 @@ export default function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Card 1: Delivery */}
             <ScrollReveal direction="left" duration={750} className="h-full">
-              <div className="h-full relative overflow-hidden rounded-3xl bg-[#14100e] border border-[#2b221c] p-8 sm:p-10 flex flex-col justify-between shadow-xl group steakhouse-glow-hover card-glare">
-                <div className="space-y-4 relative z-10">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#1c1714] border border-[#332921] text-amber-400 shadow-md transition-transform group-hover:scale-105">
-                    <Bike size={26} />
+              <TiltCard maxTilt={5} scale={1.015} className="h-full">
+                <div className="h-full relative overflow-hidden rounded-3xl bg-[#14100e] border border-[#2b221c] p-8 sm:p-10 flex flex-col justify-between shadow-xl group steakhouse-glow-hover card-glare">
+                  <div className="space-y-4 relative z-10">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#1c1714] border border-[#332921] text-amber-400 shadow-md transition-transform group-hover:scale-105">
+                      <Bike size={26} />
+                    </div>
+                    <h3 className="text-2xl sm:text-3xl font-black text-white font-['Oswald',sans-serif] uppercase tracking-wide group-hover:text-amber-400 transition-colors">
+                      FoodExpress na Sua Casa
+                    </h3>
+                    <p className="text-sm text-stone-400 leading-relaxed max-w-md">
+                      Faça seu pedido diretamente pelo cardápio digital sem taxas abusivas de aplicativos. Embalagens térmicas especiais garantem lanches e porções quentes e crocantes na sua porta em 30 a 45 minutos.
+                    </p>
                   </div>
-                  <h3 className="text-2xl sm:text-3xl font-black text-white font-['Oswald',sans-serif] uppercase tracking-wide group-hover:text-amber-400 transition-colors">
-                    FoodExpress na Sua Casa
-                  </h3>
-                  <p className="text-sm text-stone-400 leading-relaxed max-w-md">
-                    Faça seu pedido diretamente pelo cardápio digital sem taxas abusivas de aplicativos. Embalagens térmicas especiais garantem lanches e porções quentes e crocantes na sua porta em 30 a 45 minutos.
-                  </p>
-                </div>
 
-                <div className="pt-8 relative z-10">
-                  <button
-                    onClick={handleNavigateToProducts}
-                    className="btn-luxury inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#1c1714] hover:bg-[#261f1a] text-amber-400 border border-[#3d3128] font-bold text-xs uppercase tracking-wider font-['Oswald',sans-serif] shadow-sm cursor-pointer active:scale-95 group"
-                  >
-                    <span>Fazer Pedido Agora</span>
-                    <ArrowRight size={15} className="transition-transform group-hover:translate-x-1" />
-                  </button>
+                  <div className="pt-8 relative z-10">
+                    <button
+                      onClick={handleNavigateToProducts}
+                      className="btn-luxury inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#1c1714] hover:bg-[#261f1a] text-amber-400 border border-[#3d3128] font-bold text-xs uppercase tracking-wider font-['Oswald',sans-serif] shadow-sm cursor-pointer active:scale-95 group"
+                    >
+                      <span>Fazer Pedido Agora</span>
+                      <ArrowRight size={15} className="transition-transform group-hover:translate-x-1" />
+                    </button>
+                  </div>
                 </div>
-              </div>
+              </TiltCard>
             </ScrollReveal>
 
             {/* Card 2: Experiência no Salão */}
             <ScrollReveal direction="right" duration={750} className="h-full">
-              <div className="h-full relative overflow-hidden rounded-3xl bg-[#14100e] border border-[#2b221c] p-8 sm:p-10 flex flex-col justify-between shadow-xl group steakhouse-glow-hover card-glare">
-                <div className="space-y-4 relative z-10">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#1c1714] border border-[#332921] text-amber-400 shadow-md transition-transform group-hover:scale-105">
-                    <UtensilsCrossed size={26} />
+              <TiltCard maxTilt={5} scale={1.015} className="h-full">
+                <div className="h-full relative overflow-hidden rounded-3xl bg-[#14100e] border border-[#2b221c] p-8 sm:p-10 flex flex-col justify-between shadow-xl group steakhouse-glow-hover card-glare">
+                  <div className="space-y-4 relative z-10">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#1c1714] border border-[#332921] text-amber-400 shadow-md transition-transform group-hover:scale-105">
+                      <UtensilsCrossed size={26} />
+                    </div>
+                    <h3 className="text-2xl sm:text-3xl font-black text-white font-['Oswald',sans-serif] uppercase tracking-wide group-hover:text-amber-400 transition-colors">
+                      Experiência no Salão
+                    </h3>
+                    <p className="text-sm text-stone-400 leading-relaxed max-w-md">
+                      Venha viver o clima acolhedor do nosso steakhouse. Salão climatizado com iluminação quente, chopp artesanal servido na caneca congelada e pedidos direto na mesa com acompanhamento em tempo real.
+                    </p>
                   </div>
-                  <h3 className="text-2xl sm:text-3xl font-black text-white font-['Oswald',sans-serif] uppercase tracking-wide group-hover:text-amber-400 transition-colors">
-                    Experiência no Salão
-                  </h3>
-                  <p className="text-sm text-stone-400 leading-relaxed max-w-md">
-                    Venha viver o clima acolhedor do nosso steakhouse. Salão climatizado com iluminação quente, chopp artesanal servido na caneca congelada e pedidos direto na mesa com acompanhamento em tempo real.
-                  </p>
-                </div>
 
-                <div className="pt-8 relative z-10">
-                  <button
-                    onClick={() => navigate('/restaurante')}
-                    className="btn-luxury inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#1c1714] hover:bg-[#261f1a] text-amber-400 border border-[#3d3128] font-bold text-xs uppercase tracking-wider font-['Oswald',sans-serif] shadow-sm cursor-pointer active:scale-95 group"
-                  >
-                    <span>Conhecer Restaurante &amp; Salão</span>
-                    <ArrowRight size={15} className="transition-transform group-hover:translate-x-1" />
-                  </button>
+                  <div className="pt-8 relative z-10">
+                    <button
+                      onClick={() => navigate('/restaurante')}
+                      className="btn-luxury inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#1c1714] hover:bg-[#261f1a] text-amber-400 border border-[#3d3128] font-bold text-xs uppercase tracking-wider font-['Oswald',sans-serif] shadow-sm cursor-pointer active:scale-95 group"
+                    >
+                      <span>Conhecer Restaurante &amp; Salão</span>
+                      <ArrowRight size={15} className="transition-transform group-hover:translate-x-1" />
+                    </button>
+                  </div>
                 </div>
-              </div>
+              </TiltCard>
             </ScrollReveal>
           </div>
         </div>
@@ -712,51 +720,57 @@ export default function HomePage() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10 text-left">
           <ScrollReveal direction="up" delay={0} duration={700} className="h-full">
-            <div className="h-full p-6 rounded-2xl bg-[#120f0d] border border-[#241d18] space-y-3 steakhouse-glow-hover card-glare transition-all">
-              <div className="flex text-amber-400 gap-1">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} size={14} className="fill-amber-400" />
-                ))}
+            <TiltCard maxTilt={5} scale={1.02} className="h-full">
+              <div className="h-full p-6 rounded-2xl bg-[#120f0d] border border-[#241d18] space-y-3 steakhouse-glow-hover card-glare transition-all">
+                <div className="flex text-amber-400 gap-1">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} size={14} className="fill-amber-400" />
+                  ))}
+                </div>
+                <p className="text-xs text-stone-300 italic">
+                  "Lanche espetacular! A carne com gosto autêntico de brasa e o pão macio selado na manteiga. Lembra muito os burgers do Outback, mas com toque artesanal único."
+                </p>
+                <span className="block text-[11px] font-bold text-stone-400 font-['Oswald',sans-serif] uppercase">
+                  Rodrigo S. · Cliente Delivery
+                </span>
               </div>
-              <p className="text-xs text-stone-300 italic">
-                "Lanche espetacular! A carne com gosto autêntico de brasa e o pão macio selado na manteiga. Lembra muito os burgers do Outback, mas com toque artesanal único."
-              </p>
-              <span className="block text-[11px] font-bold text-stone-400 font-['Oswald',sans-serif] uppercase">
-                Rodrigo S. · Cliente Delivery
-              </span>
-            </div>
+            </TiltCard>
           </ScrollReveal>
 
           <ScrollReveal direction="up" delay={140} duration={700} className="h-full">
-            <div className="h-full p-6 rounded-2xl bg-[#120f0d] border border-[#241d18] space-y-3 steakhouse-glow-hover card-glare transition-all">
-              <div className="flex text-amber-400 gap-1">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} size={14} className="fill-amber-400" />
-                ))}
+            <TiltCard maxTilt={5} scale={1.02} className="h-full">
+              <div className="h-full p-6 rounded-2xl bg-[#120f0d] border border-[#241d18] space-y-3 steakhouse-glow-hover card-glare transition-all">
+                <div className="flex text-amber-400 gap-1">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} size={14} className="fill-amber-400" />
+                  ))}
+                </div>
+                <p className="text-xs text-stone-300 italic">
+                  "As batatas com cheddar e bacon são surreais, e a Bloomin' Onion é crocante demais. Pedido chegou super rápido e quente em casa."
+                </p>
+                <span className="block text-[11px] font-bold text-stone-400 font-['Oswald',sans-serif] uppercase">
+                  Camila M. · Cliente Frequente
+                </span>
               </div>
-              <p className="text-xs text-stone-300 italic">
-                "As batatas com cheddar e bacon são surreais, e a Bloomin' Onion é crocante demais. Pedido chegou super rápido e quente em casa."
-              </p>
-              <span className="block text-[11px] font-bold text-stone-400 font-['Oswald',sans-serif] uppercase">
-                Camila M. · Cliente Frequente
-              </span>
-            </div>
+            </TiltCard>
           </ScrollReveal>
 
           <ScrollReveal direction="up" delay={280} duration={700} className="h-full">
-            <div className="h-full p-6 rounded-2xl bg-[#120f0d] border border-[#241d18] space-y-3 steakhouse-glow-hover card-glare transition-all">
-              <div className="flex text-amber-400 gap-1">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} size={14} className="fill-amber-400" />
-                ))}
+            <TiltCard maxTilt={5} scale={1.02} className="h-full">
+              <div className="h-full p-6 rounded-2xl bg-[#120f0d] border border-[#241d18] space-y-3 steakhouse-glow-hover card-glare transition-all">
+                <div className="flex text-amber-400 gap-1">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} size={14} className="fill-amber-400" />
+                  ))}
+                </div>
+                <p className="text-xs text-stone-300 italic">
+                  "O brownie no final é obrigatório. Atendimento impecável no salão e o cardápio digital é super rápido de pedir. 10/10."
+                </p>
+                <span className="block text-[11px] font-bold text-stone-400 font-['Oswald',sans-serif] uppercase">
+                  Lucas V. · Cliente Salão
+                </span>
               </div>
-              <p className="text-xs text-stone-300 italic">
-                "O brownie no final é obrigatório. Atendimento impecável no salão e o cardápio digital é super rápido de pedir. 10/10."
-              </p>
-              <span className="block text-[11px] font-bold text-stone-400 font-['Oswald',sans-serif] uppercase">
-                Lucas V. · Cliente Salão
-              </span>
-            </div>
+            </TiltCard>
           </ScrollReveal>
         </div>
       </section>
