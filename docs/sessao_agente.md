@@ -1665,3 +1665,19 @@ pm run build bem-sucedido.
      - Build Vite (`npm run build`) concluído com sucesso em 1.38s (0 erros).
      - Testes automatizados Vitest: 12/12 testes aprovados (100% de sucesso).
      - Inspeção visual de browser concluída com sucesso em `http://localhost:5173/#/admin/pedidos` (painel escuro operacional completo renderizado sem tela branca) e `http://localhost:5173/#/` (linha de chama laranja nítida e visível).
+
+---
+
+### [2026-11-17 17:32] — Ancoragem Dinâmica da Linha Curva Laranja ao Lado do Texto do Hero
+- **Papel Ativo:** Engenheiro Frontend & Motion UI
+- **Etapa SDD:** Fase 3 — Ajuste de Proximidade e Alinhamento Responsivo da Curva ao Bloco de Texto
+- **Ações Executadas:**
+  1. **Diagnóstico da Distância Excessiva:**
+     - A curva SVG estava posicionada de forma absoluta no container pai usando porcentagens (`left-[63.5%] lg:left-[68.5%]`). Como o texto está dentro de uma coluna de grid com largura percentual e padding fixo, em telas maiores (1280px e 1440px) a linha se afastava para longe das palavras (chegando a mais de 135px de distância).
+  2. **Refatoração com Ancoragem Direta:**
+     - Movemos a tag SVG para dentro da própria coluna do texto (`Right Side: Content Container`), posicionando-a diretamente em relação à borda esquerda do texto (`-left-[142px] lg:-left-[128px] xl:-left-[120px]`).
+     - Dessa forma, o espaçamento visual passa a ser constante (~35px a 40px) em qualquer largura de tela (1024px, 1280px, 1440px ou superior), sem nunca se afastar e sem encavalar nas palavras.
+  3. **Validação:**
+     - Build Vite concluído em 675ms sem erros.
+     - 12/12 testes Vitest aprovados.
+     - Inspeção responsiva multi-resolução aprovada via subagente de browser.

@@ -235,47 +235,6 @@ export default function HomePage() {
               {/* Subtle Warm Hearth Atmosphere — Sóbrio e refinado */}
               <div className="absolute top-1/2 right-[10%] -translate-y-1/2 w-[550px] h-[480px] bg-gradient-to-br from-amber-600/[0.04] to-transparent rounded-full blur-[140px] pointer-events-none z-10" />
 
-              {/* Curvas fluidas orgânicas originais em gradiente de fogo laranja vibrante */}
-              <svg
-                className="hidden md:block absolute left-[51%] lg:left-[56%] -translate-x-1/2 top-0 bottom-0 h-full w-56 pointer-events-none z-20 will-change-transform"
-                style={{
-                  transform: `translate3d(calc(-50% + ${mouseOffset.x * 14}px), ${mouseOffset.y * 8}px, 0)`,
-                  transition: 'transform 0.18s cubic-bezier(0.16, 1, 0.3, 1)',
-                }}
-                viewBox="0 0 160 800"
-                preserveAspectRatio="none"
-                fill="none"
-              >
-                <defs>
-                  {/* Gradiente de fogo vibrante da brasa (ID único por slide para não falhar em crossfade) */}
-                  <linearGradient id={`warmGradientHero-${slide.id}`} x1="0%" y1="0%" x2="0%" y2="100%">
-                    <stop offset="0%" stopColor="#ff781f" />
-                    <stop offset="35%" stopColor="#f97316" />
-                    <stop offset="70%" stopColor="#ea580c" />
-                    <stop offset="100%" stopColor="#dc2626" />
-                  </linearGradient>
-                  <filter id={`heroFlameGlow-${slide.id}`} x="-20%" y="-20%" width="140%" height="140%">
-                    <feDropShadow dx="0" dy="0" stdDeviation="3.5" floodColor="#f97316" floodOpacity="0.65" />
-                  </filter>
-                </defs>
-                {/* Linha tracejada em âmbar próxima da linha principal */}
-                <path
-                  d="M52,0 C122,230 27,420 97,600 C127,700 62,800 47,800"
-                  stroke="#f59e0b"
-                  strokeWidth="2"
-                  strokeDasharray="6 8"
-                  className="opacity-95"
-                />
-                {/* Linha fluida principal em gradiente de fogo da brasa (Nítida, cor laranja vibrante) */}
-                <path
-                  d="M70,0 C140,230 45,420 115,600 C145,700 80,800 65,800"
-                  stroke={`url(#warmGradientHero-${slide.id})`}
-                  strokeWidth="3"
-                  filter={`url(#heroFlameGlow-${slide.id})`}
-                  className="opacity-100"
-                />
-              </svg>
-
               {/* Content Grid (Transparent columns allowing the rich degradê to shine through smoothly) */}
               <div className="w-full h-full grid grid-cols-1 md:grid-cols-12 relative z-20">
                 {/* Left Side Spacer on Desktop */}
@@ -289,6 +248,46 @@ export default function HomePage() {
                     transition: 'transform 0.18s cubic-bezier(0.16, 1, 0.3, 1)',
                   }}
                 >
+                  {/* Curvas fluidas orgânicas originais em gradiente de fogo laranja vibrante — ancoradas diretamente ao lado das palavras */}
+                  <svg
+                    className="hidden md:block absolute -left-[142px] lg:-left-[128px] xl:-left-[120px] top-0 bottom-0 h-full w-56 pointer-events-none z-20 will-change-transform"
+                    style={{
+                      transform: `translate3d(${mouseOffset.x * 6}px, ${mouseOffset.y * 3}px, 0)`,
+                      transition: 'transform 0.18s cubic-bezier(0.16, 1, 0.3, 1)',
+                    }}
+                    viewBox="0 0 160 800"
+                    preserveAspectRatio="none"
+                    fill="none"
+                  >
+                    <defs>
+                      {/* Gradiente de fogo vibrante da brasa (ID único por slide para não falhar em crossfade) */}
+                      <linearGradient id={`warmGradientHero-${slide.id}`} x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stopColor="#ff781f" />
+                        <stop offset="35%" stopColor="#f97316" />
+                        <stop offset="70%" stopColor="#ea580c" />
+                        <stop offset="100%" stopColor="#dc2626" />
+                      </linearGradient>
+                      <filter id={`heroFlameGlow-${slide.id}`} x="-20%" y="-20%" width="140%" height="140%">
+                        <feDropShadow dx="0" dy="0" stdDeviation="3.5" floodColor="#f97316" floodOpacity="0.65" />
+                      </filter>
+                    </defs>
+                    {/* Linha tracejada em âmbar próxima da linha principal */}
+                    <path
+                      d="M52,0 C122,230 27,420 97,600 C127,700 62,800 47,800"
+                      stroke="#f59e0b"
+                      strokeWidth="2"
+                      strokeDasharray="6 8"
+                      className="opacity-95"
+                    />
+                    {/* Linha fluida principal em gradiente de fogo da brasa (Nítida, cor laranja vibrante) */}
+                    <path
+                      d="M70,0 C140,230 45,420 115,600 C145,700 80,800 65,800"
+                      stroke={`url(#warmGradientHero-${slide.id})`}
+                      strokeWidth="3"
+                      filter={`url(#heroFlameGlow-${slide.id})`}
+                      className="opacity-100"
+                    />
+                  </svg>
                   {/* Content Container with soft stagger animation */}
                   <div className={`relative z-10 space-y-3 sm:space-y-4 md:space-y-4 lg:space-y-5 transition-all duration-700 ease-out transform ${
                     isActive ? 'translate-y-0 opacity-100' : 'translate-y-3 opacity-0'
