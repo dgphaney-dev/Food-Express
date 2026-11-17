@@ -2,20 +2,21 @@ import { useRef, useState, useEffect } from 'react';
 
 /**
  * ScrollReveal Component
- * Animates children into view both when scrolling down AND when scrolling back up (bidirectional "ir e voltar").
- * Replicates the modern momentum & focus-in (blur + scale + translate) effects from convertecom.com.br.
+ * Animates children dynamically both when scrolling DOWN AND when scrolling back UP (bidirectional "ir e voltar").
+ * Combines 3D perspective depth, momentum focus-in (blur + scale + translate) with silky ease-out physics.
  */
 export default function ScrollReveal({
   children,
   className = '',
   direction = 'up',
   delay = 0,
-  duration = 700,
-  distance = 32,
-  threshold = 0.08,
+  duration = 750,
+  distance = 48,
+  threshold = 0.1,
   withBlur = true,
   withScale = true,
-  once = false, // Bidirecional: anima tanto na descida quanto na subida
+  withTilt = true,
+  once = false, // Bidirecional ativo: anima tanto na descida quanto na subida
 }) {
   const ref = useRef(null);
   const [isVisible, setIsVisible] = useState(false);
@@ -50,7 +51,7 @@ export default function ScrollReveal({
       },
       {
         threshold,
-        rootMargin: '0px 0px -40px 0px',
+        rootMargin: '-20px 0px -40px 0px',
       }
     );
 
@@ -58,24 +59,30 @@ export default function ScrollReveal({
     return () => observer.disconnect();
   }, [threshold, once]);
 
-  // Compute transform offset based on direction and viewport entry/exit
-  const scalePart = withScale ? ' scale(0.96)' : '';
-  let hiddenTransform = `translate3d(0, ${distance}px, 0)${scalePart}`;
+  // Compute 3D transform offset based on direction and viewport entry/exit
+  const scalePart = withScale ? ' scale(0.93)' : '';
+  const tiltPart = withTilt
+    ? exitDirection === 'top' || direction === 'down'
+      ? ' rotateX(-5deg)'
+      : ' rotateX(5deg)'
+    : '';
+
+  let hiddenTransform = `perspective(1000px) translate3d(0, ${distance}px, 0)${scalePart}${tiltPart}`;
 
   if (direction === 'down' || exitDirection === 'top') {
-    hiddenTransform = `translate3d(0, -${distance}px, 0)${scalePart}`;
+    hiddenTransform = `perspective(1000px) translate3d(0, -${distance}px, 0)${scalePart}${tiltPart}`;
   } else if (direction === 'left') {
-    hiddenTransform = `translate3d(-${distance}px, 0, 0)${scalePart}`;
+    hiddenTransform = `perspective(1000px) translate3d(-${distance}px, 0, 0)${scalePart}`;
   } else if (direction === 'right') {
-    hiddenTransform = `translate3d(${distance}px, 0, 0)${scalePart}`;
+    hiddenTransform = `perspective(1000px) translate3d(${distance}px, 0, 0)${scalePart}`;
   } else if (direction === 'zoom') {
-    hiddenTransform = 'scale(0.92)';
+    hiddenTransform = 'perspective(1000px) scale(0.88)';
   }
 
   const style = {
     opacity: isVisible ? 1 : 0,
-    transform: isVisible ? 'translate3d(0, 0, 0) scale(1)' : hiddenTransform,
-    filter: withBlur ? (isVisible ? 'blur(0px)' : 'blur(4px)') : undefined,
+    transform: isVisible ? 'perspective(1000px) translate3d(0, 0, 0) scale(1) rotateX(0deg)' : hiddenTransform,
+    filter: withBlur ? (isVisible ? 'blur(0px)' : 'blur(8px)') : undefined,
     transitionProperty: 'opacity, transform, filter',
     transitionDuration: `${duration}ms`,
     transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)',

@@ -159,6 +159,7 @@ export default function HomePage() {
 
       {/* 2. HUGE SPLIT HERO BANNER (Luxury Dark Steakhouse Seamless Cinematic Carousel) */}
       <section
+        id="topo"
         className="relative w-full min-h-[620px] md:min-h-0 md:h-[580px] lg:h-[640px] bg-black overflow-hidden"
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
@@ -672,7 +673,7 @@ export default function HomePage() {
       </section>
 
       {/* 6. REVIEWS & SOCIAL PROOF */}
-      <section className="w-full py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center">
+      <section id="avaliacoes" className="w-full py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center scroll-mt-20">
         <ScrollReveal direction="up" duration={700}>
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#181310] border border-[#2e231b] text-amber-400 text-xs font-bold mb-4 font-['Oswald',sans-serif] uppercase tracking-wider">
             <Star size={14} className="fill-amber-400 text-amber-400" />

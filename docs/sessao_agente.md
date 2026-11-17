@@ -1696,3 +1696,24 @@ pm run build bem-sucedido.
      - Build Vite concluído em 619ms sem erros.
      - Testes automatizados Vitest: 12/12 aprovados (100%).
      - Validação visual via subagente de browser confirmando `isCompletelyStatic: true`.
+
+---
+
+### [2026-11-17 17:58] — Aprimoramento de Efeitos de Rolagem Bidirecional ("Ir e Voltar")
+- **Papel Ativo:** Engenheiro Frontend Especialista em Motion & Creative Development
+- **Etapa SDD:** Fase 3 — Expansão dos Efeitos de Rolagem (Scroll Up & Down)
+- **Ações Executadas:**
+  1. **Aprimoramento do Componente [`ScrollReveal.jsx`](file:///c:/Users/PICHAU/Documents/foodexpress/site/frontend/src/components/ScrollReveal.jsx):**
+     - Ampliamos a distância vertical para `48px` e a escala inicial para `0.93`, adicionando inclinação de perspectiva tridimensional (`perspective(1000px) rotateX(±5deg)`).
+     - Desfoque cinematográfico aprimorado (`blur(8px)` -> `blur(0px)`).
+     - Ajuste de margens do IntersectionObserver para que a animação aconteça no campo de visão ativo do usuário, tanto na descida quanto na subida da tela (*bidirecional "ir e voltar"*).
+  2. **Calibração do Motor Físico [`SmoothScroll.jsx`](file:///c:/Users/PICHAU/Documents/foodexpress/site/frontend/src/components/SmoothScroll.jsx):**
+     - Ajustada a inércia do Lenis para `duration: 1.35s`, `wheelMultiplier: 1.05` e `touchMultiplier: 1.6` com desaceleração exponencial suave.
+  3. **Aprimoramento do [`ScrollEffects.jsx`](file:///c:/Users/PICHAU/Documents/foodexpress/site/frontend/src/components/ScrollEffects.jsx):**
+     - Barra de progresso com ponta incandescente (*Glowing Ember Spark*) que corre acompanhando o avanço do scroll.
+     - Navegador lateral minimalista em micro-pills âmbar indicando a seção ativa e permitindo salto direto.
+     - Botão flutuante "Voltar ao Topo" com medidor de progresso circular.
+  4. **Validações:**
+     - Build Vite concluído em 690ms com 0 erros.
+     - 12/12 testes Vitest aprovados.
+     - Testes visuais via subagente de browser a 60fps em 1440x900 sem quebra de layout ou erros de console.
