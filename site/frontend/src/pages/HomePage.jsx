@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import ScrollReveal from '../components/ScrollReveal';
@@ -102,28 +102,6 @@ export default function HomePage() {
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [scrollY, setScrollY] = useState(0);
-  const [mouseOffset, setMouseOffset] = useState({ x: 0, y: 0 });
-  const heroRafRef = useRef(null);
-
-  const handleHeroMouseMove = useCallback((e) => {
-    const rect = e.currentTarget?.getBoundingClientRect();
-    if (!rect) return;
-    const clientX = e.clientX;
-    const clientY = e.clientY;
-
-    if (heroRafRef.current) cancelAnimationFrame(heroRafRef.current);
-    heroRafRef.current = requestAnimationFrame(() => {
-      const x = Math.max(-1, Math.min(1, ((clientX - rect.left) / rect.width - 0.5) * 2));
-      const y = Math.max(-1, Math.min(1, ((clientY - rect.top) / rect.height - 0.5) * 2));
-      setMouseOffset({ x, y });
-    });
-  }, []);
-
-  const handleHeroMouseLeave = useCallback(() => {
-    if (heroRafRef.current) cancelAnimationFrame(heroRafRef.current);
-    setIsPaused(false);
-    setMouseOffset({ x: 0, y: 0 });
-  }, []);
 
   // Smooth scroll tracking for parallax depth effects
   useEffect(() => {
@@ -182,9 +160,8 @@ export default function HomePage() {
       {/* 2. HUGE SPLIT HERO BANNER (Luxury Dark Steakhouse Seamless Cinematic Carousel) */}
       <section
         className="relative w-full min-h-[620px] md:min-h-0 md:h-[580px] lg:h-[640px] bg-black overflow-hidden"
-        onMouseMove={handleHeroMouseMove}
         onMouseEnter={() => setIsPaused(true)}
-        onMouseLeave={handleHeroMouseLeave}
+        onMouseLeave={() => setIsPaused(false)}
       >
         {/* Slides Container with Smooth Crossfade */}
         {HERO_SLIDES.map((slide, idx) => {
@@ -196,12 +173,12 @@ export default function HomePage() {
                 isActive ? 'opacity-100 z-10 pointer-events-auto' : 'opacity-0 z-0 pointer-events-none'
               }`}
             >
-              {/* Full-width Photo Layer with Parallax Depth and feathered mask fading softly into the degradê */}
+              {/* Full-width Photo Layer with Scroll Parallax and feathered mask fading softly into the degradê */}
               <div
                 className="absolute inset-y-0 left-0 w-full md:w-[68%] lg:w-[72%] h-[240px] sm:h-[280px] md:h-full overflow-hidden pointer-events-none will-change-transform"
                 style={{
-                  transform: `translate3d(${mouseOffset.x * -16}px, ${Math.min(scrollY * 0.22, 120) + mouseOffset.y * -10}px, 0)`,
-                  transition: 'transform 0.16s cubic-bezier(0.16, 1, 0.3, 1)',
+                  transform: `translate3d(0, ${Math.min(scrollY * 0.22, 120)}px, 0)`,
+                  transition: 'transform 0.1s cubic-bezier(0.16, 1, 0.3, 1)',
                 }}
               >
                 <img
@@ -242,19 +219,11 @@ export default function HomePage() {
 
                 {/* Right Side: Content Container */}
                 <div
-                  className="md:col-span-6 lg:col-span-5 relative h-full flex flex-col justify-center px-5 py-6 sm:px-8 sm:py-8 md:p-8 lg:p-12 xl:p-14 text-center md:text-left pt-64 sm:pt-72 md:pt-8 pointer-events-auto will-change-transform"
-                  style={{
-                    transform: `translate3d(${mouseOffset.x * 8}px, ${mouseOffset.y * 5}px, 0)`,
-                    transition: 'transform 0.18s cubic-bezier(0.16, 1, 0.3, 1)',
-                  }}
+                  className="md:col-span-6 lg:col-span-5 relative h-full flex flex-col justify-center px-5 py-6 sm:px-8 sm:py-8 md:p-8 lg:p-12 xl:p-14 text-center md:text-left pt-64 sm:pt-72 md:pt-8 pointer-events-auto"
                 >
                   {/* Curvas fluidas orgânicas originais em gradiente de fogo laranja vibrante — ancoradas diretamente ao lado das palavras */}
                   <svg
-                    className="hidden md:block absolute -left-[142px] lg:-left-[128px] xl:-left-[120px] top-0 bottom-0 h-full w-56 pointer-events-none z-20 will-change-transform"
-                    style={{
-                      transform: `translate3d(${mouseOffset.x * 6}px, ${mouseOffset.y * 3}px, 0)`,
-                      transition: 'transform 0.18s cubic-bezier(0.16, 1, 0.3, 1)',
-                    }}
+                    className="hidden md:block absolute -left-[142px] lg:-left-[128px] xl:-left-[120px] top-0 bottom-0 h-full w-56 pointer-events-none z-20"
                     viewBox="0 0 160 800"
                     preserveAspectRatio="none"
                     fill="none"

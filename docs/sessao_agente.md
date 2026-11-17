@@ -1681,3 +1681,18 @@ pm run build bem-sucedido.
      - Build Vite concluído em 675ms sem erros.
      - 12/12 testes Vitest aprovados.
      - Inspeção responsiva multi-resolução aprovada via subagente de browser.
+
+---
+
+### [2026-11-17 17:36] — Remoção de Movimento com o Mouse no Banner Principal (Hero Estático)
+- **Papel Ativo:** Engenheiro Frontend Especialista em UI/UX
+- **Etapa SDD:** Fase 3 — Estabilização Visual do Hero Banner
+- **Ações Executadas:**
+  1. **Remoção de Efeitos de Movimento no Banner Principal:**
+     - Conforme solicitação do usuário (*"n quero que os banner como esse fica se mexendo quando eu passo o mouse"*), removemos o listener `onMouseMove` e todos os deslocamentos em tempo real de paralaxe no Banner Hero.
+     - A foto, a curva de fogo laranja e os blocos de texto agora permanecem 100% estáticos, firmes e sem qualquer oscilação ao passar o mouse por cima.
+     - O hover continua apenas pausando a transição automática dos slides (`setIsPaused`), garantindo leitura confortável e sem distrações visuais.
+  2. **Validação:**
+     - Build Vite concluído em 619ms sem erros.
+     - Testes automatizados Vitest: 12/12 aprovados (100%).
+     - Validação visual via subagente de browser confirmando `isCompletelyStatic: true`.
