@@ -1644,3 +1644,24 @@ pm run build bem-sucedido.
      - 12/12 testes unitários e de integração aprovados.
      - Build Vite concluído em 986ms com 0 erros.
      - Sincronização e push no Git (commits `544829b` e `2890065`).
+
+---
+
+### [2026-11-17 16:51] — Correção Definitiva da Linha Laranja de Chama no Hero e Efeitos Tridimensionais com o Cursor
+- **Papel Ativo:** Engenheiro Frontend Especialista em UI/UX & Creative Development
+- **Etapa SDD:** Fase 3 — Restauração da Curva Laranja Persistente e Efeitos de Movimento com o Mouse
+- **Ações Executadas:**
+  1. **Diagnóstico da Linha Escura/Desbotada nos Slides 2 e 3:**
+     - Identificado que a definição de `<linearGradient id="warmGradientHero">` estava duplicada dentro de cada iteração de `HERO_SLIDES.map(...)`.
+     - Ao transicionar de slide, o Chromium referenciava o primeiro elemento SVG (que estava com `opacity: 0`), fazendo a curva perder a cor e renderizar em tom escuro/cinza.
+     - **Solução implementada:** Isolamento de IDs únicos por slide (`warmGradientHero-${slide.id}` e `heroFlameGlow-${slide.id}`), posicionamento correto da tag `<defs>` no topo do SVG, aumento da espessura para `strokeWidth="3"` e adição de filtro de brilho brasa (`feDropShadow` em `#f97316` com opacidade 0.65). Agora a linha permanece sempre em laranja vivo e brilhante em todos os slides.
+  2. **Efeitos Tridimensionais Reativos ao Movimento do Mouse:**
+     - Mantido e calibrado o paralaxe reativo no Hero (foto se desloca em contra-movimento, linha curva de fogo se desloca reativamente e o bloco de texto se move com profundidade).
+     - Integração de `<TiltCard>` nos cards da seção de Experiência (*FoodExpress na Sua Casa* e *Experiência no Salão*) e nos 3 cards de Depoimentos/Avaliações, proporcionando resposta tátil de inclinação 3D e reflexo especular de luz conforme o cursor se move.
+  3. **Disponibilidade e Execução dos Servidores:**
+     - Servidor Backend Node.js ativo na porta 3333 (`task-7523`).
+     - Servidor Frontend Vite ativo na porta 5173 (`task-7525`) acessível externamente no navegador host.
+  4. **Validações:**
+     - Build Vite (`npm run build`) concluído com sucesso em 1.38s (0 erros).
+     - Testes automatizados Vitest: 12/12 testes aprovados (100% de sucesso).
+     - Inspeção visual de browser concluída com sucesso em `http://localhost:5173/#/admin/pedidos` (painel escuro operacional completo renderizado sem tela branca) e `http://localhost:5173/#/` (linha de chama laranja nítida e visível).
