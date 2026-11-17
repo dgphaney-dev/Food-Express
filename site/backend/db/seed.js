@@ -3,6 +3,7 @@ import { categoryRepo } from '../admin/repositories/categoryRepo.js';
 import { orderRepo } from '../admin/repositories/orderRepo.js';
 import { productRepo } from '../admin/repositories/productRepo.js';
 import { userRepo } from '../admin/repositories/userRepo.js';
+import { bannerRepo } from '../admin/repositories/bannerRepo.js';
 import { hashPassword } from '../admin/services/authService.js';
 import { getSqlite } from './connection.js';
 
@@ -716,6 +717,12 @@ export function seedDatabase({ forceResetOrders = false } = {}) {
     for (const entry of INITIAL_SEED_ORDERS()) {
       orderRepo.createWithItems(entry.order, entry.items);
     }
+  }
+
+  // 4. Banners do Hero (Carrossel Inicial)
+  const existingBanners = bannerRepo.findAll();
+  if (existingBanners.length === 0) {
+    bannerRepo.resetDefaults();
   }
 }
 

@@ -383,4 +383,73 @@ describe('Integration — Backend Completo (Auth, Cardápio, Pedidos, Regras RN-
     expect(delRes.status).toBe(200);
     expect(delRes.body.success).toBe(true);
   });
+
+  it('API Banners: deve permitir ao gestor listar, criar, editar, alternar status e excluir banners do carrossel do Hero', async () => {
+    // 1. Listagem pública de banners ativos
+    const publicRes = await request(app).get('/api/public/banners');
+    expect(publicRes.status).toBe(200);
+    expect(Array.isArray(publicRes.body.banners)).toBe(true);
+    expect(publicRes.body.banners.length).toBeGreaterThanOrEqual(3);
+
+    // 2. Listagem administrativa com autenticação
+    const adminRes = await request(app)
+      .get('/api/admin/banners')
+      .set('Authorization', `Bearer ${adminToken}`);
+    expect(adminRes.status).toBe(200);
+    expect(Array.isArray(adminRes.body.banners)).toBe(true);
+
+    // 3. Criar novo banner
+    const createRes = await request(app)
+      .post('/api/admin/banners')
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({
+        title: 'Tomahawk Steak Especial',
+        subtitle: 'Corte nobre de 900g com osso longo grelhado na brasa.',
+        badge: 'EDIÇÃO LIMITADA',
+        tag: 'CORTE NOBRE PREMIUM',
+        schedule: 'SEXTAS E SÁBADOS',
+        ctaText: 'RESERVAR AGORA',
+        ctaSubtext: 'EDIÇÃO LIMITADA',
+        photoUrl: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=1200',
+        active: true,
+        sortOrder: 4,
+      });
+    expect(createRes.status).toBe(201);
+    expect(createRes.body.banner.title).toBe('Tomahawk Steak Especial');
+    const newBannerId = createRes.body.banner.id;
+
+    // 4. Validação: título obrigatório
+    const badRes = await request(app)
+      .post('/api/admin/banners')
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({
+        photoUrl: 'https://images.unsplash.com/photo-test',
+      });
+    expect(badRes.status).toBe(422);
+
+    // 5. Atualizar banner
+    const updateRes = await request(app)
+      .put(`/api/admin/banners/${newBannerId}`)
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({
+        title: 'Tomahawk Steak Prime',
+        ctaText: 'PEDIR AGORA',
+      });
+    expect(updateRes.status).toBe(200);
+    expect(updateRes.body.banner.title).toBe('Tomahawk Steak Prime');
+
+    // 6. Alternar status ativo/inativo
+    const toggleRes = await request(app)
+      .patch(`/api/admin/banners/${newBannerId}/toggle`)
+      .set('Authorization', `Bearer ${adminToken}`);
+    expect(toggleRes.status).toBe(200);
+    expect(toggleRes.body.banner.active).toBe(false);
+
+    // 7. Excluir banner de teste
+    const delRes = await request(app)
+      .delete(`/api/admin/banners/${newBannerId}`)
+      .set('Authorization', `Bearer ${adminToken}`);
+    expect(delRes.status).toBe(200);
+    expect(delRes.body.success).toBe(true);
+  });
 });

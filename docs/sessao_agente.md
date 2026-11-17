@@ -7,6 +7,32 @@
 
 ## Histórico de Sessões e Decisões
 
+### [2026-11-17 18:10] — Integração Completa dos Banners do Hero com o Painel de Gerenciamento (/admin)
+- **Papel Ativo:** Engenheiro Full-Stack & Especialista em Arquitetura de Sistemas (Skill `/passo3`)
+- **Ações Executadas:**
+  1. Criação da tabela SQLite e schema Drizzle `banners` em `site/backend/db/schema.js`:
+     - Colunas: `id`, `title`, `subtitle`, `badge`, `tag`, `schedule`, `cta_text`, `cta_subtext`, `photo_url`, `photo_alt`, `active`, `sort_order`, `created_at`, `updated_at`.
+  2. Implementação da camada de dados e repositório `site/backend/admin/repositories/bannerRepo.js`:
+     - Métodos: `findAll`, `findById`, `create`, `update`, `toggleActive`, `delete`, `resetDefaults`.
+     - Seed inicial com os 3 banners clássicos de steakhouse ("Cortes Nobres", "Aussie Fries", "Thunder Brownie").
+  3. Implementação da camada de serviço e validações de negócio `site/backend/admin/services/bannerService.js`.
+  4. Criação do controller REST `site/backend/admin/controllers/bannerController.js`.
+  5. Exposição das rotas de API:
+     - Pública: `GET /api/public/banners` (em `site/backend/routes/apiRoutes.js`) para carregamento veloz e cacheável no portal do cliente.
+     - Administrativa: `GET/POST /api/admin/banners`, `PUT/DELETE /api/admin/banners/:id`, `PATCH /api/admin/banners/:id/toggle`, `POST /api/admin/banners/reset-defaults` (em `site/backend/admin/routes/adminRoutes.js`).
+  6. Integração do client de API administrativa `site/frontend/admin/services/adminApi.js`.
+  7. Criação da interface completa de gestão de banners `site/frontend/admin/pages/AdminBannersPage.jsx`:
+     - Listagem com miniaturas, status ativo/inativo, ordenação, badges e chamadas.
+     - Modal completo de criação e edição com preview instantâneo da foto gastronômica.
+     - Ações de alternar visibilidade, exclusão segura e restauração aos padrões de fábrica.
+  8. Adição da rota `/admin/banners` no painel administrativo e link no menu lateral (`AdminLayout.jsx`).
+  9. Consumo dinâmico em tempo real na Home do cliente (`site/frontend/src/pages/HomePage.jsx`):
+     - `fetch('/api/public/banners')` com fallback gracioso para os banners padrão sem flicker.
+  10. Suite de testes de integração com Vitest expandida em `tests/integration/adminApi.test.js` (13/13 testes aprovados).
+  11. Build de produção do frontend executado com sucesso sem erros.
+
+---
+
 ### [2026-11-16 17:38] — Efeitos Interativos de Movimentação do Mouse (Tilt 3D, Parallax Hero & Spotlight)
 - **Papel Ativo:** Engenheiro Frontend & Especialista em Animações Interativas (Skill `/passo3`)
 - **Ações Executadas:**

@@ -82,6 +82,23 @@ export const orderItems = sqliteTable('order_items', {
   subtotal: real('subtotal').notNull(),
 });
 
+export const banners = sqliteTable('banners', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  title: text('title').notNull(),
+  subtitle: text('subtitle').notNull().default(''),
+  badge: text('badge').notNull().default(''),
+  tag: text('tag').notNull().default(''),
+  schedule: text('schedule').notNull().default(''),
+  ctaText: text('cta_text').notNull().default('VER CARDÁPIO COMPLETO'),
+  ctaSubtext: text('cta_subtext').notNull().default(''),
+  photoUrl: text('photo_url').notNull(),
+  photoAlt: text('photo_alt').notNull().default(''),
+  active: integer('active', { mode: 'boolean' }).notNull().default(true),
+  sortOrder: integer('sort_order').notNull().default(0),
+  createdAt: text('created_at').notNull(),
+  updatedAt: text('updated_at'),
+});
+
 export const SCHEMA_DDL_SQL = `
 CREATE TABLE IF NOT EXISTS users (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -151,5 +168,22 @@ CREATE TABLE IF NOT EXISTS order_items (
   notes TEXT NOT NULL DEFAULT '' CHECK(length(notes) <= 140),
   unit_price REAL NOT NULL,
   subtotal REAL NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS banners (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  title TEXT NOT NULL,
+  subtitle TEXT NOT NULL DEFAULT '',
+  badge TEXT NOT NULL DEFAULT '',
+  tag TEXT NOT NULL DEFAULT '',
+  schedule TEXT NOT NULL DEFAULT '',
+  cta_text TEXT NOT NULL DEFAULT 'VER CARDÁPIO COMPLETO',
+  cta_subtext TEXT NOT NULL DEFAULT '',
+  photo_url TEXT NOT NULL,
+  photo_alt TEXT NOT NULL DEFAULT '',
+  active INTEGER NOT NULL DEFAULT 1,
+  sort_order INTEGER NOT NULL DEFAULT 0,
+  created_at TEXT NOT NULL,
+  updated_at TEXT
 );
 `;

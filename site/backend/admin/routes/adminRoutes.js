@@ -3,6 +3,7 @@ import { authController } from '../controllers/authController.js';
 import { menuController } from '../controllers/menuController.js';
 import { orderController } from '../controllers/orderController.js';
 import { userController } from '../controllers/userController.js';
+import { bannerController } from '../controllers/bannerController.js';
 import { authMiddleware } from '../middlewares/authMiddleware.js';
 
 export const authRouter = Router();
@@ -11,6 +12,15 @@ authRouter.get('/me', authMiddleware, authController.me);
 
 export const adminRouter = Router();
 adminRouter.use(authMiddleware);
+
+// Gestão de Banners do Hero
+adminRouter.get('/banners', bannerController.getAdminBanners);
+adminRouter.get('/banners/:id', bannerController.getBannerById);
+adminRouter.post('/banners', bannerController.createBanner);
+adminRouter.put('/banners/:id', bannerController.updateBanner);
+adminRouter.patch('/banners/:id/toggle', bannerController.toggleBannerActive);
+adminRouter.delete('/banners/:id', bannerController.deleteBanner);
+adminRouter.post('/banners/reset-defaults', bannerController.resetDefaults);
 
 // Cardápio Admin (API-006, API-007, API-008)
 adminRouter.get('/menu', menuController.getAdminMenu);

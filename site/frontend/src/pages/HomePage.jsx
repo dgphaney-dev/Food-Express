@@ -99,9 +99,37 @@ const DEMO_ITEMS = [
 
 export default function HomePage() {
   const navigate = useNavigate();
+  const [slides, setSlides] = useState(HERO_SLIDES);
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [scrollY, setScrollY] = useState(0);
+
+  // Carrega os banners gerenciados no painel admin via API SQLite
+  useEffect(() => {
+    let isMounted = true;
+    fetch('/api/public/banners')
+      .then((res) => {
+        if (!res.ok) throw new Error('Falha ao buscar banners');
+        return res.json();
+      })
+      .then((data) => {
+        if (
+          isMounted &&
+          data &&
+          Array.isArray(data.banners) &&
+          data.banners.length > 0
+        ) {
+          setSlides(data.banners);
+        }
+      })
+      .catch(() => {
+        // Mantém os slides padrão locais em caso de indisponibilidade
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   // Smooth scroll tracking for parallax depth effects
   useEffect(() => {
@@ -122,14 +150,14 @@ export default function HomePage() {
 
   // Auto-advance slides every 6 seconds
   useEffect(() => {
-    if (isPaused) return;
+    if (isPaused || slides.length === 0) return;
     const interval = setInterval(() => {
-      setCurrentSlideIndex((prev) => (prev + 1) % HERO_SLIDES.length);
+      setCurrentSlideIndex((prev) => (prev + 1) % slides.length);
     }, 6000);
     return () => clearInterval(interval);
-  }, [isPaused]);
+  }, [isPaused, slides.length]);
 
-  const currentSlide = HERO_SLIDES[currentSlideIndex];
+  const currentSlide = slides[currentSlideIndex] || slides[0] || HERO_SLIDES[0];
 
   const handleNavigateToProducts = () => {
     navigate('/nossos-produtos');
@@ -165,7 +193,7 @@ export default function HomePage() {
         onMouseLeave={() => setIsPaused(false)}
       >
         {/* Slides Container with Smooth Crossfade */}
-        {HERO_SLIDES.map((slide, idx) => {
+        {slides.map((slide, idx) => {
           const isActive = idx === currentSlideIndex;
           return (
             <div
@@ -322,7 +350,7 @@ export default function HomePage() {
                           type="button"
                           onClick={(e) => {
                             e.stopPropagation();
-                            setCurrentSlideIndex((prev) => (prev - 1 + HERO_SLIDES.length) % HERO_SLIDES.length);
+                            setCurrentSlideIndex((prev) => (prev - 1 + slides.length) % slides.length);
                           }}
                           className="text-stone-400 hover:text-white transition-colors p-0.5 cursor-pointer"
                           aria-label="Slide anterior"
@@ -331,9 +359,9 @@ export default function HomePage() {
                         </button>
 
                         <div className="flex items-center gap-1.5 px-1">
-                          {HERO_SLIDES.map((s, sIdx) => (
+                          {slides.map((s, sIdx) => (
                             <button
-                              key={s.id}
+                              key={s.id || sIdx}
                               type="button"
                               onClick={(e) => {
                                 e.stopPropagation();
@@ -353,7 +381,7 @@ export default function HomePage() {
                           type="button"
                           onClick={(e) => {
                             e.stopPropagation();
-                            setCurrentSlideIndex((prev) => (prev + 1) % HERO_SLIDES.length);
+                            setCurrentSlideIndex((prev) => (prev + 1) % slides.length);
                           }}
                           className="text-stone-400 hover:text-white transition-colors p-0.5 cursor-pointer"
                           aria-label="Próximo slide"

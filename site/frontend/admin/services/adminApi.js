@@ -250,4 +250,58 @@ export const adminApi = {
       })
     );
   },
+
+  // Gestão de Banners do Hero (Carrossel Inicial)
+  async fetchPublicBanners() {
+    return requestJson('/public/banners', { method: 'GET' });
+  },
+
+  async fetchBanners() {
+    return this.withAutoAuth(() =>
+      requestJson('/admin/banners', { method: 'GET' })
+    );
+  },
+
+  async createBanner(payload) {
+    return this.withAutoAuth(() =>
+      requestJson('/admin/banners', {
+        method: 'POST',
+        body: JSON.stringify(payload),
+      })
+    );
+  },
+
+  async updateBanner(id, payload) {
+    return this.withAutoAuth(() =>
+      requestJson(`/admin/banners/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify(payload),
+      })
+    );
+  },
+
+  async toggleBannerActive(id, active = undefined) {
+    return this.withAutoAuth(() =>
+      requestJson(`/admin/banners/${id}/toggle`, {
+        method: 'PATCH',
+        body: JSON.stringify(active !== undefined ? { active } : {}),
+      })
+    );
+  },
+
+  async deleteBanner(id) {
+    return this.withAutoAuth(() =>
+      requestJson(`/admin/banners/${id}`, {
+        method: 'DELETE',
+      })
+    );
+  },
+
+  async resetDefaultBanners() {
+    return this.withAutoAuth(() =>
+      requestJson('/admin/banners/reset-defaults', {
+        method: 'POST',
+      })
+    );
+  },
 };

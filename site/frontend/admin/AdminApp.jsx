@@ -4,11 +4,12 @@ import AdminMetricsPage from './pages/AdminMetricsPage';
 import AdminOrdersPage from './pages/AdminOrdersPage';
 import AdminMenuPage from './pages/AdminMenuPage';
 import AdminUsersPage from './pages/AdminUsersPage';
+import AdminBannersPage from './pages/AdminBannersPage';
 import DriverDeliveryPage from '../src/pages/DriverDeliveryPage';
 
 /**
  * Aplicação Exclusiva do Painel Administrativo e Operacional (ACT-02)
- * Acessada exclusivamente via URL (/admin, /#/admin, /#/admin/login, /#/admin/pedidos, /#/admin/cardapio, /#/admin/metricas, /#/admin/usuarios)
+ * Acessada exclusivamente via URL (/admin, /#/admin, /#/admin/login, /#/admin/pedidos, /#/admin/cardapio, /#/admin/banners, /#/admin/metricas, /#/admin/usuarios)
  */
 export default function AdminApp() {
   return (
@@ -19,6 +20,7 @@ export default function AdminApp() {
       <Route path="/pedidos" element={<Navigate to="/admin/pedidos" replace />} />
       <Route path="/metricas" element={<Navigate to="/admin/metricas" replace />} />
       <Route path="/cardapio" element={<Navigate to="/admin/cardapio" replace />} />
+      <Route path="/banners" element={<Navigate to="/admin/banners" replace />} />
       <Route path="/usuarios" element={<Navigate to="/admin/usuarios" replace />} />
 
       {/* Rotas Canônicas do Painel Administrativo */}
@@ -28,6 +30,8 @@ export default function AdminApp() {
       <Route path="/admin/metricas" element={<AdminMetricsPage />} />
       <Route path="/admin/dashboard" element={<Navigate to="/admin/metricas" replace />} />
       <Route path="/admin/cardapio" element={<AdminMenuPage />} />
+      <Route path="/admin/banners" element={<AdminBannersPage />} />
+      <Route path="/admin/slides" element={<Navigate to="/admin/banners" replace />} />
       <Route path="/admin/usuarios" element={<AdminUsersPage />} />
       <Route path="/admin/users" element={<Navigate to="/admin/usuarios" replace />} />
       <Route path="/admin/acessos" element={<Navigate to="/admin/usuarios" replace />} />

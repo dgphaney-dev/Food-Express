@@ -108,6 +108,14 @@ export default function AdminLayout({
       badge: null,
     },
     {
+      to: '/admin/banners',
+      altPaths: ['/admin/slides', '/admin/destaques'],
+      label: 'Banners do Hero',
+      shortLabel: 'Banners',
+      icon: Flame,
+      badge: null,
+    },
+    {
       to: '/admin/usuarios',
       altPaths: ['/admin/users', '/admin/acessos', '/admin/equipe'],
       label: 'Equipe & Acessos',

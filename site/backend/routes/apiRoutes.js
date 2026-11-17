@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { menuController } from '../admin/controllers/menuController.js';
 import { orderController } from '../admin/controllers/orderController.js';
+import { bannerController } from '../admin/controllers/bannerController.js';
 import { adminRouter, authRouter } from '../admin/routes/adminRoutes.js';
 
 export const apiRouter = Router();
@@ -20,8 +21,9 @@ apiRouter.get('/health', (_req, res) => {
 apiRouter.use('/auth', authRouter);
 
 // ============================================================================
-// Rotas Públicas de Cardápio e Pedidos (API-002, API-003, API-004, API-005)
+// Rotas Públicas de Cardápio, Banners e Pedidos (API-002, API-003, API-004, API-005)
 // ============================================================================
+apiRouter.get('/public/banners', bannerController.getPublicBanners);
 apiRouter.get('/public/menu', menuController.getPublicMenu);
 apiRouter.post('/public/orders', orderController.createCustomerOrder);
 apiRouter.get('/public/orders/:id', orderController.getOrderById);
