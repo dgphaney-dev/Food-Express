@@ -9,3 +9,4 @@ Este projeto segue rigorosamente as diretrizes definidas em [`AGENTS.md`](./AGEN
    - `/passo2`: [`.agents/skills/passo2/SKILL.md`](./.agents/skills/passo2/SKILL.md)
    - `/passo3`: [`.agents/skills/passo3/SKILL.md`](./.agents/skills/passo3/SKILL.md)
 3. **Proibição de código prematuro:** Não gere código da aplicação até que `docs/brd.md` (`/passo1`) e `docs/trd.md` (`/passo2`) estejam concluídos e aprovados pelo usuário.
+4. **Sincronização Contínua Obrigatória:** Sempre realize commit semântico e envie as alterações para o repositório (`git push origin main`) a cada alteração, funcionalidade ou dia de trabalho, garantindo código sempre versionado e atualizado.

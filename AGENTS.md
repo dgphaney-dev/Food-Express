@@ -21,6 +21,7 @@ Antes de realizar qualquer ação, todo agente deve consultar os arquivos de con
 1. **Proibição de Código Prematuro:** Nenhum código da aplicação deve ser gerado antes que o `docs/brd.md` (via `/passo1`) e o `docs/trd.md` (via `/passo2`) estejam preenchidos e aprovados pelo usuário.
 2. **Isolamento de Papéis:** Cada etapa (`/passo1`, `/passo2`, `/passo3`) possui responsabilidades estritas e não deve invadir o escopo da próxima etapa sem aprovação explícita.
 3. **Memória Persistente Obrigatória:** Ao concluir qualquer etapa relevante ou tomar decisões importantes, atualize sempre o arquivo [`docs/sessao_agente.md`](./docs/sessao_agente.md).
+4. **Sincronização Contínua Obrigatória (Git & Commits Diários):** Ao concluir qualquer alteração funcional, teste ou ajuste, o agente deve sempre realizar commits semânticos claros e enviar imediatamente as alterações para o repositório remoto (`git push origin main`), mantendo o projeto 100% atualizado e sem pendências locais.
 
 ---
 

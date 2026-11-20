@@ -7,6 +7,22 @@
 
 ## Histórico de Sessões e Decisões
 
+### [2026-11-20 16:05] — Preparação para Deploy em Nuvem (Shard Cloud / Full-Stack Node.js)
+- **Papel Ativo:** Engenheiro DevOps & Arquitetura de Sistemas (Skill `/passo3`)
+- **Ações Executadas:**
+  1. Configuração do Express em `site/backend/app.js` para servir automaticamente o frontend compilado (`site/frontend/dist`):
+     - Roteamento SPA completo (`/` -> `index.html`, `/admin` -> `admin.html`, `/assets` e rotas client-side).
+     - Proteção e priorização estrita de rotas `/api/*`.
+  2. Ajuste de binding de rede em `site/backend/server.js`:
+     - O servidor agora escuta em `0.0.0.0` (via `process.env.HOST || '0.0.0.0'`), tornando a aplicação acessível externamente nos roteadores de borda e proxies reversos da Shard Cloud.
+  3. Atualização dos scripts de ciclo de vida em `package.json`:
+     - `"start": "node site/backend/server.js"` (script canônico de inicialização na nuvem).
+     - `"build": "npm --prefix site/frontend install && npm --prefix site/frontend run build"` (build automatizado do frontend client e admin).
+  4. Validação completa da suite de testes Vitest (13/13 testes de unidade e integração aprovados).
+  5. Atualização das diretrizes de sincronização contínua e commits no `AGENTS.md` e `GEMINI.md`.
+
+---
+
 ### [2026-11-17 18:10] — Integração Completa dos Banners do Hero com o Painel de Gerenciamento (/admin)
 - **Papel Ativo:** Engenheiro Full-Stack & Especialista em Arquitetura de Sistemas (Skill `/passo3`)
 - **Ações Executadas:**

@@ -6,9 +6,11 @@ import { seedDatabase } from './db/seed.js';
 initDatabase();
 seedDatabase();
 
-const server = app.listen(env.PORT, '127.0.0.1', () => {
+const HOST = process.env.HOST || '0.0.0.0';
+
+const server = app.listen(env.PORT, HOST, () => {
   console.log(
-    `🚀 FoodExpress Admin Backend rodando em http://127.0.0.1:${env.PORT}/api`
+    `🚀 FoodExpress Server rodando em http://${HOST}:${env.PORT}`
   );
   console.log(`📦 Banco SQLite inicializado em ${env.DATABASE_URL}`);
 });

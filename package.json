@@ -1,10 +1,13 @@
 {
-  "name": "foodexpress-backend",
+  "name": "foodexpress",
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "FoodExpress — Backend do Painel Administrativo (Node.js + Express + SQLite + Drizzle ORM)",
+  "description": "FoodExpress — Sistema Completo de Steakhouse e Delivery com Painel Administrativo",
   "scripts": {
+    "start": "node site/backend/server.js",
+    "build": "npm --prefix site/frontend install && npm --prefix site/frontend run build",
+    "dev": "node site/backend/server.js",
     "dev:backend": "node --watch site/backend/server.js",
     "start:backend": "node site/backend/server.js",
     "seed": "node site/backend/db/seedCli.js",
