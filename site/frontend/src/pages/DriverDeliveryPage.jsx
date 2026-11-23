@@ -11,15 +11,17 @@ import {
   ExternalLink,
   Check,
   ChevronDown,
-  Plus,
   Volume2,
   VolumeX,
+  X,
 } from 'lucide-react';
 import { useOrders } from '../contexts/OrderContext';
+import { useAuth } from '../contexts/AuthContext';
 import { formatPrice } from '../utils/helpers';
 import { driverApi } from '../services/api';
 import Navbar from '../components/Navbar';
 import ScrollReveal from '../components/ScrollReveal';
+import ModalPortal from '../components/ModalPortal';
 
 // Restaurante de Origem
 const RESTAURANT_LOCATION = {
@@ -29,26 +31,44 @@ const RESTAURANT_LOCATION = {
   lng: -46.6549,
 };
 
-// Dados padrão do motorista parceiro
-const DRIVER_PROFILE = {
-  name: 'Carlos Roberto',
-  role: 'Entregador Parceiro Especial FoodExpress',
-  vehicle: 'Honda CG 160 Fan · Placa: BRA-2026',
-  rating: '4.98',
-  totalDeliveries: 1248,
-  todayDeliveries: 8,
-  todayEarnings: 138.4,
-  avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop&crop=face',
-};
-
 export default function DriverDeliveryPage() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const { adminOrders, advanceOrderStatus, createOrder } = useOrders();
+  const { adminOrders, setAdminOrders, advanceOrderStatus } = useOrders();
+  const { user: loggedUser } = useAuth();
+
+  // Carrega entregas reais diretamente do backend SQLite
+  useEffect(() => {
+    let active = true;
+    driverApi
+      .listOrders()
+      .then((data) => {
+        if (active && Array.isArray(data?.orders) && setAdminOrders) {
+          setAdminOrders((prev) => {
+            const nonDelivery = (Array.isArray(prev) ? prev : []).filter(
+              (o) => o.orderType !== 'DELIVERY'
+            );
+            return [...data.orders, ...nonDelivery];
+          });
+        }
+      })
+      .catch(() => {});
+    return () => {
+      active = false;
+    };
+  }, [setAdminOrders]);
 
   // Filtrar todos os pedidos de entrega ativos ou concluídos recentemente
   const deliveryOrders = useMemo(() => {
-    return adminOrders.filter((o) => o.orderType === 'DELIVERY');
+    return (Array.isArray(adminOrders) ? adminOrders : []).filter((o) => o.orderType === 'DELIVERY');
   }, [adminOrders]);
+
+  const driverDisplayName = loggedUser?.name || loggedUser?.username || 'Entregador FoodExpress';
+  const todayDeliveredCount = useMemo(() => {
+    const todayStr = new Date().toISOString().slice(0, 10);
+    return deliveryOrders.filter(
+      (o) => o.status === 'DELIVERED' && String(o.updatedAt || o.createdAt || '').startsWith(todayStr)
+    ).length;
+  }, [deliveryOrders]);
 
   // ID do pedido selecionado pela URL ou o primeiro disponível
   const paramOrderId = searchParams.get('orderId');
@@ -108,11 +128,10 @@ export default function DriverDeliveryPage() {
     return () => clearInterval(interval);
   }, [driverStage]);
 
-  // Código PIN esperado para validação (últimos 4 dígitos gerados ou padrão 8492)
+  // Código PIN esperado do pedido real
   const expectedPin = useMemo(() => {
-    if (!selectedOrder) return '8492';
-    const cleanId = String(selectedOrder.id).replace(/\D/g, '');
-    return cleanId.length >= 4 ? cleanId.slice(-4) : '8492';
+    if (!selectedOrder) return '';
+    return selectedOrder.deliveryPin ? String(selectedOrder.deliveryPin) : '';
   }, [selectedOrder]);
 
   // Ações de alteração de estágio da corrida
@@ -135,53 +154,35 @@ export default function DriverDeliveryPage() {
     setShowPinModal(true);
   };
 
-  const handleConfirmDeliveryPin = () => {
-    if (pinCode.trim() === expectedPin || pinCode.trim() === '1234' || pinCode.length === 4) {
-      if (selectedOrder) {
-        advanceOrderStatus(selectedOrder.id, 'DELIVERED');
-        driverApi.confirmPin(selectedOrder.id, pinCode).catch(() => {});
-      }
+  const handleConfirmDeliveryPin = async () => {
+    const cleanPin = pinCode.trim();
+    if (cleanPin.length !== 4) {
+      setPinError('Informe o código PIN de 4 dígitos fornecido pelo cliente.');
+      return;
+    }
+
+    if (!selectedOrder) return;
+
+    try {
+      await driverApi.confirmPin(selectedOrder.id, cleanPin);
+      advanceOrderStatus(selectedOrder.id, 'DELIVERED');
       setDriverStage('COMPLETED');
       setBikePosition(100);
       setCompletedSuccess(true);
       setShowPinModal(false);
-    } else {
-      setPinError(`Código incorreto. Digite o código de 4 dígitos informado pelo cliente (${expectedPin})`);
+    } catch (err) {
+      if (err.status === 400 || err.status === 422) {
+        setPinError(err.message || 'Código PIN incorreto. Verifique com o cliente.');
+      } else if (expectedPin && cleanPin === expectedPin) {
+        advanceOrderStatus(selectedOrder.id, 'DELIVERED');
+        setDriverStage('COMPLETED');
+        setBikePosition(100);
+        setCompletedSuccess(true);
+        setShowPinModal(false);
+      } else {
+        setPinError('Código PIN incorreto. Verifique os 4 dígitos informados pelo cliente.');
+      }
     }
-  };
-
-  // Criar corrida de teste rápida se não houver nenhuma
-  const handleCreateMockDelivery = () => {
-    const mockDelivery = createOrder({
-      orderType: 'DELIVERY',
-      tableNumber: null,
-      customerName: 'Mariana Duarte',
-      deliveryAddress: 'Alameda Santos, 980 - Apto 82, Cerqueira César - SP',
-      totalAmount: 68.9,
-      items: [
-        {
-          id: Date.now() + 1,
-          productNameSnapshot: 'Grand Steakhouse Bacon Burger',
-          variationNameSnapshot: 'Duplo Artesanal',
-          quantity: 1,
-          unitPrice: 48.9,
-          subtotal: 48.9,
-          addonsJsonSnapshot: JSON.stringify([{ name: 'Queijo Cheddar Inglês', price: 6.0 }]),
-          notes: 'Ponto da carne: ao ponto mais. Sem picles.',
-        },
-        {
-          id: Date.now() + 2,
-          productNameSnapshot: 'Batata Rústica com Alecrim & Parmesão',
-          variationNameSnapshot: 'Porção Média',
-          quantity: 1,
-          unitPrice: 20.0,
-          subtotal: 20.0,
-          addonsJsonSnapshot: '[]',
-          notes: 'Molho barbecue à parte.',
-        },
-      ],
-    });
-    setSearchParams({ orderId: String(mockDelivery.id) });
   };
 
   // Toggle checklist de conferência de itens na bag
@@ -193,16 +194,21 @@ export default function DriverDeliveryPage() {
   };
 
   // Links externos de GPS
-  const clientAddress = selectedOrder?.deliveryAddress || 'Rua das Flores, 123 - São Paulo';
+  const clientAddress = selectedOrder?.deliveryAddress || 'Endereço não informado';
   const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(
     RESTAURANT_LOCATION.address
   )}&destination=${encodeURIComponent(clientAddress)}&travelmode=two_wheeler`;
   const wazeUrl = `https://waze.com/ul?q=${encodeURIComponent(clientAddress)}&navigate=yes`;
 
   // WhatsApp direto do cliente
-  const clientWhatsAppUrl = `https://api.whatsapp.com/send?phone=5511999999999&text=${encodeURIComponent(
-    `Olá ${selectedOrder?.customerName || 'Cliente'}! Aqui é o Carlos, entregador do FoodExpress. Estou a caminho com o seu pedido #${selectedOrder?.id || ''} fresquinho e quentinho!`
-  )}`;
+  const cleanCustomerPhone = (selectedOrder?.customerPhone || '').replace(/\D/g, '');
+  const clientWhatsAppUrl = cleanCustomerPhone
+    ? `https://api.whatsapp.com/send?phone=${cleanCustomerPhone}&text=${encodeURIComponent(
+        `Olá ${selectedOrder?.customerName || 'Cliente'}! Aqui é o entregador do FoodExpress. Estou a caminho com o seu pedido #${selectedOrder?.id || ''}!`
+      )}`
+    : `https://api.whatsapp.com/send?text=${encodeURIComponent(
+        `Olá ${selectedOrder?.customerName || 'Cliente'}! Aqui é o entregador do FoodExpress. Estou a caminho com o seu pedido #${selectedOrder?.id || ''}!`
+      )}`;
 
   return (
     <div className="min-h-screen bg-black text-zinc-100 font-['Plus_Jakarta_Sans',sans-serif] antialiased flex flex-col selection:bg-orange-600">
@@ -215,11 +221,9 @@ export default function DriverDeliveryPage() {
           {/* Perfil & Status do Piloto */}
           <div className="flex items-center gap-3">
             <div className="relative">
-              <img
-                src={DRIVER_PROFILE.avatarUrl}
-                alt={DRIVER_PROFILE.name}
-                className="w-12 h-12 rounded-full object-cover border-2 border-orange-500 shadow-md ring-2 ring-orange-500/20"
-              />
+              <div className="w-12 h-12 rounded-full bg-[#1c1714] border-2 border-orange-500 shadow-md ring-2 ring-orange-500/20 flex items-center justify-center text-amber-400">
+                <Bike size={22} />
+              </div>
               <span
                 className={`absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full border-2 border-black ${
                   isOnline ? 'bg-emerald-500 animate-pulse' : 'bg-zinc-600'
@@ -230,35 +234,21 @@ export default function DriverDeliveryPage() {
             <div>
               <div className="flex items-center gap-2">
                 <h2 className="text-sm sm:text-base font-black text-white uppercase font-['Oswald',sans-serif] tracking-wider">
-                  {DRIVER_PROFILE.name}
+                  {driverDisplayName}
                 </h2>
-                <span className="px-2 py-0.5 rounded-md bg-amber-500/10 border border-amber-500/30 text-amber-400 text-[11px] font-black">
-                  ⭐ {DRIVER_PROFILE.rating}
-                </span>
-                <span className="hidden md:inline text-xs text-zinc-400 font-medium">
-                  {DRIVER_PROFILE.vehicle}
-                </span>
               </div>
               <p className="text-xs text-zinc-400 flex items-center gap-2 mt-0.5">
                 <span className="text-emerald-400 font-bold">
                   {isOnline ? 'Disponível no FoodExpress Entregas' : 'Pausado'}
                 </span>
                 <span>•</span>
-                <span>{DRIVER_PROFILE.todayDeliveries} corridas hoje</span>
+                <span>{todayDeliveredCount} {todayDeliveredCount === 1 ? 'entrega hoje' : 'entregas hoje'}</span>
               </p>
             </div>
           </div>
 
-          {/* Ganhos do Dia & Botão Online Toggle */}
+          {/* Status & Botão Online Toggle */}
           <div className="flex items-center gap-3">
-            <div className="hidden sm:flex flex-col items-end px-3 py-1.5 rounded-xl bg-zinc-900 border border-zinc-800">
-              <span className="text-[10px] uppercase font-bold text-zinc-400 font-['Oswald',sans-serif] tracking-wider">
-                Ganhos de Hoje
-              </span>
-              <span className="text-sm font-black text-emerald-400 font-['Oswald',sans-serif]">
-                {formatPrice(DRIVER_PROFILE.todayEarnings)}
-              </span>
-            </div>
 
             {/* Toggle Online */}
             <button
@@ -292,15 +282,8 @@ export default function DriverDeliveryPage() {
                 <div className="absolute right-0 mt-2 w-72 bg-[#121214] border border-zinc-800 rounded-2xl p-2 shadow-2xl z-50">
                   <div className="text-xs font-bold uppercase text-zinc-400 p-2 font-['Oswald',sans-serif] border-b border-zinc-800 flex justify-between items-center">
                     <span>Entregas Cadastradas</span>
-                    <button
-                      onClick={handleCreateMockDelivery}
-                      className="text-orange-400 hover:text-orange-300 flex items-center gap-1 text-[11px] font-bold cursor-pointer"
-                    >
-                      <Plus size={12} />
-                      Nova Corrida
-                    </button>
                   </div>
-                  <div className="max-h-60 overflow-y-auto space-y-1 mt-1">
+                  <div className="max-h-60 overflow-y-auto scrollbar-hide space-y-1 mt-1">
                     {deliveryOrders.length === 0 ? (
                       <div className="p-3 text-center text-xs text-zinc-500">
                         Nenhuma entrega ativa encontrada.
@@ -347,15 +330,8 @@ export default function DriverDeliveryPage() {
                 Nenhuma corrida de entrega ativa
               </h2>
               <p className="text-sm text-zinc-400 mt-2 max-w-md mx-auto">
-                Não há pedidos de delivery no momento para este entregador. Você pode simular uma nova corrida agora mesmo com um clique!
+                Não há pedidos de delivery ativos no momento. Assim que novos pedidos de entrega forem recebidos, eles aparecerão automaticamente aqui.
               </p>
-              <button
-                onClick={handleCreateMockDelivery}
-                className="mt-6 px-6 py-3 bg-orange-600 hover:bg-orange-500 text-white font-bold text-sm uppercase tracking-wider font-['Oswald',sans-serif] rounded-xl shadow-lg shadow-orange-950/60 transition-all cursor-pointer inline-flex items-center gap-2"
-              >
-                <Plus size={16} />
-                <span>Simular Nova Corrida (Tipo iFood)</span>
-              </button>
             </div>
           </ScrollReveal>
         ) : (
@@ -748,7 +724,7 @@ export default function DriverDeliveryPage() {
                       <CheckCircle2 size={20} className="text-emerald-400 shrink-0" />
                       <div>
                         <strong className="block text-white font-bold">Entrega Finalizada com Sucesso!</strong>
-                        <span>O valor de R$ 12,50 foi creditado em sua carteira do dia.</span>
+                        <span>Pedido concluído e registrado no sistema.</span>
                       </div>
                     </div>
                   )}
@@ -767,11 +743,19 @@ export default function DriverDeliveryPage() {
                       <h4 className="text-lg font-black text-white font-['Oswald',sans-serif]">
                         {selectedOrder.customerName || 'Cliente FoodExpress'}
                       </h4>
-                      <p className="text-xs text-zinc-400">Cliente Particular · Entrega Rápida</p>
+                      <p className="text-xs text-zinc-400">
+                        {selectedOrder.customerPhone || 'Pedido Delivery'}
+                      </p>
                     </div>
 
-                    <span className="px-2.5 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold">
-                      Pago pelo App ✅
+                    <span
+                      className={`px-2.5 py-1 rounded-lg border text-xs font-bold ${
+                        selectedOrder.isPaid
+                          ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'
+                          : 'bg-amber-500/10 border-amber-500/20 text-amber-400'
+                      }`}
+                    >
+                      {selectedOrder.isPaid ? 'Pago' : 'Cobrar na Entrega'}
                     </span>
                   </div>
 
@@ -787,13 +771,20 @@ export default function DriverDeliveryPage() {
                       <span>WhatsApp</span>
                     </a>
 
-                    <a
-                      href="tel:11999999999"
-                      className="py-2.5 px-3 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-200 hover:text-white font-bold text-xs uppercase font-['Oswald',sans-serif] tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer"
-                    >
-                      <Phone size={15} />
-                      <span>Ligar</span>
-                    </a>
+                    {cleanCustomerPhone ? (
+                      <a
+                        href={`tel:${cleanCustomerPhone}`}
+                        className="py-2.5 px-3 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-200 hover:text-white font-bold text-xs uppercase font-['Oswald',sans-serif] tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer"
+                      >
+                        <Phone size={15} />
+                        <span>Ligar</span>
+                      </a>
+                    ) : (
+                      <span className="py-2.5 px-3 rounded-xl bg-zinc-900/50 border border-zinc-800 text-zinc-500 font-bold text-xs uppercase font-['Oswald',sans-serif] tracking-wider flex items-center justify-center gap-2">
+                        <Phone size={15} />
+                        <span>Sem telefone</span>
+                      </span>
+                    )}
                   </div>
                 </div>
               </ScrollReveal>
@@ -867,10 +858,22 @@ export default function DriverDeliveryPage() {
         )}
       </main>
 
-      {/* 4. MODAL DE CONFIRMAÇÃO POR CÓDIGO PIN (ESTILO IFOOD ENTREGADOR) */}
+      {/* 4. MODAL DE CONFIRMAÇÃO POR CÓDIGO PIN */}
       {showPinModal && (
-        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="w-full max-w-sm bg-[#121214] rounded-3xl border border-zinc-800 p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in duration-200">
+        <ModalPortal
+          isOpen={showPinModal}
+          className="bg-black/85 backdrop-blur-md flex items-center justify-center p-4"
+        >
+          <div className="relative w-full max-w-sm max-h-[90vh] overflow-y-auto scrollbar-hide overscroll-contain bg-[#121214] rounded-3xl border border-zinc-800 p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in duration-200">
+            <button
+              type="button"
+              onClick={() => setShowPinModal(false)}
+              className="absolute right-4 top-4 p-1.5 text-zinc-400 hover:text-white rounded-lg hover:bg-zinc-800 transition-colors cursor-pointer"
+              aria-label="Fechar modal PIN"
+            >
+              <X size={16} />
+            </button>
+
             <div className="text-center space-y-1">
               <div className="w-12 h-12 rounded-2xl bg-orange-600/20 border border-orange-500/40 text-orange-400 mx-auto flex items-center justify-center">
                 <KeyRound size={22} />
@@ -879,16 +882,8 @@ export default function DriverDeliveryPage() {
                 Código de Confirmação
               </h3>
               <p className="text-xs text-zinc-400 max-w-xs mx-auto">
-                Peça ao cliente os 4 dígitos informados no aplicativo do FoodExpress para validar a entrega.
+                Peça ao cliente os 4 dígitos informados na tela de acompanhamento do FoodExpress para validar a entrega.
               </p>
-            </div>
-
-            {/* Dica do Código de Teste para Facilitar Avaliação */}
-            <div className="p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-center text-xs">
-              <span className="text-zinc-500">Dica de Teste (PIN do Cliente):</span>
-              <span className="ml-1.5 font-black text-amber-400 text-sm tracking-widest font-['Oswald',sans-serif]">
-                {expectedPin}
-              </span>
             </div>
 
             {/* Input dos 4 dígitos */}
@@ -909,15 +904,6 @@ export default function DriverDeliveryPage() {
               )}
             </div>
 
-            {/* Botão de Preencher Código Rápido */}
-            <button
-              type="button"
-              onClick={() => setPinCode(expectedPin)}
-              className="w-full text-center text-[11px] font-bold text-orange-400 hover:text-orange-300 uppercase tracking-wider font-['Oswald',sans-serif] transition-colors cursor-pointer"
-            >
-              Preencher PIN de Teste Automaticamente ({expectedPin})
-            </button>
-
             {/* Ações do Modal */}
             <div className="flex gap-2.5 pt-2">
               <button
@@ -936,7 +922,7 @@ export default function DriverDeliveryPage() {
               </button>
             </div>
           </div>
-        </div>
+        </ModalPortal>
       )}
     </div>
   );

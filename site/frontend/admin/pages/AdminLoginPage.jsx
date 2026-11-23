@@ -15,8 +15,6 @@ export default function AdminLoginPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // Não redirecionamos automaticamente para permitir que a tela de login seja sempre visualizada e testada pelo usuário
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -28,38 +26,10 @@ export default function AdminLoginPage() {
       navigate('/admin/pedidos', { replace: true });
     } catch (err) {
       if (err.status === 401 || err.status === 400) {
-        setError(err.message || 'Usuário ou senha incorretos. Utilize as credenciais padrão de teste.');
+        setError(err.message || 'Usuário ou senha incorretos.');
       } else {
-        // Fallback offline (ex.: GitHub Pages estático)
-        await new Promise((r) => setTimeout(r, 350));
-        if (username.trim() === 'admin' && password === 'admin123') {
-          login('mock-token-123', { username: 'admin' });
-          navigate('/admin/pedidos', { replace: true });
-        } else {
-          setError('Usuário ou senha incorretos. Utilize as credenciais padrão de teste.');
-        }
+        setError('Não foi possível conectar ao servidor de autenticação. Tente novamente.');
       }
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleFillDemoCredentials = () => {
-    setUsername('admin');
-    setPassword('admin123');
-    setError('');
-  };
-
-  const handleQuickDemoLogin = async () => {
-    setError('');
-    setLoading(true);
-    try {
-      const data = await adminApi.login('admin', 'admin123');
-      login(data.token, data.user || { username: 'admin' });
-      navigate('/admin/pedidos', { replace: true });
-    } catch {
-      login('mock-token-123', { username: 'admin' });
-      navigate('/admin/pedidos', { replace: true });
     } finally {
       setLoading(false);
     }
@@ -130,25 +100,6 @@ export default function AdminLoginPage() {
                     </button>
                   </div>
                 )}
-
-                {/* Test Credentials Box */}
-                <div className="mb-6 p-3 sm:p-3.5 rounded-xl bg-[#12100e] border border-[#26201b] flex items-center justify-between gap-3">
-                  <div className="text-left text-xs leading-relaxed">
-                    <span className="block font-bold text-zinc-300">Credenciais de Teste:</span>
-                    <span className="text-zinc-400">
-                      Usuário: <code className="text-amber-400 font-bold bg-black px-1.5 py-0.5 rounded border border-[#2d2520]">admin</code>
-                      <span className="mx-1 text-zinc-600">|</span>
-                      Senha: <code className="text-amber-400 font-bold bg-black px-1.5 py-0.5 rounded border border-[#2d2520]">admin123</code>
-                    </span>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={handleFillDemoCredentials}
-                    className="shrink-0 px-3 py-1.5 rounded-lg bg-[#1a1613] hover:bg-[#251f1a] hover:text-amber-400 border border-[#332921] hover:border-[#4d3c30] text-[10px] sm:text-[11px] font-bold text-stone-200 uppercase tracking-wider font-['Oswald',sans-serif] transition-colors cursor-pointer"
-                  >
-                    PREENCHER DADOS
-                  </button>
-                </div>
 
                 {/* Form */}
                 <form onSubmit={handleSubmit} className="space-y-4">
@@ -222,17 +173,6 @@ export default function AdminLoginPage() {
                       </>
                     )}
                   </button>
-
-                  {/* 1-Click Fast Demo Login */}
-                  <button
-                    type="button"
-                    onClick={handleQuickDemoLogin}
-                    disabled={loading}
-                    className="w-full h-11 bg-zinc-900/90 hover:bg-zinc-800 border border-zinc-700/80 text-amber-400 hover:text-white font-bold text-xs uppercase tracking-wider font-['Oswald',sans-serif] rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm"
-                  >
-                    <Sparkles size={14} className="text-amber-400" />
-                    <span>Acesso Rápido de Teste (1 Clique)</span>
-                  </button>
                 </form>
               </div>
 
@@ -304,15 +244,15 @@ export default function AdminLoginPage() {
               <div className="relative z-10 p-3 rounded-xl bg-zinc-900/85 backdrop-blur-xs border border-zinc-800 flex items-center justify-between text-left">
                 <div>
                   <span className="block text-[10px] uppercase font-bold text-zinc-400 font-['Oswald',sans-serif] tracking-wider">
-                    Desempenho da Cozinha
+                    Operação Integrada
                   </span>
                   <span className="text-xs font-bold text-white flex items-center gap-1.5 mt-0.5">
                     <Sparkles size={13} className="text-amber-400" />
-                    +5.000 pedidos preparados
+                    Salão, Cozinha e Delivery sincronizados
                   </span>
                 </div>
-                <span className="px-2 py-1 rounded-md bg-zinc-800 text-[10px] font-bold text-orange-400 font-['Oswald',sans-serif]">
-                  99.8% ONLINE
+                <span className="px-2 py-1 rounded-md bg-zinc-800 text-[10px] font-bold text-emerald-400 font-['Oswald',sans-serif]">
+                  PRODUÇÃO
                 </span>
               </div>
             </div>

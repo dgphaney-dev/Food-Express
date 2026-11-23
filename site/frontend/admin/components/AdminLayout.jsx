@@ -13,7 +13,6 @@ import {
   ChevronRight,
   Menu,
   X,
-  Plus,
   RefreshCw,
   Timer,
   ShieldCheck,
@@ -22,7 +21,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../../src/contexts/AuthContext';
 import { useOrders } from '../../src/contexts/OrderContext';
-import { isSoundEnabled, setSoundEnabled, playNewOrderChime } from '../utils/soundAlert';
+import { isSoundEnabled, setSoundEnabled } from '../utils/soundAlert';
 
 const SIDEBAR_COLLAPSED_KEY = 'foodexpress_admin_sidebar_collapsed';
 
@@ -30,7 +29,6 @@ export default function AdminLayout({
   children,
   title = 'Painel Administrativo',
   subtitle = 'Gestão Operacional de Salão e Delivery',
-  onSimulateOrder = null,
   onRefresh = null,
   refreshing = false,
   pollMs = 300_000,
@@ -60,6 +58,21 @@ export default function AdminLayout({
       // Ignore storage errors
     }
   }, [isCollapsed]);
+
+  // Trava scroll da página enquanto o menu mobile do admin estiver aberto
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.documentElement.classList.add('modal-open');
+      document.body.classList.add('modal-open');
+    } else {
+      document.documentElement.classList.remove('modal-open');
+      document.body.classList.remove('modal-open');
+    }
+    return () => {
+      document.documentElement.classList.remove('modal-open');
+      document.body.classList.remove('modal-open');
+    };
+  }, [mobileMenuOpen]);
 
   // Close mobile drawer on route change
   useEffect(() => {
@@ -144,7 +157,6 @@ export default function AdminLayout({
       {/* ================= MOBILE BACKDROP ================= */}
       {mobileMenuOpen && (
         <div
-          onClick={() => setMobileMenuOpen(false)}
           className="fixed inset-0 z-40 bg-black/80 backdrop-blur-sm lg:hidden animate-fade-in"
         />
       )}
@@ -186,7 +198,7 @@ export default function AdminLayout({
         </div>
 
         {/* Navigation Items */}
-        <nav className="flex-1 px-3 py-4 space-y-1.5 overflow-y-auto">
+        <nav className="flex-1 px-3 py-4 space-y-1.5 overflow-y-auto scrollbar-hide">
           {navItems.map((item) => {
             const active = isCurrentActive(item);
             const Icon = item.icon;
@@ -321,28 +333,6 @@ export default function AdminLayout({
                 {soundActive ? 'Som: On' : 'Mudo'}
               </span>
             </button>
-
-            {/* Simulation Quick Buttons (if provided) */}
-            {onSimulateOrder && (
-              <div className="hidden sm:flex items-center gap-1.5">
-                <button
-                  onClick={() => onSimulateOrder(false)}
-                  className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-bold uppercase font-['Oswald',sans-serif] tracking-wider bg-[#161310] hover:bg-[#221c17] border border-[#332921] hover:border-[#4d3c30] text-stone-200 hover:text-amber-400 rounded-xl transition-all cursor-pointer shadow-sm active:scale-95"
-                  title="Criar novo pedido de mesa para teste da cozinha"
-                >
-                  <Plus size={14} className="text-amber-400" />
-                  <span>Mesa Teste</span>
-                </button>
-                <button
-                  onClick={() => onSimulateOrder(true)}
-                  className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-bold uppercase font-['Oswald',sans-serif] tracking-wider bg-[#161310] hover:bg-[#221c17] border border-[#332921] hover:border-[#4d3c30] text-stone-200 hover:text-amber-400 rounded-xl transition-all cursor-pointer shadow-sm active:scale-95"
-                  title="Criar novo pedido de delivery para teste"
-                >
-                  <Plus size={14} className="text-amber-400" />
-                  <span>Delivery Teste</span>
-                </button>
-              </div>
-            )}
 
             {/* Refresh button */}
             {onRefresh && (

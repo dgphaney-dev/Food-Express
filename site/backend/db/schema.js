@@ -61,7 +61,7 @@ export const orders = sqliteTable('orders', {
   deliveryAddress: text('delivery_address'),
   paymentMethod: text('payment_method'),
   isPaid: integer('is_paid', { mode: 'boolean' }).default(false),
-  deliveryPin: text('delivery_pin').default('8492'),
+  deliveryPin: text('delivery_pin'),
   totalAmount: real('total_amount').notNull(),
   createdAt: text('created_at').notNull(),
   updatedAt: text('updated_at').notNull(),

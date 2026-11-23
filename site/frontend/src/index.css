@@ -29,13 +29,38 @@ html, body {
   background: #0b0908;
 }
 
-/* Custom scrollbar for category tabs */
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
+/* Custom scrollbar hiding for category tabs and modals */
+.scrollbar-hide::-webkit-scrollbar,
+[data-modal-portal]::-webkit-scrollbar,
+[data-modal-portal] *::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }
-.scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+.scrollbar-hide,
+[data-modal-portal],
+[data-modal-portal] * {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
+}
+
+/* Global modal lock: bloqueia totalmente o scroll e interação com o site por trás */
+html.modal-open,
+html.modal-open body {
+  overflow: hidden !important;
+  overscroll-behavior: none !important;
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
+}
+html.modal-open::-webkit-scrollbar,
+html.modal-open body::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+html.modal-open #root {
+  pointer-events: none !important;
+  user-select: none !important;
 }
 
 /* Smooth transitions & scroll */

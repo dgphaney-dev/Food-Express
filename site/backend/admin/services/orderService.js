@@ -177,82 +177,6 @@ export const orderService = {
   },
 
   /**
-   * Simulador de chegada de novo pedido no banco SQLite para validação do protótipo (RN-004)
-   */
-  simulateIncomingOrder(forceDelivery = null) {
-    const existing = orderRepo.findAll();
-    const maxId = existing.reduce((acc, item) => Math.max(acc, item.id), 100);
-    const nextId = maxId + 1;
-    const isDineIn =
-      forceDelivery === true ? false : forceDelivery === false ? true : nextId % 2 === 0;
-    const now = new Date().toISOString();
-
-    if (isDineIn) {
-      const tableNum = String(((nextId * 3) % 15) + 1).padStart(2, '0');
-      const created = orderRepo.createWithItems(
-        {
-          id: nextId,
-          orderType: 'DINE_IN',
-          status: ORDER_STATUS.RECEIVED,
-          tableNumber: tableNum,
-          customerName: null,
-          deliveryAddress: null,
-          totalAmount: 47.9,
-          createdAt: now,
-          updatedAt: now,
-        },
-        [
-          {
-            productNameSnapshot: 'Double Cheddar Melt',
-            quantity: 1,
-            variationNameSnapshot: 'Duplo 160g',
-            addonsSnapshot: [{ name: 'Farofa de Bacon', price: 6.0 }],
-            notes: 'Sem picles, pão bem selado',
-            unitPrice: 39.9,
-            subtotal: 39.9,
-          },
-          {
-            productNameSnapshot: 'Água com Gás',
-            quantity: 1,
-            variationNameSnapshot: '500ml',
-            addonsSnapshot: [],
-            notes: 'Com rodela de limão',
-            unitPrice: 8.0,
-            subtotal: 8.0,
-          },
-        ]
-      );
-      return { order: enrichOrderWithMetadata(created) };
-    }
-
-    const created = orderRepo.createWithItems(
-      {
-        id: nextId,
-        orderType: 'DELIVERY',
-        status: ORDER_STATUS.RECEIVED,
-        tableNumber: null,
-        customerName: `Cliente #${nextId} (Fernanda Lima)`,
-        deliveryAddress: 'Rua Sete de Setembro, 88 - Casa 2',
-        totalAmount: 64.5,
-        createdAt: now,
-        updatedAt: now,
-      },
-      [
-        {
-          productNameSnapshot: 'Combo Casal Smash',
-          quantity: 1,
-          variationNameSnapshot: '2 Burgers + 2 Fritas',
-          addonsSnapshot: [{ name: 'Maionese Defumada Extra', price: 4.5 }],
-          notes: 'Enviar guardanapos e sachês extras',
-          unitPrice: 64.5,
-          subtotal: 64.5,
-        },
-      ]
-    );
-    return { order: enrichOrderWithMetadata(created) };
-  },
-
-  /**
    * API-003 / TR-003 a TR-005 / TR-007 / RN-001 a RN-005 / RN-011:
    * Criação pública de pedido pelo cliente (Consumo no local ou Entrega)
    */
@@ -509,7 +433,10 @@ export const orderService = {
           : null,
       paymentMethod: payload.paymentMethod || 'PIX',
       isPaid: Boolean(payload.isPaid),
-      deliveryPin: payload.deliveryPin || '8492',
+      deliveryPin:
+        payload.deliveryPin && /^\d{4}$/.test(String(payload.deliveryPin))
+          ? String(payload.deliveryPin)
+          : String(Math.floor(1000 + Math.random() * 9000)),
       totalAmount,
       createdAt: now,
       updatedAt: now,
@@ -561,8 +488,8 @@ export const orderService = {
     if (!order) {
       throw new AppError('Pedido não encontrado.', 404, 'ORDER_NOT_FOUND');
     }
-    const expectedPin = order.deliveryPin || '8492';
-    if (String(pin).trim() !== String(expectedPin).trim()) {
+    const expectedPin = order.deliveryPin ? String(order.deliveryPin).trim() : '';
+    if (!expectedPin || String(pin || '').trim() !== expectedPin) {
       throw new AppError('PIN de confirmação incorreto.', 400, 'INVALID_DELIVERY_PIN');
     }
     const updated = orderRepo.updateStatus(

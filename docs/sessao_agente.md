@@ -7,6 +7,24 @@
 
 ## Histórico de Sessões e Decisões
 
+### [2026-11-23 12:38] — Blindagem de Modais (Sem Scrollbar & Bloqueio Total do Site) e Remoção de Dados de Teste para Produção
+- **Papel Ativo:** Engenheiro Full-Stack & Confiabilidade (Skill `/passo3`)
+- **Ações Executadas:**
+  1. **Infraestrutura Global de Modais:**
+     - Criação do hook `site/frontend/src/hooks/useModalLock.js` com contador de referência (suporte a modais aninhados), pausa automática do Lenis (`window.__lenis.stop()`), bloqueio de scroll em `html`/`body` e aplicação de `inert` + `aria-hidden` no `#root`.
+     - Criação do componente `site/frontend/src/components/ModalPortal.jsx` com `createPortal(..., document.body)` em `z-[100000]`.
+     - Adição de regras CSS globais em `site/frontend/src/index.css` para ocultar todas as barras de rolagem em `[data-modal-portal]` e em `html.modal-open`, além de bloquear `pointer-events` e seleção no `#root`.
+  2. **Padronização de Todos os Modais (Cliente, Entregador e Admin):**
+     - Migrados para `ModalPortal` sem barra de scroll e sem permissão de acesso ao site por trás: `ProductModal.jsx`, `CartDrawer.jsx` (sacola e modal PIX), `Navbar.jsx` (menu mobile), `OrderTrackingPage.jsx` (modal PIX), `DriverDeliveryPage.jsx` (modal PIN), `AdminBannersPage.jsx`, `AdminMenuPage.jsx` (categoria e produto), `AdminOrdersPage.jsx` (detalhes do pedido), `AdminUsersPage.jsx` e `AdminLayout.jsx` (sidebar mobile).
+  3. **Remoção Completa de Dados de Teste e Hardening de Produção:**
+     - **Backend & SQLite:** Removidos `INITIAL_SEED_ORDERS`, `resetDemoOrders`, `teamSamples` (`juliana.atendente`, `marcos.cozinha`, `lucas.motorista`), produto demonstrativo `Sanduíche Sazonal Trufado (Inativo)`, rotas `POST /api/admin/orders/simulate` e `POST /api/admin/orders/reset`, e PIN fixo `'8492'` (substituído por geração aleatória de 4 dígitos). Banco local `data/foodexpress.sqlite` limpo e recriado com `0` pedidos, `1` admin, `13` produtos ativos e `3` banners oficiais.
+     - **Frontend Admin & Cliente:** Removidos `MOCK_ORDERS`, credenciais de teste e botão de login rápido 1-clique em `AdminLoginPage.jsx`, auto-login inseguro com `admin/admin123` em `adminApi.js`, botões `Mesa Teste` / `Delivery Teste` em `AdminLayout.jsx` e páginas admin, simulação de corridas e dica/autopreenchimento de PIN em `DriverDeliveryPage.jsx`, e dados fictícios de motorista/telefone/QR demo em `OrderTrackingPage.jsx` e `CartDrawer.jsx`. Adicionados guards de autenticação e tratamento de `401` nas páginas administrativas.
+  4. **Validação:**
+     - Suíte Vitest atualizada com fixtures isolados: 13/13 testes aprovados (`tests/unit/adminBackend.test.js` e `tests/integration/adminApi.test.js`).
+     - Lint (`0` erros) e build de produção do frontend (`vite build`) aprovados com sucesso.
+
+---
+
 ### [2026-11-20 16:05] — Preparação para Deploy em Nuvem (Shard Cloud / Full-Stack Node.js)
 - **Papel Ativo:** Engenheiro DevOps & Arquitetura de Sistemas (Skill `/passo3`)
 - **Ações Executadas:**

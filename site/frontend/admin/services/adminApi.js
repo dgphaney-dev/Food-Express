@@ -49,7 +49,7 @@ export async function requestJson(path, options = {}) {
 }
 
 export const adminApi = {
-  async login(username = 'admin', password = 'admin123') {
+  async login(username, password) {
     const data = await requestJson('/auth/login', {
       method: 'POST',
       body: JSON.stringify({ username, password }),
@@ -60,25 +60,21 @@ export const adminApi = {
     return data;
   },
 
-  async ensureAuthenticated() {
+  async withAuth(fn) {
     const current = getStoredAdminToken();
-    // Se não houver token ou for um token mock antigo sem formato JWT (3 partes), autentica no backend
-    if (current && current.split('.').length === 3) {
-      return current;
+    if (!current || current.split('.').length !== 3) {
+      setStoredAdminToken('');
+      const err = new Error('Sessão administrativa expirada ou ausente. Faça login novamente.');
+      err.status = 401;
+      err.code = 'UNAUTHORIZED';
+      throw err;
     }
-    const data = await this.login('admin', 'admin123');
-    return data.token;
-  },
 
-  async withAutoAuth(fn) {
-    await this.ensureAuthenticated();
     try {
       return await fn();
     } catch (err) {
       if (err.status === 401) {
         setStoredAdminToken('');
-        await this.login('admin', 'admin123');
-        return await fn();
       }
       throw err;
     }
@@ -86,21 +82,21 @@ export const adminApi = {
 
   // Pedidos Admin (API-009, API-010, API-011)
   async fetchOrders(status = null) {
-    return this.withAutoAuth(() => {
+    return this.withAuth(() => {
       const qs = status ? `?status=${encodeURIComponent(status)}` : '';
       return requestJson(`/admin/orders${qs}`, { method: 'GET' });
     });
   },
 
   async fetchMetrics(period = 'today') {
-    return this.withAutoAuth(() => {
+    return this.withAuth(() => {
       const qs = period ? `?period=${encodeURIComponent(period)}` : '';
       return requestJson(`/admin/metrics${qs}`, { method: 'GET' });
     });
   },
 
   async advanceOrder(orderId, targetStatus = null) {
-    return this.withAutoAuth(() =>
+    return this.withAuth(() =>
       requestJson(`/admin/orders/${orderId}/advance`, {
         method: 'PATCH',
         body: JSON.stringify(targetStatus ? { targetStatus } : {}),
@@ -109,25 +105,8 @@ export const adminApi = {
   },
 
   async cancelOrder(orderId) {
-    return this.withAutoAuth(() =>
+    return this.withAuth(() =>
       requestJson(`/admin/orders/${orderId}/cancel`, {
-        method: 'POST',
-      })
-    );
-  },
-
-  async simulateIncomingOrder(isDelivery = false) {
-    return this.withAutoAuth(() =>
-      requestJson('/admin/orders/simulate', {
-        method: 'POST',
-        body: JSON.stringify({ isDelivery }),
-      })
-    );
-  },
-
-  async resetDemoOrders() {
-    return this.withAutoAuth(() =>
-      requestJson('/admin/orders/reset', {
         method: 'POST',
       })
     );
@@ -135,13 +114,13 @@ export const adminApi = {
 
   // Cardápio Admin (API-006, API-007, API-008)
   async fetchAdminMenu() {
-    return this.withAutoAuth(() =>
+    return this.withAuth(() =>
       requestJson('/admin/menu', { method: 'GET' })
     );
   },
 
   async createCategory(payload) {
-    return this.withAutoAuth(() =>
+    return this.withAuth(() =>
       requestJson('/admin/categories', {
         method: 'POST',
         body: JSON.stringify(payload),
@@ -150,7 +129,7 @@ export const adminApi = {
   },
 
   async updateCategory(id, payload) {
-    return this.withAutoAuth(() =>
+    return this.withAuth(() =>
       requestJson(`/admin/categories/${id}`, {
         method: 'PUT',
         body: JSON.stringify(payload),
@@ -159,7 +138,7 @@ export const adminApi = {
   },
 
   async toggleCategoryActive(id, active = undefined) {
-    return this.withAutoAuth(() =>
+    return this.withAuth(() =>
       requestJson(`/admin/categories/${id}/toggle`, {
         method: 'PATCH',
         body: JSON.stringify(active !== undefined ? { active } : {}),
@@ -168,7 +147,7 @@ export const adminApi = {
   },
 
   async deleteCategory(id) {
-    return this.withAutoAuth(() =>
+    return this.withAuth(() =>
       requestJson(`/admin/categories/${id}`, {
         method: 'DELETE',
       })
@@ -176,7 +155,7 @@ export const adminApi = {
   },
 
   async createProduct(payload) {
-    return this.withAutoAuth(() =>
+    return this.withAuth(() =>
       requestJson('/admin/products', {
         method: 'POST',
         body: JSON.stringify(payload),
@@ -185,7 +164,7 @@ export const adminApi = {
   },
 
   async updateProduct(id, payload) {
-    return this.withAutoAuth(() =>
+    return this.withAuth(() =>
       requestJson(`/admin/products/${id}`, {
         method: 'PUT',
         body: JSON.stringify(payload),
@@ -194,7 +173,7 @@ export const adminApi = {
   },
 
   async toggleProductActive(id, active = undefined) {
-    return this.withAutoAuth(() =>
+    return this.withAuth(() =>
       requestJson(`/admin/products/${id}/toggle`, {
         method: 'PATCH',
         body: JSON.stringify(active !== undefined ? { active } : {}),
@@ -203,7 +182,7 @@ export const adminApi = {
   },
 
   async deleteProduct(id) {
-    return this.withAutoAuth(() =>
+    return this.withAuth(() =>
       requestJson(`/admin/products/${id}`, {
         method: 'DELETE',
       })
@@ -212,13 +191,13 @@ export const adminApi = {
 
   // Gestão de Usuários e Acessos ao Sistema (SQLite)
   async fetchUsers() {
-    return this.withAutoAuth(() =>
+    return this.withAuth(() =>
       requestJson('/admin/users', { method: 'GET' })
     );
   },
 
   async createUser(payload) {
-    return this.withAutoAuth(() =>
+    return this.withAuth(() =>
       requestJson('/admin/users', {
         method: 'POST',
         body: JSON.stringify(payload),
@@ -227,7 +206,7 @@ export const adminApi = {
   },
 
   async updateUser(id, payload) {
-    return this.withAutoAuth(() =>
+    return this.withAuth(() =>
       requestJson(`/admin/users/${id}`, {
         method: 'PUT',
         body: JSON.stringify(payload),
@@ -236,7 +215,7 @@ export const adminApi = {
   },
 
   async toggleUserActive(id) {
-    return this.withAutoAuth(() =>
+    return this.withAuth(() =>
       requestJson(`/admin/users/${id}/toggle`, {
         method: 'PATCH',
       })
@@ -244,7 +223,7 @@ export const adminApi = {
   },
 
   async deleteUser(id) {
-    return this.withAutoAuth(() =>
+    return this.withAuth(() =>
       requestJson(`/admin/users/${id}`, {
         method: 'DELETE',
       })
@@ -257,13 +236,13 @@ export const adminApi = {
   },
 
   async fetchBanners() {
-    return this.withAutoAuth(() =>
+    return this.withAuth(() =>
       requestJson('/admin/banners', { method: 'GET' })
     );
   },
 
   async createBanner(payload) {
-    return this.withAutoAuth(() =>
+    return this.withAuth(() =>
       requestJson('/admin/banners', {
         method: 'POST',
         body: JSON.stringify(payload),
@@ -272,7 +251,7 @@ export const adminApi = {
   },
 
   async updateBanner(id, payload) {
-    return this.withAutoAuth(() =>
+    return this.withAuth(() =>
       requestJson(`/admin/banners/${id}`, {
         method: 'PUT',
         body: JSON.stringify(payload),
@@ -281,7 +260,7 @@ export const adminApi = {
   },
 
   async toggleBannerActive(id, active = undefined) {
-    return this.withAutoAuth(() =>
+    return this.withAuth(() =>
       requestJson(`/admin/banners/${id}/toggle`, {
         method: 'PATCH',
         body: JSON.stringify(active !== undefined ? { active } : {}),
@@ -290,7 +269,7 @@ export const adminApi = {
   },
 
   async deleteBanner(id) {
-    return this.withAutoAuth(() =>
+    return this.withAuth(() =>
       requestJson(`/admin/banners/${id}`, {
         method: 'DELETE',
       })
@@ -298,7 +277,7 @@ export const adminApi = {
   },
 
   async resetDefaultBanners() {
-    return this.withAutoAuth(() =>
+    return this.withAuth(() =>
       requestJson('/admin/banners/reset-defaults', {
         method: 'POST',
       })

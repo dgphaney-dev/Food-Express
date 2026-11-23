@@ -41,7 +41,7 @@ export function initDatabase(customDbPath = null) {
     'ALTER TABLE orders ADD COLUMN customer_phone TEXT',
     'ALTER TABLE orders ADD COLUMN payment_method TEXT',
     'ALTER TABLE orders ADD COLUMN is_paid INTEGER DEFAULT 0',
-    'ALTER TABLE orders ADD COLUMN delivery_pin TEXT DEFAULT "8492"',
+    'ALTER TABLE orders ADD COLUMN delivery_pin TEXT',
     'ALTER TABLE users ADD COLUMN name TEXT DEFAULT ""',
     'ALTER TABLE users ADD COLUMN phone TEXT',
     'ALTER TABLE users ADD COLUMN active INTEGER DEFAULT 1',

@@ -14,6 +14,7 @@ import {
 import Navbar from '../components/Navbar';
 import OrderStatusStepper from '../components/OrderStatusStepper';
 import ScrollReveal from '../components/ScrollReveal';
+import ModalPortal from '../components/ModalPortal';
 import {
   ArrowLeft,
   MessageCircle,
@@ -27,17 +28,13 @@ import {
   Copy,
   Check,
   KeyRound,
-  Phone,
   X,
 } from 'lucide-react';
 
-// Dados do motorista parceiro atribuído
-const DRIVER_INFO = {
-  name: 'Carlos Roberto',
-  vehicle: 'Honda CG 160 Fan · Placa BRA-2026',
-  rating: '4.98',
-  deliveries: 1248,
-  avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop&crop=face',
+// Informações genéricas da logística de entrega FoodExpress
+const DELIVERY_TEAM_INFO = {
+  name: 'Equipe de Entregas FoodExpress',
+  subtitle: 'Entrega Própria · Embalagem Térmica',
 };
 
 export default function OrderTrackingPage() {
@@ -129,21 +126,23 @@ export default function OrderTrackingPage() {
     window.open(url, '_blank');
   }, [order]);
 
-  const handleSimulatePayment = () => {
+  const handleConfirmPixPayment = async () => {
     if (!order) return;
     setIsPaying(true);
-    setTimeout(() => {
-      markOrderAsPaid(order.id, 'PIX');
-      setIsPaying(false);
+    try {
+      await markOrderAsPaid(order.id, 'PIX');
       setShowPixPayModal(false);
-    }, 1000);
+    } finally {
+      setIsPaying(false);
+    }
   };
 
-  // Código PIN esperado para validação
+  // Código PIN real gerado para o pedido
   const customerPin = useMemo(() => {
-    if (!order) return '8492';
-    const cleanId = String(order.id).replace(/\D/g, '');
-    return cleanId.length >= 4 ? cleanId.slice(-4) : '8492';
+    if (!order) return '----';
+    if (order.deliveryPin) return String(order.deliveryPin);
+    const cleanId = String(order.id).replace(/\D/g, '').padStart(4, '0');
+    return cleanId.slice(-4);
   }, [order]);
 
   if (!order) {
@@ -183,10 +182,11 @@ export default function OrderTrackingPage() {
     }
   };
 
-  const clientAddress = order.deliveryAddress || 'Av. Paulista, 1200 - São Paulo';
-  const driverWhatsAppUrl = `https://api.whatsapp.com/send?phone=5511999999999&text=${encodeURIComponent(
-    `Olá Carlos! Sou o cliente do pedido #${order.id}. Estou aguardando a entrega no endereço: ${clientAddress}.`
-  )}`;
+  const clientAddress = order.deliveryAddress || 'Endereço informado no pedido';
+  const driverWhatsAppUrl = order.whatsappUrl || generateWhatsAppUrl(
+    RESTAURANT_CONFIG.whatsappNumber,
+    `Olá! Sou o cliente do pedido #${order.id}. Gostaria de acompanhar a entrega no endereço: ${clientAddress}.`
+  );
 
   return (
     <div className="min-h-screen bg-black text-neutral-100 pb-16 font-['Plus_Jakarta_Sans',sans-serif]">
@@ -307,7 +307,7 @@ export default function OrderTrackingPage() {
                     <span>CÓDIGO DE ENTREGA DO CLIENTE (PIN)</span>
                   </div>
                   <p className="text-xs text-neutral-300 mt-1 max-w-sm">
-                    Informe estes 4 dígitos ao entregador Carlos quando ele chegar na portaria para confirmar o recebimento do pacote.
+                    Informe estes 4 dígitos ao entregador quando ele chegar para confirmar o recebimento do pedido.
                   </p>
                 </div>
 
@@ -316,51 +316,39 @@ export default function OrderTrackingPage() {
                 </div>
               </div>
 
-              {/* CARD DO MOTORISTA PARCEIRO */}
+              {/* CARD DA ENTREGA */}
               <div className="p-3.5 rounded-xl bg-zinc-900/80 border border-zinc-800 flex items-center justify-between gap-3">
                 <div className="flex items-center gap-3">
-                  <img
-                    src={DRIVER_INFO.avatarUrl}
-                    alt={DRIVER_INFO.name}
-                    className="w-12 h-12 rounded-full object-cover border-2 border-orange-500 shadow-md ring-2 ring-orange-500/20"
-                  />
+                  <div className="w-12 h-12 rounded-full bg-[#1c1714] border-2 border-orange-500 shadow-md ring-2 ring-orange-500/20 flex items-center justify-center text-amber-400 shrink-0">
+                    <Truck size={20} />
+                  </div>
                   <div>
                     <div className="flex items-center gap-2">
                       <h4 className="text-sm font-black text-white uppercase font-['Oswald',sans-serif]">
-                        {DRIVER_INFO.name}
+                        {DELIVERY_TEAM_INFO.name}
                       </h4>
-                      <span className="px-2 py-0.2 rounded bg-amber-500/10 text-amber-400 text-[10px] font-bold">
-                        ⭐ {DRIVER_INFO.rating}
-                      </span>
                     </div>
-                    <p className="text-xs text-neutral-400 mt-0.5">{DRIVER_INFO.vehicle}</p>
+                    <p className="text-xs text-neutral-400 mt-0.5">{DELIVERY_TEAM_INFO.subtitle}</p>
                     <span className="text-[11px] text-emerald-400 font-bold block mt-0.5">
                       {isDelivered
                         ? 'Entrega finalizada com sucesso!'
                         : order.status === 'READY'
-                        ? '🛵 Carlos está em rota até você!'
+                        ? 'Seu pedido saiu para entrega!'
                         : 'Aguardando liberação do pedido na cozinha'}
                     </span>
                   </div>
                 </div>
 
-                {/* Ações de contato com o motorista */}
+                {/* Ação de contato pelo WhatsApp */}
                 <div className="flex items-center gap-2">
                   <a
                     href={driverWhatsAppUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="p-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white transition-all shadow-md cursor-pointer"
-                    title="Falar com o entregador no WhatsApp"
+                    title="Falar com o atendimento no WhatsApp"
                   >
                     <MessageCircle size={16} />
-                  </a>
-                  <a
-                    href="tel:11999999999"
-                    className="p-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-neutral-200 transition-all cursor-pointer"
-                    title="Ligar para o entregador"
-                  >
-                    <Phone size={16} />
                   </a>
                 </div>
               </div>
@@ -538,8 +526,11 @@ export default function OrderTrackingPage() {
 
       {/* MODAL DE PAGAMENTO PIX DIRETO NA TELA DO PEDIDO */}
       {showPixPayModal && (
-        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="w-full max-w-sm bg-[#121214] rounded-3xl border border-zinc-800 p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in duration-200">
+        <ModalPortal
+          isOpen={showPixPayModal}
+          className="bg-black/85 backdrop-blur-md flex items-center justify-center p-4"
+        >
+          <div className="w-full max-w-sm max-h-[90vh] overflow-y-auto scrollbar-hide overscroll-contain bg-[#121214] rounded-3xl border border-zinc-800 p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in duration-200">
             <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
               <div className="flex items-center gap-2">
                 <QrCode size={20} className="text-emerald-400" />
@@ -550,6 +541,7 @@ export default function OrderTrackingPage() {
               <button
                 onClick={() => setShowPixPayModal(false)}
                 className="text-zinc-400 hover:text-white p-1 cursor-pointer"
+                aria-label="Fechar modal PIX"
               >
                 <X size={16} />
               </button>
@@ -566,7 +558,7 @@ export default function OrderTrackingPage() {
 
             <div className="bg-white p-4 rounded-2xl w-48 h-48 mx-auto flex flex-col items-center justify-center relative shadow-lg">
               <img
-                src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=foodexpress-pix-demo"
+                src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(`00020126580014BR.GOV.BCB.PIX0136foodexpress-${order.id}`)}`}
                 alt="QR Code Pix FoodExpress"
                 className="w-full h-full object-contain"
               />
@@ -587,7 +579,7 @@ export default function OrderTrackingPage() {
 
             <button
               type="button"
-              onClick={handleSimulatePayment}
+              onClick={handleConfirmPixPayment}
               disabled={isPaying}
               className="w-full h-12 bg-emerald-600 hover:bg-emerald-500 active:scale-[0.99] text-white font-bold text-xs uppercase font-['Oswald',sans-serif] tracking-wider rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-emerald-950/60"
             >
@@ -601,7 +593,7 @@ export default function OrderTrackingPage() {
               )}
             </button>
           </div>
-        </div>
+        </ModalPortal>
       )}
     </div>
   );
