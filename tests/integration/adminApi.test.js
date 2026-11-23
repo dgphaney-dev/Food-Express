@@ -3,13 +3,21 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { app } from '../../site/backend/app.js';
 import { initDatabase } from '../../site/backend/db/connection.js';
 import { seedDatabase } from '../../site/backend/db/seed.js';
+import { orderRepo } from '../../site/backend/admin/repositories/orderRepo.js';
+import { productRepo } from '../../site/backend/admin/repositories/productRepo.js';
+
+const minutesAgo = (mins) =>
+  new Date(Date.now() - mins * 60 * 1000).toISOString();
 
 describe('Integration — Backend Completo (Auth, Cardápio, Pedidos, Regras RN-001 a RN-012)', () => {
   let adminToken = '';
 
   beforeEach(async () => {
     initDatabase(':memory:');
-    seedDatabase({ forceResetOrders: true });
+    seedDatabase();
+
+    // Garante que o seed de produção NÃO injeta pedidos de teste nem usuários fictícios
+    expect(orderRepo.findAll()).toHaveLength(0);
 
     const loginRes = await request(app)
       .post('/api/auth/login')
@@ -36,6 +44,17 @@ describe('Integration — Backend Completo (Auth, Cardápio, Pedidos, Regras RN-
   });
 
   it('API-006, API-007, API-008 / RN-001 / RN-011: deve gerenciar categorias e produtos, validando preço > 0 e ocultando inativos no cardápio público', async () => {
+    // Cria um produto inativo de teste isolado para validar ocultação no cardápio público (RN-001)
+    productRepo.create({
+      categoryId: 1,
+      name: 'Produto Inativo Teste',
+      description: 'Fixture isolado de teste',
+      basePrice: 39.9,
+      active: false,
+      variations: [],
+      addons: [],
+    });
+
     const adminMenuRes = await request(app)
       .get('/api/admin/menu')
       .set('Authorization', `Bearer ${adminToken}`);
@@ -120,11 +139,20 @@ describe('Integration — Backend Completo (Auth, Cardápio, Pedidos, Regras RN-
       });
     expect(longNotesRes.status).toBe(422);
 
-    // 4. Produto inativo (Sanduíche Sazonal Trufado no seed) -> deve falhar com 422 (RN-001)
+    // 4. Produto inativo -> deve falhar com 422 (RN-001)
+    const inactiveProd = productRepo.create({
+      categoryId: 1,
+      name: 'Produto Inativo Fixture',
+      description: 'Fixture de teste',
+      basePrice: 44.0,
+      active: false,
+      variations: [],
+      addons: [],
+    });
+
     const adminMenuRes = await request(app)
       .get('/api/admin/menu')
       .set('Authorization', `Bearer ${adminToken}`);
-    const inactiveProd = adminMenuRes.body.products.find((p) => !p.active);
     expect(inactiveProd).toBeDefined();
 
     const inactiveOrderRes = await request(app)
@@ -173,15 +201,34 @@ describe('Integration — Backend Completo (Auth, Cardápio, Pedidos, Regras RN-
   });
 
   it('API-009, API-010 / RN-006: deve avançar status de pedido estritamente na sequência linear e recusar pulos de etapa', async () => {
+    const order = orderRepo.createWithItems(
+      {
+        orderType: 'DINE_IN',
+        status: 'RECEIVED',
+        tableNumber: '12',
+        totalAmount: 28.9,
+        createdAt: minutesAgo(1),
+        updatedAt: minutesAgo(1),
+      },
+      [
+        {
+          productNameSnapshot: 'X-Burger Artesanal',
+          quantity: 1,
+          unitPrice: 28.9,
+          subtotal: 28.9,
+        },
+      ]
+    );
+
     const skipRes = await request(app)
-      .patch('/api/admin/orders/101/advance')
+      .patch(`/api/admin/orders/${order.id}/advance`)
       .set('Authorization', `Bearer ${adminToken}`)
       .send({ targetStatus: 'READY' });
     expect(skipRes.status).toBe(422);
 
     // Avanço válido: RECEIVED -> PREPARING
     const step1 = await request(app)
-      .patch('/api/admin/orders/101/advance')
+      .patch(`/api/admin/orders/${order.id}/advance`)
       .set('Authorization', `Bearer ${adminToken}`)
       .send({});
     expect(step1.status).toBe(200);
@@ -189,7 +236,7 @@ describe('Integration — Backend Completo (Auth, Cardápio, Pedidos, Regras RN-
 
     // Avanço válido: PREPARING -> READY
     const step2 = await request(app)
-      .patch('/api/admin/orders/101/advance')
+      .patch(`/api/admin/orders/${order.id}/advance`)
       .set('Authorization', `Bearer ${adminToken}`)
       .send({});
     expect(step2.status).toBe(200);
@@ -197,7 +244,7 @@ describe('Integration — Backend Completo (Auth, Cardápio, Pedidos, Regras RN-
 
     // Avanço válido: READY -> DELIVERED
     const step3 = await request(app)
-      .patch('/api/admin/orders/101/advance')
+      .patch(`/api/admin/orders/${order.id}/advance`)
       .set('Authorization', `Bearer ${adminToken}`)
       .send({});
     expect(step3.status).toBe(200);
@@ -205,34 +252,88 @@ describe('Integration — Backend Completo (Auth, Cardápio, Pedidos, Regras RN-
 
     // Tentar avançar após DELIVERED deve retornar 422
     const step4 = await request(app)
-      .patch('/api/admin/orders/101/advance')
+      .patch(`/api/admin/orders/${order.id}/advance`)
       .set('Authorization', `Bearer ${adminToken}`)
       .send({});
     expect(step4.status).toBe(422);
   });
 
   it('API-005, API-011 / RN-007, RN-008: deve permitir cancelamento pelo cliente em até 5 min (RECEIVED), bloquear após 5 min, e permitir cancelamento pelo atendente a qualquer momento', async () => {
-    // Pedido #101 foi criado há 2 minutos no seed e está em RECEIVED -> cliente pode cancelar
-    const custCancelOk = await request(app).post('/api/public/orders/101/cancel');
+    const sampleItem = [
+      {
+        productNameSnapshot: 'X-Burger Artesanal',
+        quantity: 1,
+        unitPrice: 28.9,
+        subtotal: 28.9,
+      },
+    ];
+
+    const recentOrder = orderRepo.createWithItems(
+      {
+        orderType: 'DINE_IN',
+        status: 'RECEIVED',
+        tableNumber: '12',
+        totalAmount: 28.9,
+        createdAt: minutesAgo(2),
+        updatedAt: minutesAgo(2),
+      },
+      sampleItem
+    );
+    const expiredOrder = orderRepo.createWithItems(
+      {
+        orderType: 'DELIVERY',
+        status: 'RECEIVED',
+        customerName: 'Cliente Expirado',
+        totalAmount: 28.9,
+        createdAt: minutesAgo(6),
+        updatedAt: minutesAgo(6),
+      },
+      sampleItem
+    );
+    const preparingOrder = orderRepo.createWithItems(
+      {
+        orderType: 'DINE_IN',
+        status: 'PREPARING',
+        tableNumber: '04',
+        totalAmount: 28.9,
+        createdAt: minutesAgo(10),
+        updatedAt: minutesAgo(8),
+      },
+      sampleItem
+    );
+    const deliveredOrder = orderRepo.createWithItems(
+      {
+        orderType: 'DINE_IN',
+        status: 'DELIVERED',
+        tableNumber: '08',
+        totalAmount: 28.9,
+        createdAt: minutesAgo(30),
+        updatedAt: minutesAgo(15),
+      },
+      sampleItem
+    );
+
+    // Pedido recente (2 min) em RECEIVED -> cliente pode cancelar
+    const custCancelOk = await request(app).post(`/api/public/orders/${recentOrder.id}/cancel`);
     expect(custCancelOk.status).toBe(200);
     expect(custCancelOk.body.order.status).toBe('CANCELLED');
 
-    // Pedido #102 foi criado há 6 minutos no seed (> 5 min) -> cliente NÃO pode cancelar (RN-007)
+    // Pedido criado há 6 minutos (> 5 min) -> cliente NÃO pode cancelar (RN-007)
     const custCancelExpired = await request(app).post(
-      '/api/public/orders/102/cancel'
+      `/api/public/orders/${expiredOrder.id}/cancel`
     );
     expect(custCancelExpired.status).toBe(422);
 
-    // Mas o atendente PODE cancelar o pedido #102 ou #103 (PREPARING) a qualquer momento sem justificativa (RN-008)
+    // Atendente PODE cancelar pedido em PREPARING sem justificativa (RN-008)
     const adminCancelRes = await request(app)
-      .post('/api/admin/orders/103/cancel')
+      .post(`/api/admin/orders/${preparingOrder.id}/cancel`)
       .set('Authorization', `Bearer ${adminToken}`);
     expect(adminCancelRes.status).toBe(200);
     expect(adminCancelRes.body.order.status).toBe('CANCELLED');
 
-    // Pedido #105 já está em DELIVERED -> não pode ser cancelado
+    // Pedido já em DELIVERED -> não pode ser cancelado
     const cancelDeliveredRes = await request(app)
-      .post('/api/admin/orders/105/cancel')
+      .post(`/api/admin/orders/${deliveredOrder.id}/cancel`)
       .set('Authorization', `Bearer ${adminToken}`);
     expect(cancelDeliveredRes.status).toBe(422);
   });
@@ -305,7 +406,7 @@ describe('Integration — Backend Completo (Auth, Cardápio, Pedidos, Regras RN-
     expect(authMetrics.status).toBe(200);
     expect(authMetrics.body.success).toBe(true);
     expect(authMetrics.body.metrics).toBeDefined();
-    expect(authMetrics.body.metrics.totalOrders).toBeGreaterThanOrEqual(1);
+    expect(authMetrics.body.metrics.totalOrders).toBe(0);
     expect(typeof authMetrics.body.metrics.totalRevenue).toBe('number');
     expect(typeof authMetrics.body.metrics.averageTicket).toBe('number');
     expect(authMetrics.body.metrics.statusCounts).toBeDefined();

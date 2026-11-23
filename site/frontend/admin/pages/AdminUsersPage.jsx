@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Users,
   UserPlus,
@@ -25,6 +26,7 @@ import AdminLayout from '../components/AdminLayout';
 import { adminApi } from '../services/adminApi';
 import { useAuth } from '../../src/contexts/AuthContext';
 import ScrollReveal from '../../src/components/ScrollReveal';
+import ModalPortal from '../../src/components/ModalPortal';
 
 const ROLES_INFO = {
   ADMIN: {
@@ -58,12 +60,19 @@ const ROLES_INFO = {
 };
 
 export default function AdminUsersPage() {
-  const { user: currentLoggedUser } = useAuth();
+  const navigate = useNavigate();
+  const { user: currentLoggedUser, isAuthenticated, logout } = useAuth();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [roleFilter, setRoleFilter] = useState('ALL');
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate('/admin/login', { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
 
   // Modal State
   const [modalOpen, setModalOpen] = useState(false);
@@ -88,16 +97,21 @@ export default function AdminUsersPage() {
         setUsers(data.users);
       }
     } catch (err) {
-      // Ignora falha de rede silenciosa
+      if (err?.status === 401) {
+        logout();
+        navigate('/admin/login', { replace: true });
+      }
     } finally {
       setLoading(false);
       setRefreshing(false);
     }
-  }, []);
+  }, [logout, navigate]);
 
   useEffect(() => {
-    loadUsers();
-  }, [loadUsers]);
+    if (isAuthenticated) {
+      loadUsers();
+    }
+  }, [isAuthenticated, loadUsers]);
 
   const handleRefresh = () => {
     setRefreshing(true);
@@ -254,6 +268,8 @@ export default function AdminUsersPage() {
   const activeCount = users.filter((u) => u.active).length;
   const adminCount = users.filter((u) => u.role === 'ADMIN').length;
   const attendantCount = users.filter((u) => u.role === 'ATENDENTE').length;
+
+  if (!isAuthenticated) return null;
 
   return (
     <AdminLayout
@@ -592,33 +608,38 @@ export default function AdminUsersPage() {
 
         {/* ================= MODAL DE CADASTRO / EDIÇÃO ================= */}
         {modalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
-            <div className="w-full max-w-lg rounded-2xl bg-[#12100d] border border-[#2e2520] shadow-2xl p-6 relative">
-              {/* Fechar */}
-              <button
-                onClick={() => setModalOpen(false)}
-                className="absolute right-4 top-4 p-1.5 text-stone-400 hover:text-white rounded-lg hover:bg-stone-800 transition-colors cursor-pointer"
-              >
-                <X size={18} />
-              </button>
-
-              {/* Título do Modal */}
-              <div className="flex items-center gap-3 mb-5 pb-3 border-b border-[#26201b]">
-                <div className="w-10 h-10 rounded-xl bg-[#1c1714] border border-[#382f28] text-amber-400 flex items-center justify-center">
-                  {editingUser ? <Edit2 size={18} /> : <UserPlus size={18} />}
+          <ModalPortal
+            isOpen={modalOpen}
+            className="flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in"
+          >
+            <div className="w-full max-w-lg max-h-[90vh] flex flex-col overflow-hidden rounded-2xl bg-[#12100d] border border-[#2e2520] shadow-2xl relative">
+              {/* Cabeçalho fixo do Modal */}
+              <div className="flex items-center justify-between px-6 py-4 border-b border-[#26201b] shrink-0">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-[#1c1714] border border-[#382f28] text-amber-400 flex items-center justify-center">
+                    {editingUser ? <Edit2 size={18} /> : <UserPlus size={18} />}
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-black uppercase font-['Oswald',sans-serif] text-white">
+                      {editingUser ? 'Editar Acesso do Usuário' : 'Cadastrar Novo Usuário'}
+                    </h3>
+                    <p className="text-xs text-stone-400">
+                      {editingUser
+                        ? 'Atualize os dados e permissões no banco SQLite'
+                        : 'Crie uma nova credencial de acesso ao sistema FoodExpress'}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="text-lg font-black uppercase font-['Oswald',sans-serif] text-white">
-                    {editingUser ? 'Editar Acesso do Usuário' : 'Cadastrar Novo Usuário'}
-                  </h3>
-                  <p className="text-xs text-stone-400">
-                    {editingUser
-                      ? 'Atualize os dados e permissões no banco SQLite'
-                      : 'Crie uma nova credencial de acesso ao sistema FoodExpress'}
-                  </p>
-                </div>
+                <button
+                  onClick={() => setModalOpen(false)}
+                  className="p-1.5 text-stone-400 hover:text-white rounded-lg hover:bg-stone-800 transition-colors cursor-pointer"
+                  aria-label="Fechar"
+                >
+                  <X size={18} />
+                </button>
               </div>
 
+              <div className="flex-1 overflow-y-auto scrollbar-hide overscroll-contain p-6">
               {/* Erro de Validação */}
               {formError && (
                 <div className="mb-4 p-3 rounded-xl bg-[#1a1311] border border-[#3d2722] text-stone-300 text-xs flex items-center gap-2">
@@ -779,8 +800,9 @@ export default function AdminUsersPage() {
                   </button>
                 </div>
               </form>
+              </div>
             </div>
-          </div>
+          </ModalPortal>
         )}
       </div>
     </AdminLayout>

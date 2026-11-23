@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { X, Plus, Minus } from 'lucide-react';
 import { formatPrice, calculateItemPrice, sanitizeProductImageUrl, getFallbackFoodImage } from '../utils/helpers';
+import ModalPortal from './ModalPortal';
 
 export default function ProductModal({ product, onClose, onAdd }) {
   const [selectedVariation, setSelectedVariation] = useState(null);
@@ -18,14 +19,6 @@ export default function ProductModal({ product, onClose, onAdd }) {
       setSelectedVariation(activeVariations[0]);
     }
   }, [product]);
-
-  // Prevent body scroll when modal is open
-  useEffect(() => {
-    document.body.style.overflow = 'hidden';
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, []);
 
   if (!product) return null;
 
@@ -54,28 +47,26 @@ export default function ProductModal({ product, onClose, onAdd }) {
   const isValid = !hasVariations || selectedVariation;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
-      {/* Backdrop */}
-      <div
-        className="absolute inset-0 bg-black/50 backdrop-blur-xs transition-opacity"
-        onClick={onClose}
-      />
+    <ModalPortal isOpen={Boolean(product)} className="flex items-end sm:items-center justify-center p-0 sm:p-4">
+      {/* Backdrop bloqueador (impede acesso ao site atrás do modal) */}
+      <div className="absolute inset-0 bg-black/80 backdrop-blur-md transition-opacity" />
 
       {/* Panel */}
-      <div className="relative z-10 flex w-full max-w-lg flex-col rounded-t-3xl sm:rounded-3xl bg-[#14110f] border border-[#2d241e] text-stone-100 shadow-2xl animate-in slide-in-from-bottom sm:zoom-in-95 duration-300 overflow-hidden"
+      <div
+        className="relative z-10 flex w-full max-w-lg flex-col rounded-t-3xl sm:rounded-3xl bg-[#14110f] border border-[#2d241e] text-stone-100 shadow-2xl animate-in slide-in-from-bottom sm:zoom-in-95 duration-300 overflow-hidden"
         style={{ maxHeight: '90vh' }}
       >
         {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute right-4 top-4 z-20 flex h-8 w-8 items-center justify-center rounded-full bg-[#100d0b]/85 text-stone-300 shadow-md backdrop-blur-sm hover:bg-[#1a1512] hover:text-white border border-[#3a3028]"
+          className="absolute right-4 top-4 z-20 flex h-8 w-8 items-center justify-center rounded-full bg-[#100d0b]/85 text-stone-300 shadow-md backdrop-blur-sm hover:bg-[#1a1512] hover:text-white border border-[#3a3028] cursor-pointer"
           aria-label="Fechar"
         >
           <X size={20} />
         </button>
 
-        {/* Scrollable content */}
-        <div className="overflow-y-auto">
+        {/* Scrollable content sem barra de rolagem visível */}
+        <div className="flex-1 overflow-y-auto scrollbar-hide overscroll-contain">
           {/* Product image */}
           <div className="aspect-video w-full overflow-hidden rounded-t-3xl bg-neutral-900">
             <img
@@ -247,6 +238,6 @@ export default function ProductModal({ product, onClose, onAdd }) {
           </button>
         </div>
       </div>
-    </div>
+    </ModalPortal>
   );
 }

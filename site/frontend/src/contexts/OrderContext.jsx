@@ -1,5 +1,4 @@
 import { createContext, useCallback, useContext, useEffect, useState } from 'react';
-import { MOCK_ORDERS } from '../data/mockData';
 import { adminApi, getStoredAdminToken, publicApi } from '../services/api';
 
 const OrderContext = createContext(null);
@@ -11,9 +10,9 @@ function loadInitialOrders() {
   try {
     const saved = localStorage.getItem(ORDERS_STORAGE_KEY);
     const parsed = saved ? JSON.parse(saved) : null;
-    return Array.isArray(parsed) && parsed.length > 0 ? parsed : MOCK_ORDERS;
+    return Array.isArray(parsed) ? parsed : [];
   } catch {
-    return MOCK_ORDERS;
+    return [];
   }
 }
 
@@ -24,7 +23,7 @@ export function OrderProvider({ children }) {
     localStorage.getItem(LAST_ORDER_KEY)
   );
 
-  // Carrega pedidos reais do backend SQLite apenas se o atendente já tiver sessão autenticada
+  // Carrega pedidos reais do backend SQLite quando o atendente tiver sessão autenticada
   useEffect(() => {
     let isMounted = true;
     const token = getStoredAdminToken();
@@ -32,12 +31,12 @@ export function OrderProvider({ children }) {
       adminApi
         .fetchOrders()
         .then((data) => {
-          if (isMounted && data?.orders && data.orders.length > 0) {
+          if (isMounted && Array.isArray(data?.orders)) {
             setAdminOrders(data.orders);
           }
         })
         .catch(() => {
-          // Modo offline / mock fallback
+          // Aguarda autenticação ou reconexão
         });
     }
 
@@ -94,7 +93,7 @@ export function OrderProvider({ children }) {
         tableNumber: orderData.tableNumber || null,
         paymentMethod: orderData.paymentMethod || 'PIX',
         isPaid: Boolean(orderData.isPaid),
-        deliveryPin: orderData.deliveryPin || '8492',
+        deliveryPin: orderData.deliveryPin || undefined,
         totalAmount: Number(orderData.totalPrice || orderData.totalAmount || 0),
         items: orderData.items || [],
       });

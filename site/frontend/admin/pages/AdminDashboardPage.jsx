@@ -18,14 +18,22 @@ import {
 } from 'lucide-react';
 import AdminLayout from '../components/AdminLayout';
 import { adminApi } from '../services/adminApi';
+import { useAuth } from '../../src/contexts/AuthContext';
 import { formatPrice } from '../../src/utils/helpers';
 import ScrollReveal from '../../src/components/ScrollReveal';
 
 export default function AdminDashboardPage() {
   const navigate = useNavigate();
+  const { isAuthenticated, logout } = useAuth();
   const [metrics, setMetrics] = useState(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate('/admin/login', { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
 
   const loadMetrics = useCallback(async () => {
     try {
@@ -33,32 +41,27 @@ export default function AdminDashboardPage() {
       if (data && data.metrics) {
         setMetrics(data.metrics);
       }
-    } catch {
-      // Fallback silently if offline
+    } catch (err) {
+      if (err?.status === 401) {
+        logout();
+        navigate('/admin/login', { replace: true });
+      }
     } finally {
       setLoading(false);
       setRefreshing(false);
     }
-  }, []);
+  }, [logout, navigate]);
 
   useEffect(() => {
+    if (!isAuthenticated) return;
     loadMetrics();
     const interval = setInterval(loadMetrics, 15_000);
     return () => clearInterval(interval);
-  }, [loadMetrics]);
+  }, [isAuthenticated, loadMetrics]);
 
   const handleManualRefresh = () => {
     setRefreshing(true);
     loadMetrics();
-  };
-
-  const handleSimulate = async (isDelivery) => {
-    try {
-      await adminApi.simulateOrder(isDelivery);
-      loadMetrics();
-    } catch {
-      // Ignore
-    }
   };
 
   const totalRevenue = metrics?.totalRevenue || 0;
@@ -67,8 +70,8 @@ export default function AdminDashboardPage() {
   const activeOrders = metrics?.activeOrders || 0;
   const dineInCount = metrics?.dineInOrders || 0;
   const deliveryCount = metrics?.deliveryOrders || 0;
-  const dineInPct = totalOrders > 0 ? Math.round((dineInCount / totalOrders) * 100) : 50;
-  const deliveryPct = 100 - dineInPct;
+  const dineInPct = totalOrders > 0 ? Math.round((dineInCount / totalOrders) * 100) : 0;
+  const deliveryPct = totalOrders > 0 ? 100 - dineInPct : 0;
 
   const statusCounts = metrics?.statusCounts || {
     RECEIVED: 0,
@@ -78,11 +81,12 @@ export default function AdminDashboardPage() {
     CANCELLED: 0,
   };
 
+  if (!isAuthenticated) return null;
+
   return (
     <AdminLayout
       title="Dashboard & Métricas"
       subtitle="Visão Executiva, Faturamento e Desempenho Operacional em Tempo Real"
-      onSimulateOrder={handleSimulate}
       onRefresh={handleManualRefresh}
       refreshing={refreshing}
     >

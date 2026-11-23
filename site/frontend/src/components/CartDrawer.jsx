@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
 import { formatPrice } from '../utils/helpers';
+import ModalPortal from './ModalPortal';
 
 export default function CartDrawer({ isOpen, onClose, onCheckout }) {
   const { items, updateQuantity, removeItem, totalItems, totalPrice } = useCart();
@@ -30,22 +31,16 @@ export default function CartDrawer({ isOpen, onClose, onCheckout }) {
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const [paymentApproved, setPaymentApproved] = useState(false);
 
-  // Prevent body scroll when drawer is open
+  // Reseta estado do modal PIX ao fechar a sacola
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
+    if (!isOpen) {
       setShowPixModal(false);
       setPaymentApproved(false);
       setIsProcessingPayment(false);
     }
-    return () => {
-      document.body.style.overflow = '';
-    };
   }, [isOpen]);
 
-  // Código PIX mock copia e cola
+  // Código PIX copia e cola gerado conforme valor do pedido
   const pixCopiaECola = useMemo(
     () =>
       `00020126580014BR.GOV.BCB.PIX0136foodexpress-pix5204000053039865406${totalPrice.toFixed(
@@ -108,19 +103,16 @@ export default function CartDrawer({ isOpen, onClose, onCheckout }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-stretch sm:justify-end">
-      {/* Backdrop */}
-      <div
-        className="absolute inset-0 bg-black/60 backdrop-blur-xs transition-opacity"
-        onClick={onClose}
-      />
+    <ModalPortal isOpen={isOpen} className="flex items-end sm:items-stretch sm:justify-end">
+      {/* Backdrop bloqueador (impede acesso ao site atrás do modal) */}
+      <div className="absolute inset-0 bg-black/80 backdrop-blur-md transition-opacity" />
 
       {/* Panel */}
       <div
-        className="relative z-10 flex w-full max-w-lg sm:max-w-md flex-col rounded-t-3xl sm:rounded-t-none sm:rounded-l-3xl bg-[#14110f] border-l border-[#2d241e] text-stone-100 shadow-2xl animate-in slide-in-from-bottom sm:slide-in-from-right duration-300 max-h-[92vh] sm:max-h-full sm:h-full"
+        className="relative z-10 flex w-full max-w-lg sm:max-w-md flex-col rounded-t-3xl sm:rounded-t-none sm:rounded-l-3xl bg-[#14110f] border-l border-[#2d241e] text-stone-100 shadow-2xl animate-in slide-in-from-bottom sm:slide-in-from-right duration-300 max-h-[92vh] sm:max-h-full sm:h-full overflow-hidden"
       >
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-[#26201b] px-5 py-4">
+        <div className="flex items-center justify-between border-b border-[#26201b] px-5 py-4 shrink-0">
           <div className="flex items-center gap-2">
             <ShoppingBag size={20} className="text-orange-500" />
             <h2 className="text-lg font-bold font-['Oswald',sans-serif] uppercase tracking-wide">
@@ -136,8 +128,8 @@ export default function CartDrawer({ isOpen, onClose, onCheckout }) {
           </button>
         </div>
 
-        {/* Content */}
-        <div className="flex-1 overflow-y-auto">
+        {/* Content sem barra de rolagem visível */}
+        <div className="flex-1 overflow-y-auto scrollbar-hide overscroll-contain">
           {isEmpty ? (
             <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
               <ShoppingBag size={48} className="text-stone-600 mb-3" />
@@ -390,8 +382,12 @@ export default function CartDrawer({ isOpen, onClose, onCheckout }) {
 
       {/* MODAL DE PAGAMENTO PIX INSTANTÂNEO */}
       {showPixModal && (
-        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="w-full max-w-sm bg-[#121214] rounded-3xl border border-zinc-800 p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in duration-200">
+        <ModalPortal
+          isOpen={showPixModal}
+          zIndexClass="z-[100010]"
+          className="bg-black/85 backdrop-blur-md flex items-center justify-center p-4"
+        >
+          <div className="w-full max-w-sm max-h-[90vh] overflow-y-auto scrollbar-hide overscroll-contain bg-[#121214] rounded-3xl border border-zinc-800 p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in duration-200">
             {paymentApproved ? (
               <div className="py-8 text-center space-y-3">
                 <div className="w-16 h-16 rounded-full bg-emerald-500/20 border-2 border-emerald-500 text-emerald-400 mx-auto flex items-center justify-center animate-bounce">
@@ -418,7 +414,8 @@ export default function CartDrawer({ isOpen, onClose, onCheckout }) {
                   </div>
                   <button
                     onClick={() => setShowPixModal(false)}
-                    className="text-zinc-400 hover:text-white p-1"
+                    className="text-zinc-400 hover:text-white p-1 cursor-pointer"
+                    aria-label="Fechar modal PIX"
                   >
                     <X size={16} />
                   </button>
@@ -434,10 +431,10 @@ export default function CartDrawer({ isOpen, onClose, onCheckout }) {
                   </span>
                 </div>
 
-                {/* QR Code Ilustrativo */}
+                {/* QR Code PIX */}
                 <div className="bg-white p-4 rounded-2xl w-48 h-48 mx-auto flex flex-col items-center justify-center relative shadow-lg">
                   <img
-                    src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=foodexpress-pix-demo"
+                    src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(pixCopiaECola)}`}
                     alt="QR Code Pix FoodExpress"
                     className="w-full h-full object-contain"
                   />
@@ -459,7 +456,7 @@ export default function CartDrawer({ isOpen, onClose, onCheckout }) {
                   <span>Aguardando confirmação bancária instantânea...</span>
                 </div>
 
-                {/* Botão de Confirmação Rápida */}
+                {/* Botão de Confirmação */}
                 <button
                   type="button"
                   onClick={handleConfirmPixPayment}
@@ -478,8 +475,8 @@ export default function CartDrawer({ isOpen, onClose, onCheckout }) {
               </>
             )}
           </div>
-        </div>
+        </ModalPortal>
       )}
-    </div>
+    </ModalPortal>
   );
 }

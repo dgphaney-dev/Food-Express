@@ -61,7 +61,7 @@ const HERO_SLIDES = [
   },
 ];
 
-const DEMO_ITEMS = [
+const FEATURED_ITEMS = [
   {
     id: 1,
     title: 'X-Burger Artesanal',
@@ -401,7 +401,7 @@ export default function HomePage() {
         <div className="absolute bottom-0 inset-x-0 h-10 md:h-12 bg-gradient-to-t from-[#0b0908] to-transparent pointer-events-none z-20" />
       </section>
 
-      {/* 3. "NOSSOS PRODUTOS" — 3 ITENS DEMONSTRATIVOS */}
+      {/* 3. "NOSSOS PRODUTOS" — 3 DESTAQUES DA CASA */}
       <section id="nossos-produtos" className="w-full py-16 sm:py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto scroll-mt-20">
         {/* Section Header */}
         <ScrollReveal direction="up" duration={700}>
@@ -420,9 +420,9 @@ export default function HomePage() {
           </div>
         </ScrollReveal>
 
-        {/* 3 Demonstrative Cards Grid */}
+        {/* 3 Featured Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
-          {DEMO_ITEMS.map((dish, idx) => (
+          {FEATURED_ITEMS.map((dish, idx) => (
             <ScrollReveal
               key={dish.id}
               direction="up"

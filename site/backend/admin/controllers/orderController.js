@@ -1,4 +1,3 @@
-import { resetDemoOrders } from '../../db/seed.js';
 import { orderService } from '../services/orderService.js';
 
 export const orderController = {
@@ -38,41 +37,6 @@ export const orderController = {
     try {
       const result = orderService.cancelOrderByAdmin(req.params.id);
       res.status(200).json(result);
-    } catch (err) {
-      next(err);
-    }
-  },
-
-  /**
-   * Rota auxiliar do protótipo: POST /api/admin/orders/simulate
-   */
-  simulateIncomingOrder(req, res, next) {
-    try {
-      const forceDelivery =
-        req.body?.isDelivery !== undefined
-          ? Boolean(req.body.isDelivery)
-          : req.query?.type === 'delivery'
-          ? true
-          : req.query?.type === 'table'
-          ? false
-          : null;
-      const result = orderService.simulateIncomingOrder(forceDelivery);
-      res.status(201).json(result);
-    } catch (err) {
-      next(err);
-    }
-  },
-
-  /**
-   * Rota auxiliar do protótipo: POST /api/admin/orders/reset
-   */
-  resetDemoOrders(_req, res, next) {
-    try {
-      const orders = resetDemoOrders();
-      res.status(200).json({
-        orders,
-        serverTime: new Date().toISOString(),
-      });
     } catch (err) {
       next(err);
     }

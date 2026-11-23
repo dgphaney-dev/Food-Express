@@ -19,6 +19,7 @@ import {
 import { useCart } from '../contexts/CartContext';
 import { useOrders } from '../contexts/OrderContext';
 import { formatPrice } from '../utils/helpers';
+import { useModalLock } from '../hooks/useModalLock';
 
 export default function Navbar({
   isAdmin = false,
@@ -78,17 +79,8 @@ export default function Navbar({
     setIsClosing(false);
   }, [location.pathname]);
 
-  // Lock body scroll when mobile menu is open
-  useEffect(() => {
-    if (mobileMenuOpen || isClosing) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [mobileMenuOpen, isClosing]);
+  // Trava scroll e acesso ao site quando o drawer mobile estiver aberto
+  useModalLock(mobileMenuOpen || isClosing);
 
   const isActive = (path) => {
     if (path === '/') return location.pathname === '/';
@@ -371,17 +363,22 @@ export default function Navbar({
         (mobileMenuOpen || isClosing) &&
         typeof document !== 'undefined' &&
         createPortal(
-          <div className="xl:hidden fixed inset-0 z-[99999] flex justify-end">
-            {/* 1. Backdrop escurecedor profundo (Dissolução suave & desfoque orgânico) */}
+          <div
+            data-modal-portal="true"
+            data-lenis-prevent="true"
+            role="dialog"
+            aria-modal="true"
+            className="xl:hidden fixed inset-0 z-[100000] flex justify-end overflow-hidden"
+          >
+            {/* 1. Backdrop escurecedor profundo (bloqueia acesso ao site atrás do menu) */}
             <div
               className={`fixed inset-0 ${isClosing ? 'animate-menu-backdrop-out' : 'animate-menu-backdrop'}`}
               style={{ backgroundColor: 'rgba(0, 0, 0, 0.96)', backdropFilter: 'blur(10px)' }}
-              onClick={handleCloseMenu}
             />
 
-            {/* 2. Painel do Menu (Abertura e fechamento com física de desaceleração suave e acabamento de brasa Steakhouse) */}
+            {/* 2. Painel do Menu (sem barra de rolagem visível) */}
             <div
-              className={`w-full sm:w-[380px] sm:max-w-sm h-full border-l border-[#2e241d]/80 p-5 sm:p-6 flex flex-col justify-between shadow-[-10px_0_40px_rgba(0,0,0,0.95)] relative z-10 overflow-y-auto ${
+              className={`w-full sm:w-[380px] sm:max-w-sm h-full border-l border-[#2e241d]/80 p-5 sm:p-6 flex flex-col justify-between shadow-[-10px_0_40px_rgba(0,0,0,0.95)] relative z-10 overflow-y-auto scrollbar-hide overscroll-contain ${
                 isClosing ? 'animate-menu-drawer-out' : 'animate-menu-drawer'
               }`}
               style={{ backgroundColor: '#0a0807' }}

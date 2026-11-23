@@ -36,8 +36,6 @@ adminRouter.delete('/products/:id', menuController.deleteProduct);
 // Operação de Pedidos Admin (API-009, API-010, API-011)
 adminRouter.get('/orders', orderController.listAdminOrders);
 adminRouter.get('/metrics', orderController.getMetrics);
-adminRouter.post('/orders/simulate', orderController.simulateIncomingOrder);
-adminRouter.post('/orders/reset', orderController.resetDemoOrders);
 adminRouter.patch('/orders/:id/advance', orderController.advanceOrderByAdmin);
 adminRouter.post('/orders/:id/cancel', orderController.cancelOrderByAdmin);
 

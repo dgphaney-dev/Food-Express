@@ -31,6 +31,7 @@ import AdminLayout from '../components/AdminLayout';
 import { playNewOrderChime } from '../utils/soundAlert';
 import { printThermalReceipt } from '../utils/printReceipt';
 import ScrollReveal from '../../src/components/ScrollReveal';
+import ModalPortal from '../../src/components/ModalPortal';
 
 const POLL_KEY = 'foodexpress_poll_ms';
 
@@ -98,20 +99,17 @@ export default function AdminOrdersPage() {
         setAdminOrders(data.orders);
         setBackendConnected(true);
       }
-    } catch {
-      setBackendConnected(false);
-      try {
-        const saved = localStorage.getItem('foodexpress_orders');
-        if (saved && setAdminOrders) {
-          setAdminOrders(JSON.parse(saved));
-        }
-      } catch {
-        // Ignora erro de parsing
+    } catch (err) {
+      if (err?.status === 401) {
+        logout();
+        navigate('/admin/login', { replace: true });
+        return;
       }
+      setBackendConnected(false);
     } finally {
       setTimeout(() => setRefreshing(false), 350);
     }
-  }, [setAdminOrders]);
+  }, [setAdminOrders, logout, navigate]);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -177,57 +175,6 @@ export default function AdminOrdersPage() {
       // Fallback local
     }
     cancelOrder(order.id);
-  };
-
-  // Simulate new order for demo/testing (persisted in SQLite backend)
-  const handleSimulateNewOrder = async (isDelivery = false) => {
-    try {
-      const data = await adminApi.simulateIncomingOrder(isDelivery);
-      if (data && data.order && setAdminOrders) {
-        setAdminOrders((prev) => [data.order, ...prev]);
-        setBackendConnected(true);
-        return;
-      }
-    } catch {
-      // Fallback local se offline
-    }
-
-    const newId = Math.floor(100 + Math.random() * 900);
-    const mockOrder = {
-      id: newId,
-      orderType: isDelivery ? 'DELIVERY' : 'DINE_IN',
-      status: 'RECEIVED',
-      tableNumber: isDelivery ? null : String(Math.floor(1 + Math.random() * 20)),
-      customerName: isDelivery ? 'Lucas Mendes (Delivery)' : null,
-      deliveryAddress: isDelivery ? 'Av. Paulista, 1500 - Apto 82' : null,
-      totalAmount: 58.80,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      items: [
-        {
-          id: Date.now(),
-          productNameSnapshot: 'X-Burger Artesanal',
-          quantity: 1,
-          variationNameSnapshot: 'Duplo 360g',
-          addonsJsonSnapshot: JSON.stringify([{ name: 'Cheddar Extra', price: 4.0 }]),
-          notes: 'Carne bem passada, maionese à parte.',
-          unitPrice: 36.90,
-          subtotal: 40.90,
-        },
-        {
-          id: Date.now() + 1,
-          productNameSnapshot: 'Aussie Cheese Fries',
-          quantity: 1,
-          variationNameSnapshot: 'Média',
-          addonsJsonSnapshot: '[]',
-          notes: '',
-          unitPrice: 17.90,
-          subtotal: 17.90,
-        },
-      ],
-    };
-
-    setAdminOrders((prev) => [mockOrder, ...prev]);
   };
 
   // Print thermal kitchen receipt
@@ -316,7 +263,6 @@ export default function AdminOrdersPage() {
     <AdminLayout
       title="Fila de Pedidos & KDS"
       subtitle="Gerencie pedidos de salão e entrega com transição rápida de status e comandas"
-      onSimulateOrder={handleSimulateNewOrder}
       onRefresh={doRefresh}
       refreshing={refreshing}
       pollMs={pollMs}
@@ -434,7 +380,7 @@ export default function AdminOrdersPage() {
               <p className="text-xs sm:text-sm text-zinc-500 mt-1 max-w-sm mx-auto">
                 {searchQuery
                   ? `Nenhum resultado corresponde à busca "${searchQuery}".`
-                  : 'Nenhum pedido nesta fila no momento. Você pode clicar em "+ Mesa Teste" para simular um pedido.'}
+                  : 'Nenhum pedido nesta fila no momento. Novos pedidos aparecerão aqui automaticamente.'}
               </p>
             </div>
           </ScrollReveal>
@@ -458,9 +404,12 @@ export default function AdminOrdersPage() {
 
       {/* ================= ORDER DETAILS MODAL ================= */}
       {selectedOrderDetails && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in">
-          <div className="bg-[#12100e] border border-[#26201b] rounded-3xl max-w-md w-full p-6 shadow-2xl text-white animate-scale-up">
-            <div className="flex items-center justify-between pb-3 border-b border-[#26201b] mb-4">
+        <ModalPortal
+          isOpen={Boolean(selectedOrderDetails)}
+          className="flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in"
+        >
+          <div className="bg-[#12100e] border border-[#26201b] rounded-3xl max-w-md w-full max-h-[90vh] flex flex-col overflow-hidden shadow-2xl text-white animate-scale-up">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-[#26201b] shrink-0">
               <div>
                 <span className="text-xs font-bold text-amber-400 uppercase font-['Oswald',sans-serif] tracking-wider">
                   Detalhes Operacionais
@@ -472,12 +421,13 @@ export default function AdminOrdersPage() {
               <button
                 onClick={() => setSelectedOrderDetails(null)}
                 className="p-1.5 text-zinc-400 hover:text-white rounded-lg hover:bg-zinc-800 transition-colors cursor-pointer"
+                aria-label="Fechar detalhes"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <div className="space-y-3 text-sm">
+            <div className="flex-1 overflow-y-auto scrollbar-hide overscroll-contain p-6 space-y-3 text-sm">
               <div className="p-3 rounded-xl bg-[#0a0908] border border-[#26201b] flex justify-between items-center">
                 <span className="text-xs text-zinc-400">Modalidade:</span>
                 <span className="font-bold text-white">
@@ -518,7 +468,7 @@ export default function AdminOrdersPage() {
               </div>
             </div>
 
-            <div className="flex gap-2.5 pt-4 mt-4 border-t border-[#26201b]">
+            <div className="flex gap-2.5 px-6 py-4 border-t border-[#26201b] shrink-0">
               <button
                 onClick={() => {
                   handlePrintReceipt(selectedOrderDetails);
@@ -536,7 +486,7 @@ export default function AdminOrdersPage() {
               </button>
             </div>
           </div>
-        </div>
+        </ModalPortal>
       )}
     </AdminLayout>
   );

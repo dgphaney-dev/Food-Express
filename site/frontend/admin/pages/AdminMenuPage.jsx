@@ -21,6 +21,7 @@ import { MOCK_MENU } from '../../src/data/mockData';
 import { formatPrice } from '../../src/utils/helpers';
 import AdminLayout from '../components/AdminLayout';
 import ScrollReveal from '../../src/components/ScrollReveal';
+import ModalPortal from '../../src/components/ModalPortal';
 
 const MENU_STORAGE_KEY = 'foodexpress_admin_menu_data';
 
@@ -74,10 +75,13 @@ export default function AdminMenuPage() {
           setMenu({ categories: formatted });
         }
       }
-    } catch {
-      // Fallback gracefully to local mock/storage
+    } catch (err) {
+      if (err?.status === 401) {
+        logout();
+        navigate('/admin/login', { replace: true });
+      }
     }
-  }, []);
+  }, [logout, navigate]);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -803,9 +807,12 @@ export default function AdminMenuPage() {
 
       {/* ================= CATEGORY MODAL (DARK THEME) ================= */}
       {isCategoryModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in">
-          <div className="bg-[#141210] border border-zinc-800 rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl text-white animate-scale-up">
-            <div className="flex items-center justify-between mb-5 pb-3 border-b border-zinc-800">
+        <ModalPortal
+          isOpen={isCategoryModalOpen}
+          className="flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in"
+        >
+          <div className="bg-[#141210] border border-zinc-800 rounded-3xl max-w-md w-full max-h-[90vh] flex flex-col overflow-hidden shadow-2xl text-white animate-scale-up">
+            <div className="flex items-center justify-between px-6 py-4 sm:px-7 border-b border-zinc-800 shrink-0">
               <div className="flex items-center gap-2">
                 <Layers className="w-5 h-5 text-orange-500" />
                 <h2 className="text-lg sm:text-xl font-black text-white uppercase font-['Oswald',sans-serif] tracking-tight">
@@ -815,11 +822,13 @@ export default function AdminMenuPage() {
               <button
                 onClick={() => setIsCategoryModalOpen(false)}
                 className="p-1.5 text-zinc-400 hover:text-white rounded-lg hover:bg-zinc-800 transition-colors cursor-pointer"
+                aria-label="Fechar"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
+            <div className="flex-1 overflow-y-auto scrollbar-hide overscroll-contain p-6 sm:p-7">
             <form onSubmit={handleSaveCategory} className="space-y-4">
               <div>
                 <label className="block text-xs font-bold text-zinc-300 uppercase tracking-wider font-['Oswald',sans-serif] mb-1.5">
@@ -880,15 +889,19 @@ export default function AdminMenuPage() {
                 </button>
               </div>
             </form>
+            </div>
           </div>
-        </div>
+        </ModalPortal>
       )}
 
       {/* ================= PRODUCT MODAL (DARK THEME) ================= */}
       {isProductModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in overflow-y-auto">
-          <div className="bg-[#141210] border border-zinc-800 rounded-3xl max-w-xl w-full p-6 sm:p-7 shadow-2xl text-white my-8 max-h-[90vh] overflow-y-auto animate-scale-up">
-            <div className="flex items-center justify-between mb-4 sticky top-0 bg-[#141210] pb-3 border-b border-zinc-800 z-10">
+        <ModalPortal
+          isOpen={isProductModalOpen}
+          className="flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in"
+        >
+          <div className="bg-[#141210] border border-zinc-800 rounded-3xl max-w-xl w-full max-h-[90vh] flex flex-col overflow-hidden shadow-2xl text-white animate-scale-up">
+            <div className="flex items-center justify-between px-6 py-4 sm:px-7 bg-[#141210] border-b border-zinc-800 shrink-0">
               <div className="flex items-center gap-2">
                 <Utensils className="w-5 h-5 text-orange-500" />
                 <h2 className="text-lg sm:text-xl font-black text-white uppercase font-['Oswald',sans-serif] tracking-tight">
@@ -898,11 +911,13 @@ export default function AdminMenuPage() {
               <button
                 onClick={() => setIsProductModalOpen(false)}
                 className="p-1.5 text-zinc-400 hover:text-white rounded-lg hover:bg-zinc-800 transition-colors cursor-pointer"
+                aria-label="Fechar"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
+            <div className="flex-1 overflow-y-auto scrollbar-hide overscroll-contain p-6 sm:p-7">
             <form onSubmit={handleSaveProduct} className="space-y-4">
               {/* Category Select */}
               <div>
@@ -1208,8 +1223,9 @@ export default function AdminMenuPage() {
                 </button>
               </div>
             </form>
+            </div>
           </div>
-        </div>
+        </ModalPortal>
       )}
     </AdminLayout>
   );

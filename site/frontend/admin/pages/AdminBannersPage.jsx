@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Flame,
   Plus,
@@ -17,6 +18,8 @@ import {
 } from 'lucide-react';
 import AdminLayout from '../components/AdminLayout';
 import { adminApi } from '../services/adminApi';
+import { useAuth } from '../../src/contexts/AuthContext';
+import ModalPortal from '../../src/components/ModalPortal';
 
 const DEFAULT_BANNER_FORM = {
   title: '',
@@ -33,9 +36,17 @@ const DEFAULT_BANNER_FORM = {
 };
 
 export default function AdminBannersPage() {
+  const navigate = useNavigate();
+  const { isAuthenticated, logout } = useAuth();
   const [banners, setBanners] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate('/admin/login', { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
 
   // Modal State
   const [modalOpen, setModalOpen] = useState(false);
@@ -53,16 +64,21 @@ export default function AdminBannersPage() {
         setBanners(data.banners);
       }
     } catch (err) {
-      // Ignora erro em mock
+      if (err?.status === 401) {
+        logout();
+        navigate('/admin/login', { replace: true });
+      }
     } finally {
       setLoading(false);
       setRefreshing(false);
     }
-  }, []);
+  }, [logout, navigate]);
 
   useEffect(() => {
-    loadBanners();
-  }, [loadBanners]);
+    if (isAuthenticated) {
+      loadBanners();
+    }
+  }, [isAuthenticated, loadBanners]);
 
   const showToast = (type, text) => {
     setFeedbackMessage({ type, text });
@@ -194,6 +210,8 @@ export default function AdminBannersPage() {
   };
 
   const activeCount = banners.filter((b) => b.active).length;
+
+  if (!isAuthenticated) return null;
 
   return (
     <AdminLayout
@@ -425,9 +443,12 @@ export default function AdminBannersPage() {
 
       {/* CREATE / EDIT MODAL */}
       {modalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm overflow-y-auto">
-          <div className="relative w-full max-w-2xl my-8 rounded-2xl bg-[#14100e] border border-[#382b22] shadow-2xl p-6 sm:p-8 space-y-6">
-            <div className="flex items-center justify-between border-b border-[#2b221c] pb-4">
+        <ModalPortal
+          isOpen={modalOpen}
+          className="flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
+        >
+          <div className="relative w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden rounded-2xl bg-[#14100e] border border-[#382b22] shadow-2xl">
+            <div className="flex items-center justify-between border-b border-[#2b221c] px-6 py-4 sm:px-8 shrink-0">
               <div className="flex items-center gap-2.5">
                 <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-500">
                   <Flame size={18} />
@@ -445,11 +466,13 @@ export default function AdminBannersPage() {
                 onClick={handleCloseModal}
                 disabled={formSubmitting}
                 className="p-1 rounded-lg hover:bg-[#221b16] text-stone-400 hover:text-white transition-colors cursor-pointer"
+                aria-label="Fechar"
               >
                 <X size={18} />
               </button>
             </div>
 
+            <div className="flex-1 overflow-y-auto scrollbar-hide overscroll-contain p-6 sm:p-8 space-y-5">
             {formError && (
               <div className="flex items-center gap-2 p-3 rounded-xl bg-red-950/50 border border-red-900/60 text-red-300 text-xs">
                 <AlertCircle size={15} className="shrink-0" />
@@ -651,8 +674,9 @@ export default function AdminBannersPage() {
                 </button>
               </div>
             </form>
+            </div>
           </div>
-        </div>
+        </ModalPortal>
       )}
     </AdminLayout>
   );
