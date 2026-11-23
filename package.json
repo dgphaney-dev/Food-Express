@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
+  "main": "index.js",
   "description": "FoodExpress — Sistema Completo de Steakhouse e Delivery com Painel Administrativo",
   "scripts": {
     "start": "node site/backend/server.js",
