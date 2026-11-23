@@ -3,6 +3,14 @@ import { env } from './config/env.js';
 import { initDatabase } from './db/connection.js';
 import { seedDatabase } from './db/seed.js';
 
+process.on('uncaughtException', (err) => {
+  console.error('⚠️ Uncaught Exception capturada:', err);
+});
+
+process.on('unhandledRejection', (reason) => {
+  console.error('⚠️ Unhandled Rejection capturada:', reason);
+});
+
 initDatabase();
 seedDatabase();
 
