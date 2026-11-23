@@ -4,7 +4,7 @@ node_modules/
 frontend/node_modules/
 frontend/dist/
 site/frontend/node_modules/
-site/frontend/dist/
+# site/frontend/dist incluído para deploy direto em cloud
 
 # Banco de dados
 data/*.sqlite
