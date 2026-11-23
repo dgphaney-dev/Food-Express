@@ -1,0 +1,6 @@
+DISPLAY_NAME=FoodExpress
+DESCRIPTION=FoodExpress Steakhouse & Delivery
+MAIN=index.js
+ENTRYPOINT=index.js
+PORT=80
+VERSION=recommended

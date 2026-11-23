@@ -25,7 +25,7 @@ function loadDotEnvFile() {
 loadDotEnvFile();
 
 export const env = {
-  PORT: Number(process.env.PORT || 3333),
+  PORT: Number(process.env.PORT || (process.platform === 'win32' ? 3333 : 80)),
   DATABASE_URL: process.env.DATABASE_URL || './data/foodexpress.sqlite',
   JWT_SECRET: process.env.JWT_SECRET || 'foodexpress-local-dev-secret-key',
   RESTAURANT_WHATSAPP: process.env.RESTAURANT_WHATSAPP || '5511999999999',
