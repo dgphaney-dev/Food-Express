@@ -32,3 +32,6 @@ docs/
 AGENTS.md
 CLAUDE.md
 GEMINI.md
+
+# Arquivos compactados de deploy
+*.zip
