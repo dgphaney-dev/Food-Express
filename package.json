@@ -24,6 +24,9 @@
     "drizzle-orm": "^0.39.3",
     "express": "^4.21.2"
   },
+  "allowScripts": {
+    "better-sqlite3": true
+  },
   "devDependencies": {
     "supertest": "^7.0.0",
     "vitest": "^3.0.5"

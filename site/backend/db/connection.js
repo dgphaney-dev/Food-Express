@@ -1,13 +1,87 @@
 import fs from 'node:fs';
+import { createRequire } from 'node:module';
 import path from 'node:path';
-import Database from 'better-sqlite3';
 import { drizzle } from 'drizzle-orm/better-sqlite3';
 import { env } from '../config/env.js';
 import * as schema from './schema.js';
 import { SCHEMA_DDL_SQL } from './schema.js';
 
+const require = createRequire(import.meta.url);
+
 let sqliteInstance = null;
 let dbInstance = null;
+
+function createDatabaseInstance(targetPath) {
+  try {
+    const BetterSqlite = require('better-sqlite3');
+    return new BetterSqlite(targetPath);
+  } catch (err) {
+    console.log(
+      `⚠️ better-sqlite3 indisponível no ambiente (${err.message}). Utilizando driver nativo node:sqlite do Node.js...`
+    );
+    const { DatabaseSync } = require('node:sqlite');
+    const raw = new DatabaseSync(targetPath);
+    return {
+      exec(sql) {
+        return raw.exec(sql);
+      },
+      pragma(sql) {
+        try {
+          return raw.exec('PRAGMA ' + sql);
+        } catch {
+          return [];
+        }
+      },
+      close() {
+        return raw.close();
+      },
+      transaction(fn) {
+        return function (...args) {
+          raw.exec('BEGIN');
+          try {
+            const res = fn(...args);
+            raw.exec('COMMIT');
+            return res;
+          } catch (e) {
+            try {
+              raw.exec('ROLLBACK');
+            } catch {}
+            throw e;
+          }
+        };
+      },
+      prepare(sql) {
+        const stmt = raw.prepare(sql);
+        let rawMode = false;
+        const wrapped = {
+          raw(val = true) {
+            rawMode = val;
+            return wrapped;
+          },
+          run(...params) {
+            return stmt.run(...params);
+          },
+          all(...params) {
+            const rows = stmt.all(...params);
+            if (rawMode) {
+              return rows.map((r) => Object.values(r));
+            }
+            return rows;
+          },
+          get(...params) {
+            const row = stmt.get(...params);
+            if (!row) return undefined;
+            if (rawMode) {
+              return Object.values(row);
+            }
+            return row;
+          },
+        };
+        return wrapped;
+      },
+    };
+  }
+}
 
 export function initDatabase(customDbPath = null) {
   const targetPath =
@@ -29,7 +103,7 @@ export function initDatabase(customDbPath = null) {
     }
   }
 
-  sqliteInstance = new Database(targetPath);
+  sqliteInstance = createDatabaseInstance(targetPath);
   if (targetPath !== ':memory:') {
     sqliteInstance.pragma('journal_mode = WAL');
   }
